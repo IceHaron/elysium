@@ -1,4 +1,5 @@
 <?
+/* Получение статуса сервера */
 function status($ip, $port){
 	if ($fp = @stream_socket_client("tcp://".$ip.":".$port,$e, $e1, 10)) {
 		@stream_set_timeout($fp, 10);
@@ -10,21 +11,26 @@ function status($ip, $port){
 	} else return null;
 }
 
+// Получаем статусы всех серверов
 $ip='78.46.52.181';
 $kernel = status($ip,25565);
 $backtrack = status($ip,25566);
 $gentoo = status($ip,25567);
 
+// Определяем нужный модуль
 $module = str_replace('/', '', $_SERVER['REQUEST_URI']);
 if ($module == '') $module = 'news';
 $content = file_get_contents("template/$module.html");
 
+// Подключаемся к базе
 $server = "localhost";
 $dbuser = "root";
 $dbpass = "olokari";
 $dbname = "ultraban";
 // mysql_connect($server, $dbuser, $dbpass);
 // mysql_select_db($dbname);
+
+// Получаем список забаненных игроков
 // $result = mysql_query("SELECT * FROM banlist ORDER BY id DESC");
 // echo '<table width=70% border=1 cellpadding=2 align=center>';
 
@@ -90,4 +96,5 @@ $dbname = "ultraban";
 // }}
 // echo"</table>\n";
 
+// Подключаем основной макет
 REQUIRE_ONCE('/template/main.html');

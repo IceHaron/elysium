@@ -1,4 +1,5 @@
 $(document).ready(function(){
+
 	$("#back-top").hide();
 	$(function () {
 		$(window).scroll(function () {
@@ -15,4 +16,9 @@ $(document).ready(function(){
 			return false;
 		});
 	});
+
+	$('.shadowed').each(function(){
+		$(this).textDropShadow('shadow')
+	});
+
 });
