@@ -17,18 +17,13 @@ $kernel = status($ip,25565);
 $backtrack = status($ip,25566);
 $gentoo = status($ip,25567);
 
-// Определяем нужный модуль
-$module = str_replace('/', '', $_SERVER['REQUEST_URI']);
-if ($module == '') $module = 'news';
-$content = file_get_contents("template/$module.html");
+REQUIRE_ONCE('php/classes/db.php');
+$db = new db();
 
-// Подключаемся к базе
-$server = "localhost";
-$dbuser = "root";
-$dbpass = "olokari";
-$dbname = "ultraban";
-// mysql_connect($server, $dbuser, $dbpass);
-// mysql_select_db($dbname);
+// Определяем нужный модуль
+$module = preg_replace('/\/|\?.+$/', '', $_SERVER['REQUEST_URI']);
+if ($module == '') $module = 'news';
+if (glob("php/controllers/$module.php")) INCLUDE_ONCE("php/controllers/$module.php");
 
 // Получаем список забаненных игроков
 // $result = mysql_query("SELECT * FROM banlist ORDER BY id DESC");

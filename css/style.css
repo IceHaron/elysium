@@ -186,4 +186,20 @@ h4 {font-size:31px;color:#000;letter-spacing:-2px;margin-bottom:16px}
     display:inline;
     float:right;
     margin:0px 6px;
-	}
+}
+
+/* Новости */
+.newsTitle {
+	font-family: 'Cuprum', arial, serif;
+	margin: 30px;
+}
+.newsText {
+
+}
+.newsDate {
+	float: right;
+	margin: 0 10px 10px;
+}
+.newsSplit {
+
+}
