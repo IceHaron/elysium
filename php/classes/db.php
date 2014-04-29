@@ -36,7 +36,12 @@ class db {
 		}
 		else $res = ($query_result === FALSE) ? mysqli_error($this->link) : $query_result;
 		if (mysqli_error($this->link) != '') return mysqli_error($this->link);
+		if (!isset($res)) $res = NULL;
 		return $res;
+	}
+
+	public function escape($str='') {
+		return mysqli_real_escape_string($this->link, $str);
 	}
 
 }

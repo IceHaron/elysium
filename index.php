@@ -20,6 +20,10 @@ $gentoo = status($ip,25567);
 REQUIRE_ONCE('php/classes/db.php');
 $db = new db();
 
+// Логинимся
+if (isset($_COOKIE['login'])) $clogin = $_COOKIE['login'];
+else $clogin = '';
+
 // Определяем нужный модуль
 $module = preg_replace('/\/|\?.+$/', '', $_SERVER['REQUEST_URI']);
 if ($module == '') $module = 'news';

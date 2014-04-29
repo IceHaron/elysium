@@ -105,7 +105,17 @@
 				<!-- Шапка -->
 				<div id="header">
 					<div class="extra"><img src="images/header-img.png" alt="" /></div>
-					<div class="row-1"></div>
+					<div class="row-1">
+						<div id="authPanel">
+							<? if ($clogin != '') { ?>
+								<span>Вы вошли как <?=$clogin?></span>
+								<a href="auth?action=off">Выйти</a>
+							<? } else { ?>
+								<a href="auth?action=reg">Регистрация</a>
+								<a href="auth?action=log">Авторизация</a>
+							<? } ?>
+						</div>
+					</div>
 					<div class="row-2">
 						<ul>
 							<li class="m1"><a href="/">Главная</a></li>
