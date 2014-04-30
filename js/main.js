@@ -21,4 +21,15 @@ $(document).ready(function(){
 		$(this).textDropShadow('shadow')
 	});
 
+	$('#banlist').click(function(e) {
+		e.preventDefault();
+		$('#shadow').show();
+		$('#basic-modal-content').show();
+	});
+
+	$('#shadow').click(function() {
+		$('#shadow').hide();
+		$('#basic-modal-content').hide();
+	});
+
 });

@@ -97,7 +97,24 @@
 <!-- / Панель статусов -->
 
 <!-- Основной блок -->
-<body id="page2">
+<body>
+<div id="shadow"></div>
+<div id="basic-modal-content">
+	<center><h3>Список Банов</h3></center>
+	<script type="text/javascript">
+		(function($) {
+			$.fn.textDropShadow = function(ShdwClass){
+				$(this).css('position','relative').html('<span class='+ShdwClass+'>'+$(this).html()+'</span><span style="position:relative;">'+$(this).html()+'</span>');
+				return $(this);
+			}
+		})(jQuery);
+	</script>
+	<h2 class="shadowed header"></h2>
+	<center><p style="color:gray">(разбаненные игроки здесь не отображаются)</p></center>
+</div>
+<div style='display:none'>
+	<img src='images/x.png' alt='' />
+</div>
 	<div class="tail-top">
 		<div class="tail-bottom">
 			<div class="body-bg">
@@ -123,7 +140,7 @@
 							<li class="m2"><a href="/play">Играть</a></li>
 							<li class="m3"><a href="http://elysium-game.ru/forum/">Форум</a></li>
 							<li class="m4"><a href="/rules">Правила</a></li>
-							<li class="m5"><div id="basic-modal"><a href="#" class="basic">Банлист</a></div></li>
+							<li class="m5" id="banlist"><a href="">Банлист</a></li>
 							<li class="m6"><a href="/donate">Донат</a></li>
 						</ul>
 					</div>
@@ -198,22 +215,6 @@
 				<!-- / Центральный блок -->
 
 				<!-- Нижний блок -->
-				<div id="basic-modal-content">
-					<center><h3>Список Банов</h3></center>
-					<script type="text/javascript">
-						(function($) {
-							$.fn.textDropShadow = function(ShdwClass){
-								$(this).css('position','relative').html('<span class='+ShdwClass+'>'+$(this).html()+'</span><span style="position:relative;">'+$(this).html()+'</span>');
-								return $(this);
-							}
-						})(jQuery);
-					</script>
-					<h2 class="shadowed header"></h2>
-					<center><p style="color:gray">(разбаненные игроки здесь не отображаются)</p></center>
-				</div>
-				<div style='display:none'>
-					<img src='images/x.png' alt='' />
-				</div>
 			</div>
 			<script type='text/javascript' src='js/ban.js'></script>
 			<script type='text/javascript' src='js/banb.js'></script>
