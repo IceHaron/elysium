@@ -1,7 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ru" lang="ru">
-
+<!DOCTYPE html>
 <head>
 <title>Elysium Game | Портал игровых серверов Minecraft</title>
 <link rel="icon" href="favicon.ico" type="image/x-icon">
@@ -153,6 +150,7 @@
 					<div class="inner_copy"></div>
 					<div class="tail-right">
 						<div class="wrapper">
+							<? if($_SERVER['REQUEST_URI'] != '/lk') { ?>
 							<!-- Левый столбец, основной контент -->
 							<div class="col-1">
 								<div class="indent">
@@ -209,6 +207,11 @@
 								<div id="vk_groups"></div>
 								<script type="text/javascript">VK.Widgets.Group("vk_groups", {mode: 0, width: "290", height: "330"}, 34954874);</script>
 							</div>
+							<? } else { ?>
+							<div class="nocol">
+								<?INCLUDE("template/lk.html");?>
+							</div>
+							<? } ?>
 						</div>
 					</div>
 				</div>

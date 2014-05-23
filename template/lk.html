@@ -1,0 +1,47 @@
+<h1 id="pageCaption">Личный кабинет</h1>
+<table class="lk">
+	<tr>
+		<th class="head">Ваша электропочта</th>
+		<td class="input"><?=$user['email']?></td>
+		<td class="action"></td>
+	</tr>
+	<tr>
+		<th class="head">Ваш никнейм</th>
+		<td class="input"><?=$user['nick']?></td>
+		<td class="action"></td>
+	</tr>
+	<tr>
+		<th class="head">Ваше имя в MineCraft`е</th>
+		<td class="input"><?=$user['mcName']?></td>
+		<td class="action"></td>
+	</tr>
+	<tr>
+		<th class="head">Ваш уровень аккаунта</th>
+		<td class="input">
+			<?=$user['level']?> + <?=$user['signature']?>
+			<div class="expBarEmpty"></div>
+			<div class="expBarFull" style="width: <?=(int)$user['percent']*2?>px"></div>
+		</td>
+		<td class="action"></td>
+	</tr>
+</table>
+<hr>
+<table class="lk">
+	<tr>
+		<th class="head">А вот пароль мы вам не покажем хЪ</th>
+		<td class="input">
+			<input type="password" name="pw" placeholder="Введите новый пароль">
+			<input type="password" name="pw" placeholder="Повторите новый пароль"></td>
+		<td class="action"><button id="changePass">Сменить</button></td>
+	</tr>
+	<tr>
+		<th class="head">Привязанный пользователь Steam</th>
+		<td class="input"><img src="<?=$user['avatar']?>"><a href="<?=$user['steamURL']?>"><?=$user['steamName']?></a></td>
+		<td class="action"></td>
+	</tr>
+	<tr>
+		<th class="head">Пригласивший вас человек</th>
+		<td class="input"><?=$user['referrer']?></td>
+		<td class="action"></td>
+	</tr>
+</table>

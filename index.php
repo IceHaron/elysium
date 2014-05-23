@@ -20,9 +20,13 @@ $gentoo = status($ip,25567);
 REQUIRE_ONCE('php/classes/db.php');
 $db = new db();
 
+session_start();
 // Логинимся
-if (isset($_COOKIE['login'])) $clogin = $_COOKIE['login'];
-else $clogin = '';
+if (isset($_SESSION['login'])) {
+	$clogin = $_SESSION['login'];
+	$cemail = $_SESSION['email'];
+
+} else $clogin = '';
 
 // Определяем нужный модуль
 $module = preg_replace('/\/|\?.+$/', '', $_SERVER['REQUEST_URI']);

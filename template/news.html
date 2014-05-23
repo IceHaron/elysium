@@ -1,3 +1,4 @@
+<h1 id="pageCaption">Новости</h1>
 <?
 foreach ($news as $item) {
 	echo '<h3 class="newsTitle">' . $item['title'] . '</h3><div class="newsText">' . $item['intro'] . '</div><a href="/newsitem?id=' . $item['id'] . '">Подробнее</a><span class="newsDate">' . date('d.m.Y H:i', $item['ts']) . '</span><div class="clear"></div><hr class="newsSplit">';
