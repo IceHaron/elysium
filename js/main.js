@@ -32,4 +32,12 @@ $(document).ready(function(){
 		$('#basic-modal-content').hide();
 	});
 
+	$('#changePass').click(function() {
+		var oldpw = $('input[name="oldpw"]').val();
+		var newpw = $('input[name="newpw"]').val();
+		var repw = $('input[name="repw"]').val();
+		if (oldpw != '' && newpw != '' && newpw == repw)
+			$('#changePw').submit();
+	});
+
 });

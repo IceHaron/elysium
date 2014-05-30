@@ -1,4 +1,5 @@
 <h1 id="pageCaption">Личный кабинет</h1>
+<h4><?=$message?></h4>
 <table class="lk">
 	<tr>
 		<th class="head">Ваша электропочта</th>
@@ -30,14 +31,31 @@
 	<tr>
 		<th class="head">А вот пароль мы вам не покажем хЪ</th>
 		<td class="input">
-			<input type="password" name="pw" placeholder="Введите новый пароль">
-			<input type="password" name="pw" placeholder="Повторите новый пароль"></td>
+			<form method="POST" id="changePw">
+				<input type="password" name="oldpw" placeholder="Введите новый пароль">
+				<input type="password" name="newpw" placeholder="Введите новый пароль">
+				<input type="password" name="repw" placeholder="Повторите новый пароль">
+			</form>
+		</td>
 		<td class="action"><button id="changePass">Сменить</button></td>
 	</tr>
 	<tr>
 		<th class="head">Привязанный пользователь Steam</th>
-		<td class="input"><img src="<?=$user['avatar']?>"><a href="<?=$user['steamURL']?>"><?=$user['steamName']?></a></td>
+		<? if (!$profile) { ?>
+		<td class="input">
+			<script src="//ulogin.ru/js/ulogin.js"></script>
+			<div id="uLogin" data-ulogin="display=panel;fields=uid;providers=steam;hidden=;redirect_uri=http%3A%2F%2Felysium.ice%2Flk"></div>
+		</td>
 		<td class="action"></td>
+		<? } else { ?>
+		<td class="input"><img src="<?=$user['avatar']?>"> <a href="<?=$user['steamURL']?>"><?=$user['steamName']?></a></td>
+		<td class="action">
+			<form method="POST">
+				<input type="hidden" name="unbindID" value="<?=$user['steamID']?>">
+				<input type="submit" name="unbindSteam" value="Отвязать">
+			</form>
+		</td>
+		<? } ?>
 	</tr>
 	<tr>
 		<th class="head">Пригласивший вас человек</th>
