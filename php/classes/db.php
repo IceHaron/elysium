@@ -11,10 +11,10 @@ class db {
 
 	public function db() {
 		$server = "localhost";
-		$dbuser = "root";
+		$dbuser = "srv44030_elysium";
 		// $dbpass = "olokari";
 		$dbpass = "230105";
-		$dbname = "elysium";
+		$dbname = "srv44030_elysium";
 
 		$link = mysqli_connect($server, $dbuser, $dbpass, $dbname);
 		if (!$link) {
