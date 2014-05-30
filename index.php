@@ -100,4 +100,4 @@ if (glob("php/controllers/$module.php")) INCLUDE_ONCE("php/controllers/$module.p
 // echo"</table>\n";
 
 // Подключаем основной макет
-REQUIRE_ONCE('/template/main.html');
+REQUIRE_ONCE('template/main.html');
