@@ -17,5 +17,7 @@
 <? } else if ($action == 'off') { ?>
 	<span>Разлогиниваемся, ждите.</span>
 <? } else { ?>
-
+<h4><?=$message?></h4>
+<span>Страница будет перезагружена, если этого не произошло, ткните <a href="/lk">сюда</a></span>
+<meta http-equiv="refresh" content="3; url=/lk">
 <? } ?>

@@ -1,6 +1,12 @@
 <?php
 $action = $_GET['action'];
 $registered = '';
+$message = '';
+
+if (isset($_POST)) {
+	$h = $db->query("SELECT `history` FROM `ololousers` WHERE `email` = '$cemail' AND `nick` = '$clogin'");
+	$history = json_decode($h[0]['history'], TRUE);
+}
 
 if ($action == 'reg' && isset($_POST['nick'])) {
 	$email = $db->escape($_POST['email']);
@@ -37,4 +43,53 @@ if ($action == 'reg' && isset($_POST['nick'])) {
 	unset($_SESSION['login']);
 	unset($_SESSION['email']);
 	header("Location: /");
+} else if ($action == 'changepw' && isset($_POST['oldpw']) && isset($_POST['newpw'])) {
+	$q = "SELECT IF(MD5('{$_POST['oldpw']}') = `pw`, 1, 0) as `pass` FROM `ololousers` WHERE `email` = '$cemail' AND `nick` = '$clogin'";
+	$r = $db->query($q);
+	$pass = $r[0]['pass'];
+	if($pass) {
+		$history['changedPw'][] = time();
+		$h = json_encode($history);
+		$q = "UPDATE `ololousers` SET `pw` = MD5('{$_POST['newpw']}'), `history` = '$h' WHERE `email` = '$cemail' AND `nick` = '$clogin'";
+		$r = $db->query($q);
+		if($r) $message = "Пароль успешно изменен";
+		else $message = "something broken";
+	} else {
+		$message = "Неверно указан старый пароль";
+	}
+} else if ($action == 'steambind' && isset($_POST['token'])) {
+	$q = "SELECT `steamid` FROM `ololousers` WHERE `email` = '$cemail' AND `nick` = '$clogin'";
+	$r = $db->query($q);
+	if (!$r[0]['steamid']) {
+		$s = file_get_contents('http://ulogin.ru/token.php?token=' . $_POST['token'] . '&host=' . $_SERVER['HTTP_HOST']);
+		$steamUser = json_decode($s, true);
+		$q = "SELECT count(*) as `c` FROM `ololousers` WHERE `steamid` = '{$steamUser['uid']}'";
+		$c = $db->query($q);
+		if ((int)$c[0]['c'] == 0) {
+			if ($steamUser != '') {
+				$history['steamBindingSet'][$steamUser['uid']] = time();
+				$h = json_encode($history);
+				$q = "UPDATE `ololousers` SET `steamid` = '{$steamUser['uid']}', `history` = '$h' WHERE `email` = '$cemail' AND `nick` = '$clogin'";
+				$r = $db->query($q);
+				if($r) $message = "Привязка прошла успешно";
+				else $message = "something broken";
+			} else $message = "Сервис uLogin вернул пустой ID, мы не знаем, почему.";
+		} else {
+			$message = "Этот аккаунт Steam уже привязан к другой учетной записи.";
+			unset($steamUser);
+		}
+	} else $message = "К вашей учетной записи уже привязан SteamID, сначала следует его отвязать";
+
+} else if ($action == 'steambind' && isset($_POST['unbindID'])) {
+	$q = "SELECT `steamid` FROM `ololousers` WHERE `email` = '$cemail' AND `nick` = '$clogin'";
+	$r = $db->query($q);
+	if ($r[0]['steamid'] == $_POST['unbindID']) {
+		$history['steamBindingBroken'][ $_POST['unbindID'] ] = time();
+		$h = json_encode($history);
+		$q = "UPDATE `ololousers` SET `steamid` = NULL, `history` = '$h' WHERE `email` = '$cemail' AND `nick` = '$clogin'";
+		$r = $db->query($q);
+		if($r) $message = "Аккаунт Steam успешно отвязан";
+		else $message = "something broken";
+	} else $message = "По какой-то причине привязанный к вашей учетной записи аккаунт Steam отличается от того, который вы пытаетесь отвязать";
 }
+?>

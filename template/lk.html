@@ -1,5 +1,7 @@
+<?
+if (!$_POST) {
+?>
 <h1 id="pageCaption">Личный кабинет</h1>
-<h4><?=$message?></h4>
 <table class="lk">
 	<tr>
 		<th class="head">Ваша электропочта</th>
@@ -31,7 +33,7 @@
 	<tr>
 		<th class="head">А вот пароль мы вам не покажем хЪ</th>
 		<td class="input">
-			<form method="POST" id="changePw">
+			<form action="/auth?action=changepw" method="POST" id="changePw">
 				<input type="password" name="oldpw" placeholder="Введите старый пароль"><br/>
 				<input type="password" name="newpw" placeholder="Введите новый пароль">
 				<input type="password" name="repw" placeholder="Повторите новый пароль">
@@ -44,13 +46,13 @@
 		<? if (!$profile) { ?>
 		<td class="input">
 			<script src="//ulogin.ru/js/ulogin.js"></script>
-			<div id="uLogin" data-ulogin="display=panel;fields=uid;providers=steam;hidden=;redirect_uri=http%3A%2F%2F<?=$_SERVER['HTTP_HOST']?>%2Flk"></div>
+			<div id="uLogin" data-ulogin="display=panel;fields=uid;providers=steam;hidden=;redirect_uri=http%3A%2F%2F<?=$_SERVER['HTTP_HOST']?>%2Fauth%3Faction%3Dsteambind"></div>
 		</td>
 		<td class="action"></td>
 		<? } else { ?>
 		<td class="input"><img src="<?=$user['avatar']?>"> <a href="<?=$user['steamURL']?>"><?=$user['steamName']?></a></td>
 		<td class="action">
-			<form method="POST">
+			<form action="/auth?action=steambind" method="POST">
 				<input type="hidden" name="unbindID" value="<?=$user['steamID']?>">
 				<input type="submit" name="unbindSteam" value="Отвязать">
 			</form>
@@ -63,3 +65,12 @@
 		<td class="action"></td>
 	</tr>
 </table>
+<?
+} else {
+?>
+<h4><?=$message?></h4>
+<span>Страница будет перезагружена, если этого не произошло, ткните <a href="/lk">сюда</a></span>
+<meta http-equiv="refresh" content="3; url=/">
+<?
+}
+?>
