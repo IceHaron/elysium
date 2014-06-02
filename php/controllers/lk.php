@@ -72,7 +72,6 @@ if ($steamID) {
 	// Вот эта строка - и есть заглушка на случай если стим недоступен
 	if (!isset($profile['response']['players'][0])) $profile = array('response'=> array('players' => array(0 => array("personaname" => "Dummy", "profileurl" => "http://google.com", "avatar" => "http://placehold.it/32x32"))));
 } else $profile = FALSE;
-var_dump(file_get_contents('http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=0BE85074D210A01F70B48205C44D1D56&steamids=76561197991665605'), file_get_contents('http://steamcommunity.com'));
 $exp = $r[0]['exp'];
 $remain = $exp;
 $expForLevel = 100;
