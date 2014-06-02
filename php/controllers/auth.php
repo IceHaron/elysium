@@ -3,7 +3,7 @@ $action = $_GET['action'];
 $registered = '';
 $message = '';
 
-if (isset($_POST)) {
+if (isset($_POST) && isset($cemail) && isset($clogin)) {
 	$h = $db->query("SELECT `history` FROM `ololousers` WHERE `email` = '$cemail' AND `nick` = '$clogin'");
 	$history = json_decode($h[0]['history'], TRUE);
 }
