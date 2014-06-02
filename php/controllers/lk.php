@@ -26,7 +26,7 @@ if (isset($_POST['oldpw']) && isset($_POST['newpw'])) {
 		$steamUser = json_decode($s, true);
 		$q = "SELECT count(*) as `c` FROM `ololousers` WHERE `steamid` = '{$steamUser['uid']}'";
 		$c = $db->query($q);
-		if ((int)$c[0]['c'] > 1) {
+		if ((int)$c[0]['c'] == 0) {
 			if ($steamUser != '') {
 				$history['steamBindingSet'][$steamUser['uid']] = time();
 				$h = json_encode($history);
