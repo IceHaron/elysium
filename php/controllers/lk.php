@@ -73,10 +73,6 @@ if ($steamID) {
 	// Вот эта строка - и есть заглушка на случай если стим недоступен
 	if (!isset($profile['response']['players'][0])) $profile = array('response'=> array('players' => array(0 => array("personaname" => "Dummy", "profileurl" => "http://google.com", "avatar" => "http://placehold.it/32x32"))));
 } else $profile = FALSE;
-var_dump("SELECT `user`.`email`, `user`.`nick`, `user`.`mcname`, `user`.`steamid`, `user`.`exp`, `ref`.`nick` AS `referrer`
-									FROM `ololousers` AS `user`
-									LEFT JOIN `ololousers` as `ref` ON (`user`.`referrer` = `ref`.`id`)
-									WHERE `user`.`nick` = '$clogin' AND `user`.`email` = '$cemail'");
 $exp = $r[0]['exp'];
 $remain = $exp;
 $expForLevel = 100;
