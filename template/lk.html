@@ -44,7 +44,7 @@
 		<? if (!$profile) { ?>
 		<td class="input">
 			<script src="//ulogin.ru/js/ulogin.js"></script>
-			<div id="uLogin" data-ulogin="display=panel;fields=uid;providers=steam;hidden=;redirect_uri=http%3A%2F%2Felysium.ice%2Flk"></div>
+			<div id="uLogin" data-ulogin="display=panel;fields=uid;providers=steam;hidden=;redirect_uri=http%3A%2F%2F<?=$_SERVER['HTTP_HOST']?>%2Flk"></div>
 		</td>
 		<td class="action"></td>
 		<? } else { ?>
