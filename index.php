@@ -18,6 +18,7 @@ $backtrack = status($ip,25566);
 $gentoo = status($ip,25567);
 
 REQUIRE_ONCE('php/classes/db.php');
+REQUIRE_ONCE('php/classes/achievement.php');
 $db = new db();
 
 session_start();
