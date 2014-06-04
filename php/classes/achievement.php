@@ -31,4 +31,18 @@ class achievement {
 		}
 	}
 
+	public function getAch($user) {
+		GLOBAL $db;
+		$q = "SELECT `a`.`name`, `a`.`desc`, FROM_UNIXTIME(`ua`.`ts`) as `ts`
+					FROM `user_achievs` AS `ua`
+					JOIN `achievements` AS `a` ON (`ua`.`achievement` = `a`.`id`)
+					WHERE `ua`.`user` = $user;";
+		$r = $db->query($q);
+		return $r;
+	}
+
+	public function getUser($ach) {
+
+	}
+
 }

@@ -21,9 +21,12 @@ if (!$_POST) {
 	<tr>
 		<th class="head">Ваш уровень аккаунта</th>
 		<td class="input">
-			<?=$user['level']?> + <?=$user['signature']?>
-			<div class="expBarEmpty"></div>
-			<div class="expBarFull" style="width: <?=(int)$user['percent']*2?>px"></div>
+			<div class="level"><?=$user['level']?></div>
+			<div class="exp">
+				<?=$user['signature']?>
+				<div class="expBarEmpty"></div>
+				<div class="expBarFull" style="width: <?=(int)$user['percent']*2?>px"></div>
+			</div>
 		</td>
 		<td class="action"></td>
 	</tr>
@@ -65,6 +68,14 @@ if (!$_POST) {
 		<td class="action"></td>
 	</tr>
 </table>
+<h3>Ваши достижения:</h3>
+<? foreach ($user['achievements'] as $achievement) { ?>
+<div class="achievement">
+	<span class="achTitle"><?=$achievement['name']?></span>
+	<span class="achDate"><?=$achievement['ts']?></span>
+	<span class="achDesc"><?=$achievement['desc']?></span>
+</div>
+<? } ?>
 <?
 } else {
 ?>
