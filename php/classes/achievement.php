@@ -42,7 +42,26 @@ class achievement {
 	}
 
 	public function getUser($ach) {
-
+		var_dump('expression');
+	}
+	public function getAll($user = NULL) {
+		GLOBAL $db;
+		$q = "SELECT count(*) FROM `ololousers`";
+		$r = $db->query($q);
+		
+		if (isset($user))
+			$q = "SELECT `a`.`id`, `a`.`name`, `a`.`desc`, FROM_UNIXTIME(`my`.`ts`) AS `ts`, count(*) AS `earned`
+						FROM `achievements` AS `a`
+						LEFT JOIN `user_achievs` AS `ua` ON (`a`.`id` = `ua`.`achievement`)
+						LEFT JOIN `user_achievs` as `my` ON (`my`.`user` = 4 AND `ua`.`achievement` = `my`.`achievement`)
+						GROUP BY `a`.`id`;";
+		else
+			$q = "SELECT `a`.`id`, `a`.`name`, `a`.`desc`, count(*) AS `earned`
+						FROM `achievements` AS `a`
+						LEFT JOIN `user_achievs` AS `ua` ON (`a`.`id` = `ua`.`achievement`)
+						GROUP BY `a`.`id`;";
+		$r = $db->query($q);
+		return $r;
 	}
 
 }

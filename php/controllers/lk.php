@@ -3,7 +3,7 @@ if (!isset($cemail)) header('Location: /');
 $r = $db->query("SELECT `user`.`id`, `user`.`email`, `user`.`nick`, `user`.`mcname`, `user`.`steamid`, `user`.`exp`, `ref`.`nick` AS `referrer`
 									FROM `ololousers` AS `user`
 									LEFT JOIN `ololousers` as `ref` ON (`user`.`referrer` = `ref`.`id`)
-									WHERE `user`.`nick` = '$clogin' AND `user`.`email` = '$cemail'");
+									WHERE `user`.`id` = $cid");
 
 $steamID = isset($steamUser['uid']) ? $steamUser['uid'] : $r[0]['steamid'];
 // Profile
@@ -48,7 +48,7 @@ $user = array(
 	, 'percent' => $percent
 	, 'referrer' => $r[0]['referrer']
 	, 'steamID' => $steamID
-	, 'achievements' => $achievements
+	, 'achievements' => array_slice($achievements, 0, 5)
 );
 if ($profile) {
 	$user['steamName'] = $profile['response']['players'][0]['personaname'];

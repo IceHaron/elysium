@@ -69,13 +69,16 @@ if (!$_POST) {
 	</tr>
 </table>
 <h3>Ваши достижения:</h3>
-<? foreach ($user['achievements'] as $achievement) { ?>
-<div class="achievement">
-	<span class="achTitle"><?=$achievement['name']?></span>
-	<span class="achDate"><?=$achievement['ts']?></span>
-	<span class="achDesc"><?=$achievement['desc']?></span>
+<div>
+	<? foreach ($user['achievements'] as $achievement) { ?>
+	<div class="achievement">
+		<span class="achTitle"><?=$achievement['name']?></span>
+		<span class="achDate"><?=$achievement['ts']?></span>
+		<span class="achDesc"><?=$achievement['desc']?></span>
+	</div>
+	<? } ?>
+	<div><a href="/achievements">Посмотреть все достижения</a></div>
 </div>
-<? } ?>
 <?
 } else {
 ?>

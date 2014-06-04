@@ -1,0 +1,14 @@
+<h1 id="pageCaption">Обзор достижений</h1>
+<div>
+	<?
+	foreach ($achievs as $achievement) { 
+		if (!$achievement['ts']) $opacity = '0.5';
+		else $opacity = '1';
+	?>
+	<div class="achievement" style="opacity:<?=$opacity?>">
+		<span class="achTitle"><?=$achievement['name']?></span>
+		<span class="achDate"><?=$achievement['ts']?></span>
+		<span class="achDesc"><?=$achievement['desc']?></span>
+	</div>
+	<? } ?>
+</div>

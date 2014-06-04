@@ -33,12 +33,12 @@ if ($action == 'reg' && isset($_POST['nick'])) {
 } else if ($action == 'log' && isset($_POST['login'])) {
 	$login = $db->escape($_POST['login']);
 	$pw = $db->escape($_POST['pw']);
-	$q = "SELECT `email`, `nick` FROM `ololousers` WHERE (`nick` = '$login' OR `email` = '$login') AND `pw` = MD5('$pw')";
+	$q = "SELECT `id`, `email`, `nick` FROM `ololousers` WHERE (`nick` = '$login' OR `email` = '$login') AND `pw` = MD5('$pw')";
 	$answer = $db->query($q);
 	if ($answer === NULL) $registered = 'Не найдено такой комбинации логина/почты и пароля';
 
 	else {
-		setcookie('login', $answer[0]['nick']);
+		$_SESSION['id'] = $answer[0]['id'];
 		$_SESSION['login'] = $answer[0]['nick'];
 		$_SESSION['email'] = $answer[0]['email'];
 		header("Location: /lk");
@@ -51,13 +51,13 @@ if ($action == 'reg' && isset($_POST['nick'])) {
 	header("Location: /");
 
 } else if ($action == 'changepw' && isset($_POST['oldpw']) && isset($_POST['newpw'])) {
-	$q = "SELECT IF(MD5('{$_POST['oldpw']}') = `pw`, 1, 0) as `pass` FROM `ololousers` WHERE `email` = '$cemail' AND `nick` = '$clogin'";
+	$q = "SELECT IF(MD5('{$_POST['oldpw']}') = `pw`, 1, 0) as `pass` FROM `ololousers` WHERE `id` = $cid";
 	$r = $db->query($q);
 	$pass = $r[0]['pass'];
 	if($pass) {
 		$history['changedPw'][] = time();
 		$h = json_encode($history);
-		$q = "UPDATE `ololousers` SET `pw` = MD5('{$_POST['newpw']}'), `history` = '$h' WHERE `email` = '$cemail' AND `nick` = '$clogin'";
+		$q = "UPDATE `ololousers` SET `pw` = MD5('{$_POST['newpw']}'), `history` = '$h' WHERE `id` = $cid";
 		$r = $db->query($q);
 		if($r) $message = "Пароль успешно изменен";
 		else $message = "something broken";
@@ -66,7 +66,7 @@ if ($action == 'reg' && isset($_POST['nick'])) {
 	}
 
 } else if ($action == 'steambind' && isset($_POST['token'])) {
-	$q = "SELECT `id`, `steamid`, `exp` FROM `ololousers` WHERE `email` = '$cemail' AND `nick` = '$clogin'";
+	$q = "SELECT `id`, `steamid`, `exp` FROM `ololousers` WHERE `id` = $cid";
 	$r = $db->query($q);
 	if (!$r[0]['steamid']) {
 		$exp = (int)$r[0]['exp'];
@@ -80,7 +80,7 @@ if ($action == 'reg' && isset($_POST['nick'])) {
 				$history['steamBindingSet'][$steamUser['uid']] = time();
 				$h = json_encode($history);
 				$exp += 500;
-				$q = "UPDATE `ololousers` SET `steamid` = '{$steamUser['uid']}', `history` = '$h', `exp` = $exp WHERE `email` = '$cemail' AND `nick` = '$clogin'";
+				$q = "UPDATE `ololousers` SET `steamid` = '{$steamUser['uid']}', `history` = '$h', `exp` = $exp WHERE `id` = $cid";
 				$r = $db->query($q);
 				if($r) $message = "Привязка прошла успешно";
 				else $message = "something broken";
@@ -93,7 +93,7 @@ if ($action == 'reg' && isset($_POST['nick'])) {
 	} else $message = "К вашей учетной записи уже привязан SteamID, сначала следует его отвязать";
 
 } else if ($action == 'steambind' && isset($_POST['unbindID'])) {
-	$q = "SELECT `id`, `steamid`, `exp` FROM `ololousers` WHERE `email` = '$cemail' AND `nick` = '$clogin'";
+	$q = "SELECT `id`, `steamid`, `exp` FROM `ololousers` WHERE `id` = $cid";
 	$r = $db->query($q);
 	if ($r[0]['steamid'] == $_POST['unbindID']) {
 		$exp = $r[0]['exp'];
@@ -101,7 +101,7 @@ if ($action == 'reg' && isset($_POST['nick'])) {
 		$history['steamBindingBroken'][ $_POST['unbindID'] ] = time();
 		$h = json_encode($history);
 		$exp -= 500;
-		$q = "UPDATE `ololousers` SET `steamid` = NULL, `history` = '$h', `exp` = $exp WHERE `email` = '$cemail' AND `nick` = '$clogin'";
+		$q = "UPDATE `ololousers` SET `steamid` = NULL, `history` = '$h', `exp` = $exp WHERE `id` = $cid";
 		$r = $db->query($q);
 		if($r) $message = "Аккаунт Steam успешно отвязан";
 		else $message = "something broken";
