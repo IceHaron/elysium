@@ -23,7 +23,12 @@ if ($action == 'reg' && isset($_POST['nick'])) {
 		if (strpos($answer, 'for key \'nick') !== FALSE)
 			$registered = 'Такое имя уже используется';
 
-	} else $registered = 'Регистрация прошла успешно';
+	} else {
+		$q = "SELECT `id` FROM `ololousers` WHERE `nick` = '$nick' AND `email` = '$email'";
+		$r = $db->query($q);
+		$a->earn($r[0]['id'], 0);
+		$registered = 'Регистрация прошла успешно';
+	}
 
 } else if ($action == 'log' && isset($_POST['login'])) {
 	$login = $db->escape($_POST['login']);
