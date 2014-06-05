@@ -40,4 +40,46 @@ $(document).ready(function(){
 			$('#changePw').submit();
 	});
 
+	$.ajax({
+		  type: 'GET'
+		, url: '/ajax'
+		, data: {'mode': 'achCheck'}
+		, dataType: 'json'
+		, success: function(data) {
+			for (i in data) {
+				showAchievement(data[i]);
+			}
+		}
+	});
+
+
 });
+
+setInterval(function() {
+	$.ajax({
+		  type: 'GET'
+		, url: '/ajax'
+		, data: {'mode': 'achCheck'}
+		, dataType: 'json'
+		, success: function(data) {
+			for (i in data) {
+				showAchievement(data[i]);
+			}
+		}
+	});
+}, 300000);
+
+function showAchievement(id) {
+	$.ajax({
+		  type: 'GET'
+		, url: '/ajax'
+		, data: {'mode': 'getAchHtml', 'id': id}
+		, success: function(data) {
+			$('#popupAch').append(data);
+			$('#achList').prepend(data);
+			$('#achList .achievement').eq(0).removeAttr('id');
+			$('#ach-' + id).click(function() {$(this).remove()});
+			setTimeout(function() {$('#ach-' + id).remove()}, 15000)
+		}
+	});
+}

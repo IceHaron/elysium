@@ -5,10 +5,16 @@
 		if (!$achievement['ts']) $opacity = '0.5';
 		else $opacity = '1';
 	?>
-	<div class="achievement" style="opacity:<?=$opacity?>">
+	<div class="achievement" style="opacity:<?=$opacity?>;float: left;">
 		<span class="achTitle"><?=$achievement['name']?></span>
 		<span class="achDate"><?=$achievement['ts']?></span>
 		<span class="achDesc"><?=$achievement['desc']?></span>
 	</div>
+	<div class="achHoldersFill" style="width: <?=$achievement['perc'] * 2?>px;">
+		<div class="achHolders">
+			<span class="achPercTitle"><?=$achievement['perc'] . '% игроков получили это достижение'?></span>
+		</div>
+	</div>
+	
 	<? } ?>
 </div>

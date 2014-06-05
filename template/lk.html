@@ -5,27 +5,27 @@ if (!$_POST) {
 <table class="lk">
 	<tr>
 		<th class="head">Ваша электропочта</th>
-		<td class="input"><?=$user['email']?></td>
+		<td class="input"><?=$info['email']?></td>
 		<td class="action"></td>
 	</tr>
 	<tr>
 		<th class="head">Ваш никнейм</th>
-		<td class="input"><?=$user['nick']?></td>
+		<td class="input"><?=$info['nick']?></td>
 		<td class="action"></td>
 	</tr>
 	<tr>
 		<th class="head">Ваше имя в MineCraft`е</th>
-		<td class="input"><?=$user['mcName']?></td>
+		<td class="input"><?=$info['mcName']?></td>
 		<td class="action"></td>
 	</tr>
 	<tr>
 		<th class="head">Ваш уровень аккаунта</th>
 		<td class="input">
-			<div class="level"><?=$user['level']?></div>
+			<div class="level"><?=$info['level']?></div>
 			<div class="exp">
-				<?=$user['signature']?>
+				<?=$info['signature']?>
 				<div class="expBarEmpty"></div>
-				<div class="expBarFull" style="width: <?=(int)$user['percent']*2?>px"></div>
+				<div class="expBarFull" style="width: <?=(int)$info['percent']*2?>px"></div>
 			</div>
 		</td>
 		<td class="action"></td>
@@ -53,10 +53,10 @@ if (!$_POST) {
 		</td>
 		<td class="action"></td>
 		<? } else { ?>
-		<td class="input"><img src="<?=$user['avatar']?>"> <a href="<?=$user['steamURL']?>"><?=$user['steamName']?></a></td>
+		<td class="input"><img src="<?=$info['avatar']?>"> <a href="<?=$info['steamURL']?>"><?=$info['steamName']?></a></td>
 		<td class="action">
 			<form action="/auth?action=steambind" method="POST">
-				<input type="hidden" name="unbindID" value="<?=$user['steamID']?>">
+				<input type="hidden" name="unbindID" value="<?=$info['steamID']?>">
 				<input type="submit" name="unbindSteam" value="Отвязать">
 			</form>
 		</td>
@@ -64,13 +64,13 @@ if (!$_POST) {
 	</tr>
 	<tr>
 		<th class="head">Пригласивший вас человек</th>
-		<td class="input"><?=$user['referrer']?></td>
+		<td class="input"><?=$info['referrer']?></td>
 		<td class="action"></td>
 	</tr>
 </table>
-<h3>Ваши достижения:</h3>
-<div>
-	<? foreach ($user['achievements'] as $achievement) { ?>
+<h3>Ваши достижения (5 последних):</h3>
+<div id="achList">
+	<? foreach ($info['achievements'] as $achievement) { ?>
 	<div class="achievement">
 		<span class="achTitle"><?=$achievement['name']?></span>
 		<span class="achDate"><?=$achievement['ts']?></span>

@@ -19,6 +19,7 @@ $gentoo = status($ip,25567);
 
 REQUIRE_ONCE('php/classes/db.php');
 REQUIRE_ONCE('php/classes/achievement.php');
+REQUIRE_ONCE('php/classes/user.php');
 $db = new db();
 
 session_start();
@@ -27,6 +28,7 @@ if (isset($_SESSION['login'])) {
 	$cid = $_SESSION['id'];
 	$clogin = $_SESSION['login'];
 	$cemail = $_SESSION['email'];
+	$user = new user($cid);
 } else $clogin = '';
 
 // Определяем нужный модуль
@@ -35,4 +37,4 @@ if ($module == '') $module = 'news';
 if (glob("php/controllers/$module.php")) INCLUDE_ONCE("php/controllers/$module.php");
 
 // Подключаем основной макет
-REQUIRE_ONCE('template/main.html');
+if (strpos($_SERVER['REQUEST_URI'], '/ajax') === FALSE) REQUIRE_ONCE('template/main.html');

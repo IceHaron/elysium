@@ -20,30 +20,22 @@ if ($steamID) {
 	if (!isset($profile['response']['players'][0])) $profile = array('response'=> array('players' => array(0 => array("personaname" => "Dummy", "profileurl" => "http://google.com", "avatar" => "http://placehold.it/32x32"))));
 } else $profile = FALSE;
 $exp = $r[0]['exp'];
-$remain = $exp;
-$expForLevel = 100;
-$multiplier = 1.15;
-$level = 1;
-while ($remain > $expForLevel && $level < 70) {
-	$level++;
-	$remain = $exp - $expForLevel;
-	$exp = $remain;
-	$expForLevel = ceil($expForLevel * $multiplier);
-};
-if ($level < 70) {
-	$percent = floor($remain / $expForLevel * 100);
-	$signature = $remain . ' / ' . $expForLevel . ' exp (' . $percent . '%)';
+$level = $user->getLevel($r[0]['exp']);
+if ($level['level'] < 70) {
+	$percent = floor($level['exp'] / $level['need'] * 100);
+	$signature = $level['exp'] . ' / ' . $level['need'] . ' exp (' . $percent . '%)';
 } else {
 	$percent = 100;
-	$signature = $remain . ' exp';
+	$signature = $level['exp'] . ' exp';
 }
 $a = new achievement();
+// $a->check($r[0]['id']);
 $achievements = $a->getAch($r[0]['id']);
-$user = array(
+$info = array(
 	  'email' => $r[0]['email']
 	, 'nick' => $r[0]['nick']
 	, 'mcName' => $r[0]['mcname']
-	, 'level' => $level
+	, 'level' => $level['level']
 	, 'signature' => $signature
 	, 'percent' => $percent
 	, 'referrer' => $r[0]['referrer']
@@ -51,7 +43,7 @@ $user = array(
 	, 'achievements' => array_slice($achievements, 0, 5)
 );
 if ($profile) {
-	$user['steamName'] = $profile['response']['players'][0]['personaname'];
-	$user['steamURL'] = $profile['response']['players'][0]['profileurl'];
-	$user['avatar'] = $profile['response']['players'][0]['avatar'];
+	$info['steamName'] = $profile['response']['players'][0]['personaname'];
+	$info['steamURL'] = $profile['response']['players'][0]['profileurl'];
+	$info['avatar'] = $profile['response']['players'][0]['avatar'];
 }
