@@ -40,34 +40,35 @@ $(document).ready(function(){
 			$('#changePw').submit();
 	});
 
-	$.ajax({
-		  type: 'GET'
-		, url: '/ajax'
-		, data: {'mode': 'achCheck'}
-		, dataType: 'json'
-		, success: function(data) {
-			for (i in data) {
-				showAchievement(data[i]);
+	if ($('.logged').length != 0) {
+		$.ajax({
+			  type: 'GET'
+			, url: '/ajax'
+			, data: {'mode': 'achCheck'}
+			, dataType: 'json'
+			, success: function(data) {
+				for (i in data) {
+					showAchievement(data[i]);
+				}
 			}
-		}
-	});
-
+		});
+		setInterval(function() {
+			$.ajax({
+				  type: 'GET'
+				, url: '/ajax'
+				, data: {'mode': 'achCheck'}
+				, dataType: 'json'
+				, success: function(data) {
+					for (i in data) {
+						showAchievement(data[i]);
+					}
+				}
+			});
+		}, 300000);
+	}
 
 });
 
-setInterval(function() {
-	$.ajax({
-		  type: 'GET'
-		, url: '/ajax'
-		, data: {'mode': 'achCheck'}
-		, dataType: 'json'
-		, success: function(data) {
-			for (i in data) {
-				showAchievement(data[i]);
-			}
-		}
-	});
-}, 300000);
 
 function showAchievement(id) {
 	$.ajax({

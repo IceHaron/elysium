@@ -1,3 +1,9 @@
 <?
 $a = new achievement();
-$achievs = $a->getAll($cid);
+if (isset($cid)) {
+	$achievs = $a->getAll($cid);
+	$nouser = FALSE;
+} else {
+	$achievs = $a->getAll();
+	$nouser = TRUE;
+}
