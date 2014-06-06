@@ -39,6 +39,7 @@ $info = array(
 	, 'signature' => $signature
 	, 'percent' => $percent
 	, 'referrer' => $r[0]['referrer']
+	, 'referral' => 'http://' . $_SERVER['HTTP_HOST'] . '/auth?action=reg&referrer=' . base64_encode($r[0]['id'] . '_' . $r[0]['nick'])
 	, 'steamID' => $steamID
 	, 'achievements' => array_slice($achievements, 0, 5)
 );

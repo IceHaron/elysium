@@ -10,11 +10,22 @@ if (isset($_POST) && isset($cemail) && isset($clogin)) {
 }
 
 if ($action == 'reg' && isset($_POST['nick'])) {
+	if (isset($_GET['referrer'])) {
+		$ref = explode('_', base64_decode($_GET['referrer']));
+		$refid = $db->escape($ref[0]);
+		$refnick = $db->escape($ref[1]);
+		$q = "SELECT * FROM `ololousers` WHERE `id` = $refid AND `nick` = '$refnick'";
+		$r = $db->query($q);
+		if (isset($r[0]['id']))
+			$referrer = $r[0]['id'];
+		else $referrer = 1;
+	}
+	if (!isset($referrer)) $referrer = 1;
 	$email = $db->escape($_POST['email']);
 	$nick = $db->escape($_POST['nick']);
 	$pw = $db->escape($_POST['pw']);
 	$history = json_encode(array('created' => time()));
-	$q = "INSERT INTO `ololousers` (`nick`, `email`, `pw`, `history`) VALUES ('$nick', '$email', MD5('$pw'), '$history')";
+	$q = "INSERT INTO `ololousers` (`nick`, `email`, `pw`, `history`, `referrer`) VALUES ('$nick', '$email', MD5('$pw'), '$history', '$referrer')";
 	$answer = $db->query($q);
 
 	if (strpos($answer, 'Duplicate entry') !== FALSE){
@@ -27,6 +38,7 @@ if ($action == 'reg' && isset($_POST['nick'])) {
 		$q = "SELECT `id` FROM `ololousers` WHERE `nick` = '$nick' AND `email` = '$email'";
 		$r = $db->query($q);
 		$a->earn($r[0]['id'], 0);
+		if ($referrer != 1) $a->earn($r[0]['id'], 8);
 		$registered = 'Регистрация прошла успешно';
 	}
 

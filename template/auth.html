@@ -1,4 +1,4 @@
-<? echo $registered;
+<? echo '<h1>' . $registered . '</h1>';
 	 if ($action == 'reg' && $registered != 'Регистрация прошла успешно') { ?>
 	<form method="POST">
 		<input type="text" name="email" placeholder="E-Mail">
@@ -8,6 +8,10 @@
 		<!-- <input type="text" name="steamid" placeholder="Steam ID"> -->
 		<input type="submit" name="reg" value="Proceed">
 	</form>
+<? } else if ($registered == 'Регистрация прошла успешно') { ?>
+	<h4><?=$message?></h4>
+	<span>Страница будет перезагружена, если уже вечереет, но этого не произошло, ткните <a href="/auth?action=log">сюда</a></span>
+	<meta http-equiv="refresh" content="3; url=/auth?action=log">
 <? } else if ($action == 'log') { ?>
 	<form method="POST">
 		<input type="text" name="login" placeholder="E-Mail or Nickname">

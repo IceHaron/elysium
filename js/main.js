@@ -67,6 +67,10 @@ $(document).ready(function(){
 		}, 300000);
 	}
 
+	$('#refLink').click(function() {
+		this.select();
+	});
+
 });
 
 

@@ -38,7 +38,7 @@ ul, ol {list-style:none}
 p {margin-bottom:20px;line-height:1.43em}
 .p0 {margin-bottom:0}
 /* Тексты, ссылки */
-h1 { font-family: 'Cuprum', arial, serif; }
+h1 { font-family: 'Cuprum', arial, serif; line-height: normal; }
 a {color:#20b7c9;outline:none}
 a:hover {text-decoration:none}
 h3 {font-size:40px;line-height:1.2em;font-weight:normal;color:#000;letter-spacing:-2px;margin-bottom:12px}

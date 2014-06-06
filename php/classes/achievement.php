@@ -73,6 +73,9 @@ class achievement {
 		GLOBAL $user;
 		$info = $user->info;
 		$id = $info['id'];
+		$q = "SELECT count(*) AS `count` FROM `ololousers` WHERE `referrer` = $id";
+		$r = $this->db->query($q);
+		$count = $r[0]['count'];
 		$q = "SELECT `a`.`id`
 					FROM `achievements` AS `a`
 					LEFT JOIN `user_achievs` AS `ua` ON (`a`.`id` = `ua`.`achievement`)
@@ -84,9 +87,33 @@ class achievement {
 		$output = array();
 		foreach ($r as $ach) {
 			switch ($ach['id']) {
+				case '3':
+					if ($count >= 1) {
+						$this->earn($id, 3);
+						$output[] = $ach['id'];
+					}
+					break;
+				case '4':
+					if ($count >= 5) {
+						$this->earn($id, 4);
+						$output[] = $ach['id'];
+					}
+					break;
 				case '5':
 					if ($level['level'] >= 5) {
 						$this->earn($id, 5);
+						$output[] = $ach['id'];
+					}
+					break;
+				case '6':
+					if ($count >= 10) {
+						$this->earn($id, 6);
+						$output[] = $ach['id'];
+					}
+					break;
+				case '7':
+					if ($count >= 15) {
+						$this->earn($id, 7);
 						$output[] = $ach['id'];
 					}
 					break;
