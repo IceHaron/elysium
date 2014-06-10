@@ -71,6 +71,11 @@ $(document).ready(function(){
 		this.select();
 	});
 
+	$('#izumform input[name="want"]').keyup(function() {
+		var clear = $(this).val().substr(0,5).replace(/\D+/g, '');
+		$(this).val(clear);
+	});
+
 });
 
 

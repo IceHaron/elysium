@@ -1,0 +1,10 @@
+<h1 id="pageCaption">Пополнение запасов изюма</h1>
+<? if (isset($message)) { echo '<h1>' . $message . '</h1>'; } else { ?>
+<div>Ваш баланс: <?=$izum?> Izum</div>
+<form id="izumform" method="POST">
+	<input type="hidden" name="was" value="<?=$izum?>">
+	<input type="text" name="want" placeholder="Сколько вам насыпать?">
+	<button>Купить Izum</button>
+</form>
+<h1 style="color:red">Внимание! Данная фича находится в разработке! До тех пор, пока она не будет полностью допилена, Изюм можно будет получать абсолютно бесплатно! Естественно, все потом обнулится</h1>
+<? } ?>

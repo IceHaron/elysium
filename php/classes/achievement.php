@@ -4,6 +4,21 @@
 *
 * Класс управления достижениями
 *
+* Ачивки делятся по трем полям:
+* type
+* 	0 - Standard / Стандартная, что-то сделал - получил
+* 	1 - Progressive / Прогрессивная, для ее получения нужно что-то накопить
+* 	2 - Reclaimable / Многоразовая, можно получить несколько раз
+* class
+* 	0 - Normal / Обычная, показывается в списке достижений еще до получения
+* 	1 - Ninja / Полускрытая, показывается в списке достижений, но описание скрыто
+* 	2 - Hidden / Скрытая ачивка, не отображается в списке достижений пока игрок ее не получит
+* grade
+* 	0 - Basic / Обычная, в серо-черной рамке
+* 	1 - Improved / Улучшенная, в фиолетовой рамке, дает нефиксированное количество опыта
+* 	2 - Elite / Элитная, в золотой рамке, получить сложно.
+* 	3 - Platinum / Платиновая, в светлой рамке, раз просрав, никогда больше не получишь (если не удалось получить, у нее красный фон)
+*
 **/
 
 class achievement {
@@ -17,16 +32,24 @@ class achievement {
 		$this->user = $user;
 	}
 
-	public function earn($user, $ach) {
+	public function earn($user, $ach, $achExp = FALSE) {
 		$q = "SELECT * FROM `user_achievs` WHERE `user` = $user AND `achievement` = $ach";
 		$r = $this->db->query($q);
 		if (!$r) {
 			$q = "SELECT `exp` FROM `ololousers` WHERE `id` = $user";
 			$r = $this->db->query($q);
 			$exp = (int)$r[0]['exp'];
-			$q = "SELECT `xpcost` FROM `achievements` WHERE `id` = $ach";
-			$r = $this->db->query($q);
-			$gift = (int)$r[0]['xpcost'];
+			if ($achExp === FALSE) {
+				$q = "SELECT `xpcost` FROM `achievements` WHERE `id` = $ach";
+				$r = $this->db->query($q);
+				$gift = (int)$r[0]['xpcost'];
+			} else {
+				$q = "SELECT `grade` FROM `achievements` WHERE `id` = $ach";
+				$r = $this->db->query($q);
+				$grade = $r[0]['grade'];
+				if ($grade == '1') $gift = $achExp;
+				else $gift = 0;
+			}
 			$exp += $gift;
 			$q = "UPDATE `ololousers` SET `exp` = $exp WHERE `id` = $user";
 			$r = $this->db->query($q);
@@ -37,7 +60,7 @@ class achievement {
 	}
 
 	public function getAch($user) {
-		$q = "SELECT `a`.`name`, `a`.`desc`, FROM_UNIXTIME(`ua`.`ts`) as `ts`
+		$q = "SELECT `a`.`name`, `a`.`desc`, FROM_UNIXTIME(`ua`.`ts`) as `ts`, `a`.`type`, `a`.`class`, `a`.`grade`
 					FROM `user_achievs` AS `ua`
 					JOIN `achievements` AS `a` ON (`ua`.`achievement` = `a`.`id`)
 					WHERE `ua`.`user` = $user ORDER BY `ts` DESC;";
@@ -55,13 +78,13 @@ class achievement {
 		$userCount = $r[0]['count'];
 
 		if (isset($user))
-			$q = "SELECT `a`.`id`, `a`.`name`, `a`.`desc`, FROM_UNIXTIME(`my`.`ts`) AS `ts`, round(count(*) / $userCount * 100) AS `perc`
+			$q = "SELECT `a`.`id`, `a`.`name`, `a`.`desc`, `a`.`type`, `a`.`class`, `a`.`grade`, FROM_UNIXTIME(`my`.`ts`) AS `ts`, round(count(*) / $userCount * 100) AS `perc`
 						FROM `achievements` AS `a`
 						LEFT JOIN `user_achievs` AS `ua` ON (`a`.`id` = `ua`.`achievement`)
 						LEFT JOIN `user_achievs` as `my` ON (`my`.`user` = $user AND `ua`.`achievement` = `my`.`achievement`)
 						GROUP BY `a`.`id`;";
 		else
-			$q = "SELECT `a`.`id`, `a`.`name`, `a`.`desc`, round(count(*) / $userCount * 100) AS `perc`
+			$q = "SELECT `a`.`id`, `a`.`name`, `a`.`desc`, `a`.`type`, `a`.`class`, `a`.`grade`, round(count(*) / $userCount * 100) AS `perc`
 						FROM `achievements` AS `a`
 						LEFT JOIN `user_achievs` AS `ua` ON (`a`.`id` = `ua`.`achievement`)
 						GROUP BY `a`.`id`;";

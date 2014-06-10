@@ -12,6 +12,7 @@ class user {
 		GLOBAL $db;
 		$q = "SELECT * FROM `ololousers` WHERE `id` = $user OR `nick` = '$user' OR `email` = $user";
 		$r = $db->query($q);
+		unset ($r[0]['pw']);
 		return $r[0];
 	}
 

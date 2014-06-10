@@ -1,6 +1,6 @@
 <?
 if (!isset($cemail)) header('Location: /');
-$r = $db->query("SELECT `user`.`id`, `user`.`email`, `user`.`nick`, `user`.`mcname`, `user`.`steamid`, `user`.`exp`, `ref`.`nick` AS `referrer`
+$r = $db->query("SELECT `user`.`id`, `user`.`email`, `user`.`nick`, `user`.`mcname`, `user`.`steamid`, `user`.`exp`, `user`.`izumko`, `ref`.`nick` AS `referrer`
 									FROM `ololousers` AS `user`
 									LEFT JOIN `ololousers` as `ref` ON (`user`.`referrer` = `ref`.`id`)
 									WHERE `user`.`id` = $cid");
@@ -38,6 +38,7 @@ $info = array(
 	, 'level' => $level['level']
 	, 'signature' => $signature
 	, 'percent' => $percent
+	, 'izum' => $r[0]['izumko']
 	, 'referrer' => $r[0]['referrer']
 	, 'referral' => 'http://' . $_SERVER['HTTP_HOST'] . '/auth?action=reg&referrer=' . base64_encode($r[0]['id'] . '_' . $r[0]['nick'])
 	, 'steamID' => $steamID

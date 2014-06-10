@@ -151,7 +151,7 @@
 					<div class="inner_copy"></div>
 					<div class="tail-right">
 						<div class="wrapper">
-							<? if($_SERVER['REQUEST_URI'] != '/lk') { ?>
+							<? if($_SERVER['REQUEST_URI'] != '/lk' && $_SERVER['REQUEST_URI'] != '/payment') { ?>
 							<!-- Левый столбец, основной контент -->
 							<div class="col-1">
 								<div class="indent">
@@ -171,7 +171,7 @@
 							</div>
 							<? } else { ?>
 							<div class="nocol">
-								<?INCLUDE("template/lk.html");?>
+								<?INCLUDE("template/$module.html");?>
 							</div>
 							<? } ?>
 						</div>

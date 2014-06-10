@@ -18,6 +18,6 @@ switch ($_GET['mode']) {
 		echo $output;
 	break;
 	default:
-		echo 'wrong parameter "mode"';
+		echo 'wrong mode';
 	break;
 }

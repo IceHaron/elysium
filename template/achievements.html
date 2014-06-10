@@ -4,9 +4,11 @@
 	if ($nouser) {
 		foreach ($achievs as $achievement) { 
 	?>
-		<div class="achievement" style="float: left;">
-			<span class="achTitle"><?=$achievement['name']?></span>
-			<span class="achDesc"><?=$achievement['desc']?></span>
+		<div class="achievementWrapper" style="float: left;">
+			<div class="achievement grade_<?=$achievement['grade']?>">
+				<span class="achTitle"><?=$achievement['name']?></span>
+				<span class="achDesc"><?=$achievement['desc']?></span>
+			</div>
 		</div>
 		<div class="achHoldersFill" style="width: <?=$achievement['perc'] * 2?>px;">
 			<div class="achHolders">
@@ -19,10 +21,12 @@
 			if (!$achievement['ts']) $opacity = '0.5';
 			else $opacity = '1';
 		?>
-		<div class="achievement" style="opacity:<?=$opacity?>;float: left;">
-			<span class="achTitle"><?=$achievement['name']?></span>
-			<span class="achDate"><?=$achievement['ts']?></span>
-			<span class="achDesc"><?=$achievement['desc']?></span>
+		<div class="achievementWrapper" style="opacity:<?=$opacity?>;float: left;">
+			<div class="achievement grade_<?=$achievement['grade']?>">
+				<span class="achTitle"><?=$achievement['name']?></span>
+				<span class="achDate"><?=$achievement['ts']?></span>
+				<span class="achDesc"><?=$achievement['desc']?></span>
+			</div>
 		</div>
 		<div class="achHoldersFill" style="width: <?=$achievement['perc'] * 2?>px;">
 			<div class="achHolders">

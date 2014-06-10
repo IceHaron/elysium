@@ -6,17 +6,17 @@ if (!$_POST) {
 	<tr>
 		<th class="head">Ваша электропочта</th>
 		<td class="input"><?=$info['email']?></td>
-		<td class="action"></td>
+		<th class="balance">Ваш баланс:</th>
 	</tr>
 	<tr>
 		<th class="head">Ваш никнейм</th>
 		<td class="input"><?=$info['nick']?></td>
-		<td class="action"></td>
+		<td class="balance"><?=$info['izum']?> izum</td>
 	</tr>
 	<tr>
 		<th class="head">Ваше имя в MineCraft`е</th>
 		<td class="input"><?=$info['mcName']?></td>
-		<td class="action"></td>
+		<td class="balance"><a href="/payment">MOAR IZUM!!!</a></td>
 	</tr>
 	<tr>
 		<th class="head">Ваш уровень аккаунта</th>
@@ -77,10 +77,12 @@ if (!$_POST) {
 <h3>Ваши достижения (5 последних плюс только что полученные):</h3>
 <div id="achList">
 	<? foreach ($info['achievements'] as $achievement) { ?>
-	<div class="achievement">
-		<span class="achTitle"><?=$achievement['name']?></span>
-		<span class="achDate"><?=$achievement['ts']?></span>
-		<span class="achDesc"><?=$achievement['desc']?></span>
+	<div class="achievementWrapper">
+		<div class="achievement grade_<?=$achievement['grade']?>">
+			<span class="achTitle"><?=$achievement['name']?></span>
+			<span class="achDate"><?=$achievement['ts']?></span>
+			<span class="achDesc"><?=$achievement['desc']?></span>
+		</div>
 	</div>
 	<? } ?>
 	<div><a href="/achievements">Посмотреть все достижения</a></div>
