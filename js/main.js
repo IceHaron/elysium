@@ -41,29 +41,10 @@ $(document).ready(function(){
 	});
 
 	if ($('.logged').length != 0) {
-		$.ajax({
-			  type: 'GET'
-			, url: '/ajax'
-			, data: {'mode': 'achCheck'}
-			, dataType: 'json'
-			, success: function(data) {
-				for (i in data) {
-					showAchievement(data[i]);
-				}
-			}
-		});
+		achCheck();
+		
 		setInterval(function() {
-			$.ajax({
-				  type: 'GET'
-				, url: '/ajax'
-				, data: {'mode': 'achCheck'}
-				, dataType: 'json'
-				, success: function(data) {
-					for (i in data) {
-						showAchievement(data[i]);
-					}
-				}
-			});
+			achCheck();
 		}, 300000);
 	}
 
@@ -78,6 +59,19 @@ $(document).ready(function(){
 
 });
 
+function achCheck() {
+	$.ajax({
+		  type: 'GET'
+		, url: '/ajax'
+		, data: {'mode': 'achCheck'}
+		, dataType: 'json'
+		, success: function(data) {
+				for (i in data) {
+					showAchievement(data[i]);
+				}
+			}
+	});
+}
 
 function showAchievement(id) {
 	$.ajax({
@@ -85,11 +79,11 @@ function showAchievement(id) {
 		, url: '/ajax'
 		, data: {'mode': 'getAchHtml', 'id': id}
 		, success: function(data) {
-			$('#popupAch').append(data);
-			$('#achList').prepend(data);
-			$('#achList .achievement').eq(0).removeAttr('id');
-			$('#ach-' + id).click(function() {$(this).remove()});
-			setTimeout(function() {$('#ach-' + id).remove()}, 15000)
+				$('#popupAch').append(data);
+				$('#achList').prepend(data);
+				$('#achList .achievement').eq(0).removeAttr('id');
+				$('#ach-' + id).click(function() {$(this).remove()});
+				setTimeout(function() {$('#ach-' + id).remove()}, 15000)
 		}
 	});
 }

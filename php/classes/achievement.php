@@ -56,6 +56,7 @@ class achievement {
 			$time = time();
 			$q = "INSERT INTO `user_achievs` (`user`, `achievement`, `ts`) VALUES ($user, $ach, $time)";
 			$r = $this->db->query($q);
+			return '<script>showAchievement(' . $ach . ');</script>';
 		}
 	}
 

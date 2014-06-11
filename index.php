@@ -16,6 +16,7 @@ $ip='78.46.52.181';
 $kernel = status($ip,25565);
 $backtrack = status($ip,25566);
 $gentoo = status($ip,25567);
+$postfix = '';
 
 REQUIRE_ONCE('php/classes/db.php');
 REQUIRE_ONCE('php/classes/achievement.php');
@@ -38,3 +39,6 @@ if (glob("php/controllers/$module.php")) INCLUDE_ONCE("php/controllers/$module.p
 
 // Подключаем основной макет
 if (strpos($_SERVER['REQUEST_URI'], '/ajax') === FALSE) REQUIRE_ONCE('template/main.html');
+
+// Выводим постфикс - код, который нужно выполнить после всего.
+echo $postfix;
