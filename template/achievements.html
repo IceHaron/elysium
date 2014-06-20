@@ -1,15 +1,19 @@
 <h1 id="pageCaption">Обзор достижений</h1>
+
 <div>
 	<?
 	if ($nouser) {
 		foreach ($achievs as $achievement) { 
 	?>
+		<!-- Ачивка -->
 		<div class="achievementWrapper" style="float: left;">
 			<div class="achievement grade_<?=$achievement['grade']?>">
 				<span class="achTitle"><?=$achievement['name']?></span>
 				<span class="achDesc"><?=$achievement['desc']?></span>
 			</div>
 		</div>
+		
+		<!-- Процент игроков, получивших ачивку -->
 		<div class="achHoldersFill" style="width: <?=$achievement['perc'] * 2?>px;">
 			<div class="achHolders">
 				<span class="achPercTitle"><?=$achievement['perc'] . '% игроков получили это достижение'?></span>
@@ -18,10 +22,11 @@
 	<? }
 	} else {
 		foreach ($achievs as $achievement) { 
-			if (!$achievement['ts']) $opacity = '0.5';
-			else $opacity = '1';
+			// Если мы залогинены, то нужно определить, какую ачивку мы получили, а какую - нет
+			if (!$achievement['ts']) $class = 'achievementWrapper unclaimed';
+			else $class = 'achievementWrapper';
 		?>
-		<div class="achievementWrapper" style="opacity:<?=$opacity?>;float: left;">
+		<div class="<?=$class?>" style="float: left;">
 			<div class="achievement grade_<?=$achievement['grade']?>">
 				<span class="achTitle"><?=$achievement['name']?></span>
 				<span class="achDate"><?=$achievement['ts']?></span>

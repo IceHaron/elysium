@@ -1,6 +1,17 @@
 $(document).ready(function(){
 
-	$("#back-top").hide();
+	$("#back-top").hide(); // Скрываем банлист
+
+	// Если мы залогинены, проверяем неполученные ачивки сразу и запускаем проверку каждые 5 минут
+	if ($('.logged').length != 0) {
+		achCheck();
+		
+		setInterval(function() {
+			achCheck();
+		}, 300000);
+	}
+
+	// Хер его проссыт, зачем это, наследие
 	$(function () {
 		$(window).scroll(function () {
 			if ($(this).scrollTop() > 50) {
@@ -17,21 +28,25 @@ $(document).ready(function(){
 		});
 	});
 
+	// И это наследие
 	$('.shadowed').each(function(){
 		$(this).textDropShadow('shadow')
 	});
 
+	// При клике на кнопку банлиста, мы не по ссылке переходим, а отображаем банлист
 	$('#banlist').click(function(e) {
 		e.preventDefault();
 		$('#shadow').show();
 		$('#basic-modal-content').show();
 	});
 
+	// При клике на тень, скрываем все всплывающие какашки
 	$('#shadow').click(function() {
 		$('#shadow').hide();
 		$('#basic-modal-content').hide();
 	});
 
+	// Смена пароля в ЛК
 	$('#changePass').click(function() {
 		var oldpw = $('input[name="oldpw"]').val();
 		var newpw = $('input[name="newpw"]').val();
@@ -40,18 +55,12 @@ $(document).ready(function(){
 			$('#changePw').submit();
 	});
 
-	if ($('.logged').length != 0) {
-		achCheck();
-		
-		setInterval(function() {
-			achCheck();
-		}, 300000);
-	}
-
+	// При клике на поле с реферральной ссылкой, выделяем ее всю
 	$('#refLink').click(function() {
 		this.select();
 	});
 
+	// Проверяем входные данные при печати количества изюма
 	$('#izumform input[name="want"]').keyup(function() {
 		var clear = $(this).val().substr(0,5).replace(/\D+/g, '');
 		$(this).val(clear);
@@ -59,6 +68,11 @@ $(document).ready(function(){
 
 });
 
+/**
+* 
+* Список неполученных ачивок
+* 
+**/
 function achCheck() {
 	$.ajax({
 		  type: 'GET'
@@ -73,6 +87,11 @@ function achCheck() {
 	});
 }
 
+/**
+* 
+* Отображение всплывающей ачивки
+* 
+**/
 function showAchievement(id) {
 	$.ajax({
 		  type: 'GET'

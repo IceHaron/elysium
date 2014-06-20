@@ -1,10 +1,21 @@
 <?
+/**
+* 
+* AJAX-контроллер, сюда мы будем прилетать только через AJAX-запросы
+* 
+**/
+
+// Смотрим, с чем к нам пришли
 switch ($_GET['mode']) {
+
 	case 'achCheck':
+		// Просмотреть неполученные достижения
 		$ach = new achievement();
 		echo $ach->check();
 	break;
+
 	case 'getAchHtml':
+		// Получить HTML-код для отображения всплывающей ачивки
 		$q = "SELECT * FROM `achievements` WHERE `id` = {$_GET['id']}";
 		$r = $db->query($q);
 		$achievement = $r[0];
@@ -18,7 +29,9 @@ switch ($_GET['mode']) {
 		</div>';
 		echo $output;
 	break;
+
 	default:
+		// Какая-то хрень
 		echo 'wrong mode';
 	break;
 }

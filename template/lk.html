@@ -1,7 +1,9 @@
 <?
 if (!$_POST) {
+// Без поста грузим ЛК
 ?>
 <h1 id="pageCaption">Личный кабинет</h1>
+
 <table class="lk">
 	<tr>
 		<th class="head">Ваша электропочта</th>
@@ -31,7 +33,9 @@ if (!$_POST) {
 		<td class="action"></td>
 	</tr>
 </table>
+
 <hr>
+
 <table class="lk">
 	<tr>
 		<th class="head">А вот пароль мы вам не покажем хЪ</th>
@@ -46,13 +50,17 @@ if (!$_POST) {
 	</tr>
 	<tr>
 		<th class="head">Привязанный пользователь Steam</th>
+
 		<? if (!$profile) { ?>
 		<td class="input">
+			<!-- Форма логина от uLogin если не привязан Steam -->
 			<script src="//ulogin.ru/js/ulogin.js"></script>
 			<div id="uLogin" data-ulogin="display=panel;fields=uid;providers=steam;hidden=;redirect_uri=http%3A%2F%2F<?=$_SERVER['HTTP_HOST']?>%2Fauth%3Faction%3Dsteambind"></div>
 		</td>
 		<td class="action"></td>
+
 		<? } else { ?>
+		<!-- Инфа о Steam-аккаунте: аватарка, ссылка и ник -->
 		<td class="input"><img src="<?=$info['avatar']?>"> <a href="<?=$info['steamURL']?>"><?=$info['steamName']?></a></td>
 		<td class="action">
 			<form action="/auth?action=steambind" method="POST">
@@ -67,6 +75,7 @@ if (!$_POST) {
 		<td class="input"><?=$info['referrer']?></td>
 		<td class="action"></td>
 	</tr>
+	<!-- Приглашеньки =) -->
 	<tr>
 		<th class="head">Ваша реферральная ссылка</th>
 		<td class="input">
@@ -74,8 +83,10 @@ if (!$_POST) {
 		<td class="action"></td>
 	</tr>
 </table>
+
 <h3>Ваши достижения (5 последних плюс только что полученные):</h3>
 <div id="achList">
+
 	<? foreach ($info['achievements'] as $achievement) { ?>
 	<div class="achievementWrapper">
 		<div class="achievement grade_<?=$achievement['grade']?>">
@@ -88,7 +99,9 @@ if (!$_POST) {
 	<div><a href="/achievements">Посмотреть все достижения</a></div>
 </div>
 <?
+
 } else {
+// С постом выводим сообщение и ставим редирект
 ?>
 <h4><?=$message?></h4>
 <span>Страница будет перезагружена, если этого не произошло, ткните <a href="/lk">сюда</a></span>

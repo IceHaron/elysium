@@ -18,7 +18,9 @@
 <![endif]-->
 </head>
 
-<!-- Yandex.Metrika counter -->
+<!-- В жопу эту метрику -->
+
+<!-- Yandex.Metrika counter
 <script type="text/javascript">
 	(function (d, w, c) {
 	    (w[c] = w[c] || []).push(function() {
@@ -40,9 +42,9 @@
 	})(document, window, "yandex_metrika_callbacks");
 </script>
 <noscript><div><img src="//mc.yandex.ru/watch/16123105" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
-<!-- /Yandex.Metrika counter -->
+ /Yandex.Metrika counter -->
 
-<!-- Панель статусов -->
+<!-- Панель статусов, в стилях прописан display: none; -->
 <div id="nav"> 
 	<ul>
 		<li>
@@ -121,6 +123,8 @@
 				<div id="header">
 					<div class="extra"><img src="images/header-img.png" alt="" /></div>
 					<div class="row-1">
+
+						<!-- Логин-панель -->
 						<div id="authPanel">
 							<? if ($clogin != '') { ?>
 								<span class="logged">Вы вошли как <?=$clogin?></span><br/>
@@ -131,7 +135,10 @@
 								<a href="auth?action=log">Авторизация</a>
 							<? } ?>
 						</div>
+
 					</div>
+
+					<!-- Главная менюшка -->
 					<div class="row-2">
 						<ul>
 							<li class="m1"><a href="/">Главная</a></li>
@@ -143,6 +150,7 @@
 							<li class="m6"><a href="/donate">Донат</a></li>
 						</ul>
 					</div>
+
 					<div class="row-3"><img src="images/slogan.png" alt="" /></div>
 				</div>
 				<!-- / Шапка -->
@@ -152,13 +160,17 @@
 					<div class="inner_copy"></div>
 					<div class="tail-right">
 						<div class="wrapper">
-							<? if($_SERVER['REQUEST_URI'] != '/lk' && $_SERVER['REQUEST_URI'] != '/payment') { ?>
+							<?
+							if($_SERVER['REQUEST_URI'] != '/lk' && $_SERVER['REQUEST_URI'] != '/payment') { // На страницах ЛК и оплаты вырубаем колонку с соцсетями
+							?>
 							<!-- Левый столбец, основной контент -->
 							<div class="col-1">
 								<div class="indent">
 									<div class="indent1">
-										<?INCLUDE("template/$module.html");?>
-									</div>	
+										<?
+										INCLUDE("template/$module.html"); // Подгружаем макет модуля, переменная определяется по URI в файле index.php
+										?>
+									</div>
 								</div>
 							</div>
 							<!-- Правый столбец, ссылки -->
@@ -170,7 +182,9 @@
 								<div id="vk_groups"></div>
 								<script type="text/javascript">VK.Widgets.Group("vk_groups", {mode: 0, width: "290", height: "330"}, 34954874);</script>
 							</div>
-							<? } else { ?>
+							<?
+							} else { // Ну, соответственно, стиль без второй колонки для ЛК и страницы оплаты.
+							?>
 							<div class="nocol">
 								<?INCLUDE("template/$module.html");?>
 							</div>
@@ -182,8 +196,8 @@
 
 				<!-- Нижний блок -->
 			</div>
-			<script type='text/javascript' src='js/ban.js'></script>
-			<script type='text/javascript' src='js/banb.js'></script>
+			<!-- <script type='text/javascript' src='js/ban.js'></script>
+			<script type='text/javascript' src='js/banb.js'></script> Хер его знает, зачем это надо -->
 			<div class="extra"><img src="images/zomb.png" alt="" /></div>
 			<!-- / Нижний блок -->
 
