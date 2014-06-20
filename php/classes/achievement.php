@@ -52,10 +52,18 @@ class achievement {
 	public function earn($user, $ach, $achExp = FALSE) {
 
 		// Проверяем, получена ли эта ачивка пользователем
-		$q = "SELECT * FROM `user_achievs` WHERE `user` = $user AND `achievement` = $ach";
+		$q = "SELECT `ua`.*, `a`.`type` FROM `user_achievs` AS `ua` JOIN `achievements` AS `a` ON (`a`.`id` = $ach) WHERE `user` = $user AND `achievement` = $ach";
 		$r = $this->db->query($q);
 
-		if (!$r) {
+		if (!$r) $pass = TRUE;
+
+		else if ($r[0]['type'] == '2') $pass = TRUE;
+
+		else $pass = FALSE;
+
+		if ($pass) {
+			// Запоминаем типа ачивки
+			$type = $r[0]['type'];
 
 			// Вытаскиваем экспу пользователя
 			$q = "SELECT `exp` FROM `ololousers` WHERE `id` = $user";
@@ -85,8 +93,20 @@ class achievement {
 			$r = $this->db->query($q);
 
 			// И записываем в таблицу инфу
+			if ($type == '2') {
+
+				$compID = $this->zerofill($user, 8) . $this->zerofill($ach, 4);
+				$q = "SELECT * FROM `user_achievs` WHERE `achievement` LIKE '%$compID' ORDER BY `achievement` DESC";
+				$r = $this->db->query($q);
+				if (!$r) $compID = '1' . $compID;
+				else {
+					preg_match("/(\d+){$compID}/",$r[0]['achievement'], $num);
+					$compID = ++$num[1] . $compID;
+				}
+			}
 			$time = time();
-			$q = "INSERT INTO `user_achievs` (`user`, `achievement`, `ts`) VALUES ($user, $ach, $time)";
+			$achInsertID = $compID ? $compID : $ach;
+			$q = "INSERT INTO `user_achievs` (`user`, `achievement`, `ts`, `powah`) VALUES ($user, $achInsertID, $time, $gift)";
 			$r = $this->db->query($q);
 
 			// Возвращаем код для отображения всплывающей ачивки
@@ -104,11 +124,21 @@ class achievement {
 **/
 	public function getAch($user) {
 
-		$q = "SELECT `a`.`name`, `a`.`desc`, FROM_UNIXTIME(`ua`.`ts`) as `ts`, `a`.`type`, `a`.`class`, `a`.`grade`
+		$q = "SELECT `ua`.`achievement` AS `ach`, `a`.`name`, `a`.`desc`, FROM_UNIXTIME(`ua`.`ts`) as `ts`, `a`.`type`, `a`.`class`, `a`.`grade`
 					FROM `user_achievs` AS `ua`
-					JOIN `achievements` AS `a` ON (`ua`.`achievement` = `a`.`id`)
+					LEFT JOIN `achievements` AS `a` ON (`ua`.`achievement` = `a`.`id`)
 					WHERE `ua`.`user` = $user ORDER BY `ts` DESC;";
 		$r = $this->db->query($q);
+
+		foreach ($r as $ach) {
+			if ($ach['ach'] != NULL && $ach['name'] == NULL) {
+				$code = $this->zerofill($user, 8);
+				preg_match("/(\d+){$code}(\d+)/", $ach['ach'], $match);
+				$achID = ltrim($match[2], '0');
+				var_dump($achID);
+			}
+			// var_dump($ach);
+		}
 
 		return $r;
 	}
@@ -154,6 +184,17 @@ class achievement {
 		$r = $this->db->query($q);
 
 		return $r;
+	}
+
+	public function zerofill($str, $outLen) {
+		$inpLen = strlen((string)$str);
+		$addLen = $outLen - $inpLen;
+		$addStr = '';
+		for ($i = 0; $i < $addLen; $i++) {
+			$addStr .= '0';
+		}
+		$addStr .= $str;
+		return $addStr;
 	}
 
 /**
