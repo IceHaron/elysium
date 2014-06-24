@@ -61,10 +61,10 @@ if ($action == 'reg' && isset($_POST['nick'])) {
 		// Проверяем регистрацию, получаем ачивки
 		$q = "SELECT `id` FROM `ololousers` WHERE `nick` = '$nick' AND `email` = '$email'";
 		$r = $db->query($q);
-		$a->earn($r[0]['id'], 0);
+		$a->earn($r[0]['id'], 15);
 
 		if ($referrer != 1) $a->earn($r[0]['id'], 8);
-		if ($referrer != 1) $a->earn($r[0]['id'], 14);
+		if ($referrer == 1) $a->earn($r[0]['id'], 14);
 		$registered = 'Регистрация прошла успешно';
 	}
 

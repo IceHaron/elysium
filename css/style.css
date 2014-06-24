@@ -259,12 +259,23 @@ h4 {font-size:31px;color:#000;letter-spacing:-2px;margin-bottom:16px}
 }
 
 /* Достижения */
+.achievementStack {
+	width: 320px;
+	min-height: 60px;
+	margin: 10px auto;
+}
 .achievementWrapper {
 	width: 316px;
 	min-height: 60px;
 	margin: 10px auto;
 	border: 2px solid black;
 	border-radius: 10px;
+}
+.achievementWrapper.improved {
+	position: absolute;
+}
+.achievementWrapper.improved:hover {
+	z-index: 6 !important;
 }
 .unclaimed { opacity: 0.5; }
 .achievement {
@@ -293,6 +304,18 @@ h4 {font-size:31px;color:#000;letter-spacing:-2px;margin-bottom:16px}
 	margin-right: 10px;
 	color: white;
 	font-size: 14px;
+}
+.achPowah {
+	float: right;
+	color: gold;
+}
+.achCount {
+	float: right;
+	color: grey;
+}
+.achProgress {
+	padding: 10px;
+	color: gold;
 }
 .achHolders {
 	position: absolute;

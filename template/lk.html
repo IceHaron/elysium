@@ -87,15 +87,57 @@ if (!$_POST) {
 <h3>Ваши достижения (5 последних плюс только что полученные):</h3>
 <div id="achList">
 
-	<? foreach ($info['achievements'] as $achievement) { ?>
-	<div class="achievementWrapper">
-		<div class="achievement grade_<?=$achievement['grade']?>">
-			<span class="achTitle"><?=$achievement['name']?></span>
-			<span class="achDate"><?=$achievement['ts']?></span>
-			<span class="achDesc"><?=$achievement['desc']?></span>
-		</div>
-	</div>
-	<? } ?>
+	<?
+	foreach ($info['achievements'] as $achievement) {
+		if (isset($achievement[0])) {
+			$count = count($achievement); // Общее количество ачивок данного типа
+			$a = array_slice($achievement, 0, 5); // Больше пяти не имеет смысла показывать
+			$counter = 0;
+			?> <div class="achievementStack"> <?
+			foreach ($a as $achieve) {
+				$add = '';
+				$z_index = 5 - $counter;
+				$margin = count($a)*5 - $counter * 5 - 5;
+
+				if ($achieve['grade'] == 1) $add .= '<div><span class="achPowah">Мощь: ' . $achieve['powah'] . '</span><div class="clear"></div></div>';
+
+				$add .= '<div><span class="achCount">Всего таких ачивок у вас: ' . $count . '</span><div class="clear"></div></div>';
+				$counter++;
+			?>
+			<div class="achievementWrapper improved" style="z-index: <?=$z_index?>; margin: <?=$margin?>px;">
+				<div class="achievement grade_<?=$achieve['grade']?>">
+					<span class="achTitle"><?=$achieve['name']?></span>
+					<span class="achDate"><?=$achieve['ts']?></span>
+					<span class="achDesc"><?=$achieve['desc']?></span>
+					<?=$add?>
+				</div>
+			</div>
+			<?
+			}
+			?> <div class="clear"></div></div> <?
+		} else {
+			$add = '';
+
+			if ($achievement['type'] == 1) $add .= '<div class="achProgress">
+																						Завершено на ' . $achievement['progress']['perc'] . '% (' . $achievement['progress']['prog'] . ' / ' . $achievement['progress']['req'] . ')
+																						<div class="expBarEmpty"></div>
+																						<div class="expBarFull" style="width: ' . (int)$achievement['progress']['perc']*2 . 'px"></div>
+																					</div>';
+
+			if ($achievement['grade'] == 1) $add .= '<div><span class="achPowah">Мощь: ' . $achievement['powah'] . '</span><div class="clear"></div></div>';
+			?>
+			<div class="achievementWrapper">
+				<div class="achievement grade_<?=$achievement['grade']?>">
+					<span class="achTitle"><?=$achievement['name']?></span>
+					<span class="achDate"><?=$achievement['ts']?></span>
+					<span class="achDesc"><?=$achievement['desc']?></span>
+					<?=$add?>
+				</div>
+			</div>
+			<?
+		}
+	}
+	?>
 	<div><a href="/achievements">Посмотреть все достижения</a></div>
 </div>
 <?

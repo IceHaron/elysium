@@ -3,44 +3,91 @@
 <div>
 	<?
 	if ($nouser) {
-		foreach ($achievs as $achievement) { 
+		foreach ($achievs as $id => $ach) { 
 	?>
 		<!-- Ачивка -->
 		<div class="achievementWrapper" style="float: left;">
-			<div class="achievement grade_<?=$achievement['grade']?>">
-				<span class="achTitle"><?=$achievement['name']?></span>
-				<span class="achDesc"><?=$achievement['desc']?></span>
+			<div class="achievement grade_<?=$ach['grade']?>">
+				<span class="achTitle"><?=$ach['name']?></span>
+				<span class="achDesc"><?=$ach['desc']?></span>
 			</div>
 		</div>
 		
 		<!-- Процент игроков, получивших ачивку -->
-		<div class="achHoldersFill" style="width: <?=$achievement['perc'] * 2?>px;">
+		<div class="achHoldersFill" style="width: <?=$ach['perc'] * 2?>px;">
 			<div class="achHolders">
-				<span class="achPercTitle"><?=$achievement['perc'] . '% игроков получили это достижение'?></span>
+				<span class="achPercTitle"><?=$ach['perc'] . '% игроков получили это достижение'?></span>
 			</div>
 		</div>
 	<? }
 	} else {
-		foreach ($achievs as $achievement) { 
-			// Если мы залогинены, то нужно определить, какую ачивку мы получили, а какую - нет
-			if (!$achievement['ts']) $class = 'achievementWrapper unclaimed';
-			else $class = 'achievementWrapper';
-		?>
-		<div class="<?=$class?>" style="float: left;">
-			<div class="achievement grade_<?=$achievement['grade']?>">
-				<span class="achTitle"><?=$achievement['name']?></span>
-				<span class="achDate"><?=$achievement['ts']?></span>
-				<span class="achDesc"><?=$achievement['desc']?></span>
-			</div>
-		</div>
-		<div class="achHoldersFill" style="width: <?=$achievement['perc'] * 2?>px;">
-			<div class="achHolders">
-				<span class="achPercTitle"><?=$achievement['perc'] . '% игроков получили это достижение'?></span>
-			</div>
-		</div>
-		
-	<?
+		foreach ($achievs as $ach) { 
+			$add = '';
+
+			if ($ach['type'] != '2') {
+				// Если мы залогинены, то нужно определить, какую ачивку мы получили, а какую - нет
+				if (!isset($ach['users'][$cid])) {
+					$class = 'achievementWrapper unclaimed';
+					if ($ach['type'] == 1) $add .= '<div class="achProgress">
+																						Завершено на ' . $ach['progress']['perc'] . '% (' . $ach['progress']['prog'] . ' / ' . $ach['progress']['req'] . ')
+																						<div class="expBarEmpty"></div>
+																						<div class="expBarFull" style="width: ' . (int)$ach['progress']['perc']*2 . 'px"></div>
+																					</div>';
+				} else {
+					$class = 'achievementWrapper';
+					$last = max(array_keys($ach['users'][$cid]));
+					$date = date('Y-m-d H:i:s', $last);
+					if ($ach['type'] == 1) $add .= '<div class="achProgress">
+																						Завершено на ' . $ach['progress']['perc'] . '% (' . $ach['progress']['prog'] . ' / ' . $ach['progress']['req'] . ')
+																						<div class="expBarEmpty"></div>
+																						<div class="expBarFull" style="width: ' . (int)$ach['progress']['perc']*2 . 'px"></div>
+																					</div>';
+					if ($ach['grade'] == 1) $add .= '<div><span class="achPowah">Мощь: ' . $ach['users'][$cid][$last] . '</span><div class="clear"></div></div>';
+				}
+				?>
+				<div class="<?=$class?>" style="float: left;">
+					<div class="achievement grade_<?=$ach['grade']?>">
+						<span class="achTitle"><?=$ach['name']?></span>
+						<span class="achDate"><?=$date?></span>
+						<span class="achDesc"><?=$ach['desc']?></span>
+						<?=$add?>
+					</div>
+				</div>
+				<?
+				} else {
+					krsort($ach['users'][$cid]);
+					$achi = array_slice($ach['users'][$cid], 0, 5, TRUE);
+					echo '<div class="achievementStack" style="float: left">';
+					$counter = 0;
+					foreach ($achi as $ts => $powah) {
+						$add = '';
+						$z_index = 5 - $counter;
+						$margin = count($achi)*5 - $counter * 5 - 5;
+						$date = date('Y-m-d H:i:s', $ts);
+						if ($ach['grade'] == 1) $add .= '<div><span class="achPowah">Мощь: ' . $powah . '</span><div class="clear"></div></div>';
+						$add .= '<div><span class="achCount">Всего таких ачивок: ' . count($ach['users'][$cid]) . '</span><div class="clear"></div></div>';
+						$counter++;
+						?>
+						<div class="achievementWrapper improved" style="z-index: <?=$z_index?>; margin: <?=$margin?>px;">
+							<div class="achievement grade_<?=$ach['grade']?>">
+								<span class="achTitle"><?=$ach['name']?></span>
+								<span class="achDate"><?=$date?></span>
+								<span class="achDesc"><?=$ach['desc']?></span>
+								<?=$add?>
+							</div>
+						</div>
+						<?
+					}
+					echo '</div>';
+				}
+				?>
+				<div class="achHoldersFill" style="width: <?=$ach['perc'] * 2?>px;">
+					<div class="achHolders">
+						<span class="achPercTitle"><?=$ach['perc'] . '% игроков получили это достижение'?></span>
+					</div>
+				</div>
+				<?
+			}
 		}
-	}
-	?>
+		?>
 </div>

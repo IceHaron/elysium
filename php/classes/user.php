@@ -36,6 +36,7 @@ class user {
 		$r = $db->query($q);
 		// Убираем пароль из массива, защита дохера
 		unset ($r[0]['pw']);
+		$r[0]['levelInfo'] = $this->getLevel($r[0]['exp']); // Добавляем в массив уровень
 		return $r[0];
 	}
 

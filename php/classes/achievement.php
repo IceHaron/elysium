@@ -69,6 +69,7 @@ class achievement {
 			$q = "SELECT `exp` FROM `ololousers` WHERE `id` = $user";
 			$r = $this->db->query($q);
 			$exp = (int)$r[0]['exp'];
+			$powah = 0;
 
 			if ($achExp === FALSE) {
 				// Если не дано количество экспы параметром, вытягиваем его из базы
@@ -82,7 +83,7 @@ class achievement {
 				$r = $this->db->query($q);
 				$grade = $r[0]['grade'];
 
-				if ($grade == '1') $gift = $achExp + $r[0]['xpcost'];
+				if ($grade == '1') $gift = $powah = $achExp + $r[0]['xpcost'];
 
 				else $gift = $r[0]['xpcost'];
 			}
@@ -93,20 +94,8 @@ class achievement {
 			$r = $this->db->query($q);
 
 			// И записываем в таблицу инфу
-			if ($type == '2') {
-
-				$compID = $this->zerofill($user, 8) . $this->zerofill($ach, 4);
-				$q = "SELECT * FROM `user_achievs` WHERE `achievement` LIKE '%$compID' ORDER BY `achievement` DESC";
-				$r = $this->db->query($q);
-				if (!$r) $compID = '1' . $compID;
-				else {
-					preg_match("/(\d+){$compID}/",$r[0]['achievement'], $num);
-					$compID = ++$num[1] . $compID;
-				}
-			}
 			$time = time();
-			$achInsertID = $compID ? $compID : $ach;
-			$q = "INSERT INTO `user_achievs` (`user`, `achievement`, `ts`, `powah`) VALUES ($user, $achInsertID, $time, $gift)";
+			$q = "INSERT INTO `user_achievs` (`user`, `achievement`, `ts`, `powah`) VALUES ($user, $ach, $time, $powah)";
 			$r = $this->db->query($q);
 
 			// Возвращаем код для отображения всплывающей ачивки
@@ -124,23 +113,24 @@ class achievement {
 **/
 	public function getAch($user) {
 
-		$q = "SELECT `ua`.`achievement` AS `ach`, `a`.`name`, `a`.`desc`, FROM_UNIXTIME(`ua`.`ts`) as `ts`, `a`.`type`, `a`.`class`, `a`.`grade`
+		$q = "SELECT `ua`.`achievement` AS `ach`, `a`.`name`, `a`.`desc`, FROM_UNIXTIME(`ua`.`ts`) as `ts`, `a`.`type`, `a`.`class`, `a`.`grade`, `a`.`req`, `ua`.`powah`
 					FROM `user_achievs` AS `ua`
 					LEFT JOIN `achievements` AS `a` ON (`ua`.`achievement` = `a`.`id`)
-					WHERE `ua`.`user` = $user ORDER BY `ts` DESC;";
+					WHERE `ua`.`user` = $user ORDER BY `ua`.`ts` DESC;";
 		$r = $this->db->query($q);
+		$outArr = array();
 
 		foreach ($r as $ach) {
-			if ($ach['ach'] != NULL && $ach['name'] == NULL) {
-				$code = $this->zerofill($user, 8);
-				preg_match("/(\d+){$code}(\d+)/", $ach['ach'], $match);
-				$achID = ltrim($match[2], '0');
-				var_dump($achID);
-			}
-			// var_dump($ach);
+			if ($ach['type'] == '1') $ach['progress'] = $this->prep($ach['ach']);
+
+			if (!isset($outArr[ $ach['ach'] ])) $outArr[ $ach['ach'] ] = $ach;
+
+			else if (!isset($outArr[ $ach['ach'] ][0])) $outArr[ $ach['ach'] ] = array(0 => $outArr[ $ach['ach'] ], 1 => $ach);
+
+			else $outArr[ $ach['ach'] ] = array_merge($outArr[ $ach['ach'] ], array($ach));
 		}
 
-		return $r;
+		return $outArr;
 	}
 
 /**
@@ -160,32 +150,55 @@ class achievement {
 * @return array - ачивки
 * 
 **/
-	public function getAll($user = NULL) {
+	public function getAll() {
 
 		// Считаем пользователей чтоб узнать проценты получения ачивок
 		$q = "SELECT count(*) AS `count` FROM `ololousers`";
 		$r = $this->db->query($q);
 		$userCount = $r[0]['count'];
 
-		if (isset($user))
-			// Если получаем юзверя, то узнаем, какие ачивки он получил
-			$q = "SELECT `a`.`id`, `a`.`name`, `a`.`desc`, `a`.`type`, `a`.`class`, `a`.`grade`, FROM_UNIXTIME(`my`.`ts`) AS `ts`, round(count(*) / $userCount * 100) AS `perc`
-						FROM `achievements` AS `a`
-						LEFT JOIN `user_achievs` AS `ua` ON (`a`.`id` = `ua`.`achievement`)
-						LEFT JOIN `user_achievs` as `my` ON (`my`.`user` = $user AND `ua`.`achievement` = `my`.`achievement`)
-						GROUP BY `a`.`id`;";
-
-		else
-			// Если юзверя нам не сказали, то и узначать полученные ачивки нам не надо
-			$q = "SELECT `a`.`id`, `a`.`name`, `a`.`desc`, `a`.`type`, `a`.`class`, `a`.`grade`, round(count(*) / $userCount * 100) AS `perc`
-						FROM `achievements` AS `a`
-						LEFT JOIN `user_achievs` AS `ua` ON (`a`.`id` = `ua`.`achievement`)
-						GROUP BY `a`.`id`;";
+		$q = "SELECT `a`.`id`, `ua`.`user`, `a`.`name`, `a`.`desc`, `a`.`type`, `a`.`class`, `a`.`grade`, `ua`.`ts`, `ua`.`powah`
+					FROM `user_achievs` AS `ua`
+					RIGHT JOIN `achievements` AS `a` ON (`a`.`id` = `ua`.`achievement`)
+					ORDER BY `a`.`id` ASC , `user` ASC , `ts` DESC";
 		$r = $this->db->query($q);
 
-		return $r;
+		foreach ($r as $ach) {
+
+			if (!isset($output[ $ach['id'] ])) {
+				$output[ $ach['id'] ] = array(
+					  'name' => $ach['name']
+					, 'desc' => $ach['desc']
+					, 'type' => $ach['type']
+					, 'class' => $ach['class']
+					, 'grade' => $ach['grade']
+					, 'users' => array()
+				);
+
+				if (isset($ach['user'])) $output[ $ach['id'] ]['users'][ $ach['user'] ][ $ach['ts'] ] = $ach['powah'];
+
+				if ($ach['type'] == '1') $output[ $ach['id'] ]['progress'] = $this->prep($ach['id']);
+
+			} else $output[ $ach['id'] ]['users'][ $ach['user'] ][ $ach['ts'] ] = $ach['powah'];
+
+		}
+
+		foreach ($output as $id => $ach) {
+			$perc = round(count($ach['users']) / $userCount * 100);
+			$output[$id]['perc'] = $perc;
+		}
+
+		return $output;
 	}
 
+/**
+* 
+* Ну это зерофилл, что тут можно сказать?
+* @param str - строка/число
+* @param outLen - требуемая длина
+* @return string - отформатированная строка
+* 
+**/
 	public function zerofill($str, $outLen) {
 		$inpLen = strlen((string)$str);
 		$addLen = $outLen - $inpLen;
@@ -195,6 +208,47 @@ class achievement {
 		}
 		$addStr .= $str;
 		return $addStr;
+	}
+
+/**
+* 
+* Узнать готовность достижения
+* @param id - айдишник достижения
+* 
+**/
+	public function prep($id) {
+		$q = "SELECT `req` FROM `achievements` WHERE `id` = $id";
+		$r = $this->db->query($q);
+		$requirement = $r[0]['req'];
+
+		switch ($id) {
+			case 5: case 10: case 13: case 21: case 30: case 42: case 50: case 70: // Уровни
+				$progress = $this->user->info['levelInfo']['level'];
+			break;
+
+			case 4: case 6: case 7:
+				$q = "SELECT count(*) AS `count` FROM `ololousers` WHERE `referrer` = $id";
+				$r = $this->db->query($q);
+				$progress = $r[0]['count'];
+			break;
+
+			case 100500: // Опыт
+				$progress = $this->user->info['exp'];
+			break;
+
+			default: $progress = 0;
+		}
+
+		if ($progress <= $requirement) $percentage = round($progress / $requirement * 100);
+		else $percentage = 100;
+
+		$output = array(
+			  'perc' => $percentage
+			, 'req' => $requirement
+			, 'prog' => $progress
+		);
+		
+		return $output;
 	}
 
 /**
@@ -213,7 +267,7 @@ class achievement {
 		$r = $this->db->query($q);
 		$count = $r[0]['count'];
 		// Получаем список неполученных ачивок
-		$q = "SELECT `a`.`id`
+		$q = "SELECT `a`.`id`, `a`.`req`
 					FROM `achievements` AS `a`
 					LEFT JOIN `user_achievs` AS `ua` ON (`a`.`id` = `ua`.`achievement`)
 					LEFT JOIN `user_achievs` as `my` ON (`my`.`user` = $id AND `ua`.`achievement` = `my`.`achievement`)
@@ -224,7 +278,7 @@ class achievement {
 		/* Тут мы определяем все необходимые переменные для последующих условий */
 		//////////////////////////////////////////////////////////////////////////
 		// Узнаем свой уровень
-		$level = $this->user->getLevel($info['exp']);
+		$level = $this->user->info['levelInfo']['level'];
 		//////////////////////////////////////////////////////////////////////////
 
 		// Создаем массивчик под полученные ачивки и в путь, по условиям.
@@ -244,7 +298,7 @@ class achievement {
 
 				case '4':
 					// Приглашено 5 друзей
-					if ($count >= 5) {
+					if ($count >= $ach['req']) {
 						$this->earn($id, 4);
 						$output[] = $ach['id'];
 					}
@@ -252,14 +306,14 @@ class achievement {
 
 				case '5':
 					// Достигнут 5 уровень
-					if ($level['level'] >= 5) {
+					if ($level['level'] >= $ach['req']) {
 						$this->earn($id, 5);
 						$output[] = $ach['id'];
 					}
 					break;
 				case '6':
 					// Приглашено 10 друзей
-					if ($count >= 10) {
+					if ($count >= $ach['req']) {
 						$this->earn($id, 6);
 						$output[] = $ach['id'];
 					}
@@ -267,15 +321,23 @@ class achievement {
 
 				case '7':
 					// Приглашено 15 друзей
-					if ($count >= 15) {
+					if ($count >= $ach['req']) {
 						$this->earn($id, 7);
+						$output[] = $ach['id'];
+					}
+					break;
+
+				case '9':
+					// Хитрая ачивка: дается рандомный образом
+					if (rand(0, 1000) == 352) {
+						$this->earn($id, 9);
 						$output[] = $ach['id'];
 					}
 					break;
 
 				case '10':
 					// Достигнут 10 уровень
-					if ($level['level'] >= 10) {
+					if ($level['level'] >= $ach['req']) {
 						$this->earn($id, 10);
 						$output[] = $ach['id'];
 					}
@@ -283,7 +345,7 @@ class achievement {
 
 				case '13':
 					// Достигнут 13 уровень
-					if ($level['level'] >= 13) {
+					if ($level['level'] >= $ach['req']) {
 						$this->earn($id, 13);
 						$output[] = $ach['id'];
 					}
@@ -299,7 +361,7 @@ class achievement {
 
 				case '21':
 					// Достигнут 21 уровень
-					if ($level['level'] >= 21) {
+					if ($level['level'] >= $ach['req']) {
 						$this->earn($id, 21);
 						$output[] = $ach['id'];
 					}
@@ -307,7 +369,7 @@ class achievement {
 
 				case '30':
 					// Достигнут 30 уровень
-					if ($level['level'] >= 30) {
+					if ($level['level'] >= $ach['req']) {
 						$this->earn($id, 30);
 						$output[] = $ach['id'];
 					}
@@ -315,7 +377,7 @@ class achievement {
 
 				case '42':
 					// Достигнут 42 уровень
-					if ($level['level'] >= 42) {
+					if ($level['level'] >= $ach['req']) {
 						$this->earn($id, 42);
 						$output[] = $ach['id'];
 					}
@@ -323,7 +385,7 @@ class achievement {
 
 				case '50':
 					// Достигнут 50 уровень
-					if ($level['level'] >= 50) {
+					if ($level['level'] >= $ach['req']) {
 						$this->earn($id, 50);
 						$output[] = $ach['id'];
 					}
@@ -331,7 +393,7 @@ class achievement {
 
 				case '70':
 					// Достигнут 70 уровень
-					if ($level['level'] == 70) {
+					if ($level['level'] == $ach['req']) {
 						$this->earn($id, 70);
 						$output[] = $ach['id'];
 					}
@@ -339,7 +401,7 @@ class achievement {
 
 				case '100500':
 					// Накоплено 100500 опыта
-					if ($info['exp'] >= 100500) {
+					if ($info['exp'] >= $ach['req']) {
 						$this->earn($id, 100500);
 						$output[] = $ach['id'];
 					}

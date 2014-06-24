@@ -11,6 +11,14 @@ $(document).ready(function(){
 		}, 300000);
 	}
 
+	//В ЛК и списке достижений нужно установить высоту стопок ачивок чтобы они не пересекались, не знаю, как сделать это средствами html
+	$('.achievementStack').each(function() {
+		var inner = $(this).children().eq(0);
+		var height = parseInt(inner.css('height').replace('px',''));
+		var margin = parseInt(inner.css('margin-top').replace('px',''));
+		$(this).css('height', height + margin + 4);
+	});
+
 	// Хер его проссыт, зачем это, наследие
 	$(function () {
 		$(window).scroll(function () {
