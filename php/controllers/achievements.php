@@ -17,7 +17,7 @@ if (isset($cid)) {
 		if (!isset($ach['users'][$cid]) && $ach['class'] == '1') $achievs[$k]['desc'] = '???';
 	}
 
-	foreach ($toDel as $del) unset($achievs[$del]);
+	if (isset($toDel)) foreach ($toDel as $del) unset($achievs[$del]);
 
 } else {
 	// Если не залогинились, ставим другой флажок

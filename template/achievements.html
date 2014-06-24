@@ -55,30 +55,42 @@
 				</div>
 				<?
 				} else {
-					krsort($ach['users'][$cid]);
-					$achi = array_slice($ach['users'][$cid], 0, 5, TRUE);
-					echo '<div class="achievementStack" style="float: left">';
-					$counter = 0;
-					foreach ($achi as $ts => $powah) {
-						$add = '';
-						$z_index = 5 - $counter;
-						$margin = count($achi)*5 - $counter * 5 - 5;
-						$date = date('Y-m-d H:i:s', $ts);
-						if ($ach['grade'] == 1) $add .= '<div><span class="achPowah">Мощь: ' . $powah . '</span><div class="clear"></div></div>';
-						$add .= '<div><span class="achCount">Всего таких ачивок: ' . count($ach['users'][$cid]) . '</span><div class="clear"></div></div>';
-						$counter++;
+					if (isset($ach['users'][$cid])) {
+						krsort($ach['users'][$cid]);
+						$achi = array_slice($ach['users'][$cid], 0, 5, TRUE);
+						echo '<div class="achievementStack" style="float: left">';
+						$counter = 0;
+						foreach ($achi as $ts => $powah) {
+							$add = '';
+							$z_index = 5 - $counter;
+							$margin = count($achi)*5 - $counter * 5 - 5;
+							$date = date('Y-m-d H:i:s', $ts);
+							if ($ach['grade'] == 1) $add .= '<div><span class="achPowah">Мощь: ' . $powah . '</span><div class="clear"></div></div>';
+							$add .= '<div><span class="achCount">Всего таких ачивок: ' . count($ach['users'][$cid]) . '</span><div class="clear"></div></div>';
+							$counter++;
+							?>
+							<div class="achievementWrapper improved" style="z-index: <?=$z_index?>; margin: <?=$margin?>px;">
+								<div class="achievement grade_<?=$ach['grade']?>">
+									<span class="achTitle"><?=$ach['name']?></span>
+									<span class="achDate"><?=$date?></span>
+									<span class="achDesc"><?=$ach['desc']?></span>
+									<?=$add?>
+								</div>
+							</div>
+							<?
+						}
+						echo '</div>';
+					} else {
 						?>
-						<div class="achievementWrapper improved" style="z-index: <?=$z_index?>; margin: <?=$margin?>px;">
+						<div class="achievementWrapper unclaimed" style="float: left;">
 							<div class="achievement grade_<?=$ach['grade']?>">
 								<span class="achTitle"><?=$ach['name']?></span>
 								<span class="achDate"><?=$date?></span>
 								<span class="achDesc"><?=$ach['desc']?></span>
-								<?=$add?>
 							</div>
 						</div>
 						<?
 					}
-					echo '</div>';
 				}
 				?>
 				<div class="achHoldersFill" style="width: <?=$ach['perc'] * 2?>px;">

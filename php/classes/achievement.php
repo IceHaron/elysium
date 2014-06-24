@@ -177,7 +177,7 @@ class achievement {
 
 				if (isset($ach['user'])) $output[ $ach['id'] ]['users'][ $ach['user'] ][ $ach['ts'] ] = $ach['powah'];
 
-				if ($ach['type'] == '1') $output[ $ach['id'] ]['progress'] = $this->prep($ach['id']);
+				if ($ach['type'] == '1' && $this->user) $output[ $ach['id'] ]['progress'] = $this->prep($ach['id']);
 
 			} else $output[ $ach['id'] ]['users'][ $ach['user'] ][ $ach['ts'] ] = $ach['powah'];
 
