@@ -51,6 +51,7 @@ switch ($_GET['action']) {
 		$header.="Content-Type: text/plain; charset=utf-8\r\n";
 		$header.="Content-Transfer-Encoding: 8bit\r\n";
 
+		$query = "INSERT INTO `mail` (`action`, `userid`, `to`, `text`) VALUES ('$action', $userID, '$mailTo', '$messageText');";
 
 		// $message .= $messageText;
 	break;
@@ -59,6 +60,7 @@ switch ($_GET['action']) {
 
 send($mailFrom, $mailTo, $header, $messageText);
 send($mailFrom, $mailFrom, $confirmHeader, $confirmText);
+$db->query($query);
 
 // $message .= $data;
 $message .= 'Отправка письма прошла успешно!';
