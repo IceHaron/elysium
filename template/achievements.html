@@ -28,6 +28,7 @@
 				// Если мы залогинены, то нужно определить, какую ачивку мы получили, а какую - нет
 				if (!isset($ach['users'][$cid])) {
 					$class = 'achievementWrapper unclaimed';
+					$date = '';
 					if ($ach['type'] == 1) $add .= '<div class="achProgress">
 																						Завершено на ' . $ach['progress']['perc'] . '% (' . $ach['progress']['prog'] . ' / ' . $ach['progress']['req'] . ')
 																						<div class="expBarEmpty"></div>
@@ -81,6 +82,7 @@
 						}
 						echo '</div>';
 					} else {
+						$date = '';
 						?>
 						<div class="achievementWrapper unclaimed" style="float: left;">
 							<div class="achievement grade_<?=$ach['grade']?>">

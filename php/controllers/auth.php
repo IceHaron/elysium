@@ -197,5 +197,19 @@ if ($action == 'reg' && isset($_POST['nick'])) {
 	// Ну это уже против утырков
 	} else $message = "По какой-то причине привязанный к вашей учетной записи аккаунт Steam отличается от того, который вы пытаетесь отвязать";
 
+/**
+* 
+* Настройки приватности
+* 
+**/
+} else if ($action == 'privacy') {
+	$privacy = 0;
+	foreach ($_POST as $value => $status) {
+		$privacy += (int)$value;
+	}
+	$q = "UPDATE `ololousers` SET `privacy` = '$privacy' WHERE `id` = {$user->info['id']}";
+	$r = $db->query($q);
+	// var_dump($q);
+
 }
 ?>

@@ -279,6 +279,12 @@ h4 {font-size:31px;color:#000;letter-spacing:-2px;margin-bottom:16px}
 	min-height: 100px;
 	resize: vertical;
 }
+.privacyTitle {
+	display: block;
+	margin-top: 10px;
+	margin-bottom: 5px;
+	font-style: italic;
+}
 
 /* Достижения */
 .achievementStack {
@@ -357,4 +363,13 @@ h4 {font-size:31px;color:#000;letter-spacing:-2px;margin-bottom:16px}
 .achPercTitle {
 	display: block;
 	margin: 15px;
+}
+
+/* Список игроков */
+#playerList {
+	width: 100%;
+}
+#playerList td {
+	padding: 5px;
+	border: 1px solid grey;
 }

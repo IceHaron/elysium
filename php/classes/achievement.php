@@ -223,11 +223,12 @@ class achievement {
 
 		switch ($id) {
 			case 5: case 10: case 13: case 21: case 30: case 42: case 50: case 70: // Уровни
-				$progress = $this->user->info['levelInfo']['level'];
+				$l = $this->user->getLevel($this->user->info['exp']);
+				$progress = $l['level'];
 			break;
 
 			case 4: case 6: case 7:
-				$q = "SELECT count(*) AS `count` FROM `ololousers` WHERE `referrer` = $id";
+				$q = "SELECT count(*) AS `count` FROM `ololousers` WHERE `referrer` = {$this->user->info['id']}";
 				$r = $this->db->query($q);
 				$progress = $r[0]['count'];
 			break;
@@ -278,7 +279,7 @@ class achievement {
 		/* Тут мы определяем все необходимые переменные для последующих условий */
 		//////////////////////////////////////////////////////////////////////////
 		// Узнаем свой уровень
-		$level = $this->user->info['levelInfo']['level'];
+		$level = $this->user->getLevel($info['exp']);
 		//////////////////////////////////////////////////////////////////////////
 
 		// Создаем массивчик под полученные ачивки и в путь, по условиям.

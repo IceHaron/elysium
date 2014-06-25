@@ -32,6 +32,42 @@ if (!$_POST) {
 		</td>
 		<td class="action"></td>
 	</tr>
+	<!-- Приглашеньки =) -->
+	<tr>
+		<th class="head">Ваша реферральная ссылка</th>
+		<td class="input">
+			<input type="text" id="refLink" value="<?=$info['referral']?>" readonly size="50"></td>
+		<td class="action">
+			<button id="refer" data-link="<?=$info['referral']?>">Пригласить друга</button>
+			<div class="modal" id="referralForm">
+				<h2>Отправить приглашение по электронной почте</h2>
+				<form method="POST" action="/mail?action=refer">
+					<input type="hidden" name="user" value="<?=$cid?>">
+					<input type="hidden" name="from" value="<?=$info['email']?>">
+					<input type="hidden" name="subject" value="Вас приглашают на портал Elysium Game">
+					<input type="hidden" name="link" value="<?=$info['referral']?>">
+					<div>
+						<label>Кому: </label>
+						<input type="text" name="email" placeholder="e-Mail">
+					</div>
+					<div>
+						<label>Тема: </label>
+						<span>Вас приглашают на портал Elysium Game</span>
+					</div>
+					<label>Текст сообщения: </label><br/>
+					<div id="messageContainer">
+						<span>
+							Привет, <input type="text" name="name" placeholder="Имя друга">, хочу пригласить тебя зарегистрироваться на портале Elysium Game в качестве моего друга, подумай хорошенько, ведь за это и ты тоже получишь ништяки ;)<br/>
+							<a href="<?=$info['referral']?>">Вот ссылка на регистрацию по моему приглашению</a><br/>
+						</span>
+						<textarea id="referralMessage" name="message">Введите сюда свое сообщение</textarea>
+						С уважением, <input type="text" name="me" placeholder="Как представиться?">.
+					</div>
+					<input type="submit" value="Отправить приглашение">
+				</form>
+			</div>
+		</td>
+	</tr>
 </table>
 
 <hr>
@@ -75,42 +111,44 @@ if (!$_POST) {
 		<td class="input"><?=$info['referrer']?></td>
 		<td class="action"></td>
 	</tr>
-	<!-- Приглашеньки =) -->
-	<tr>
-		<th class="head">Ваша реферральная ссылка</th>
-		<td class="input">
-			<input type="text" id="refLink" value="<?=$info['referral']?>" readonly size="50"></td>
-		<td class="action">
-			<button id="refer" data-link="<?=$info['referral']?>">Пригласить друга</button>
-			<div class="modal" id="referralForm">
-				<h2>Отправить приглашение по электронной почте</h2>
-				<form method="POST" action="/mail?action=refer">
-					<input type="hidden" name="user" value="<?=$cid?>">
-					<input type="hidden" name="from" value="<?=$info['email']?>">
-					<input type="hidden" name="subject" value="Вас приглашают на портал Elysium Game">
-					<input type="hidden" name="link" value="<?=$info['referral']?>">
-					<div>
-						<label>Кому: </label>
-						<input type="text" name="email" placeholder="e-Mail">
-					</div>
-					<div>
-						<label>Тема: </label>
-						<span>Вас приглашают на портал Elysium Game</span>
-					</div>
-					<label>Текст сообщения: </label><br/>
-					<div id="messageContainer">
-						<span>
-							Привет, <input type="text" name="name" placeholder="Имя друга">, хочу пригласить тебя зарегистрироваться на портале Elysium Game в качестве моего друга, подумай хорошенько, ведь за это и ты тоже получишь ништяки ;)<br/>
-							<a href="<?=$info['referral']?>">Вот ссылка на регистрацию по моему приглашению</a><br/>
-						</span>
-						<textarea id="referralMessage" name="message">Введите сюда свое сообщение</textarea>
-						С уважением, <input type="text" name="me" placeholder="Как представиться?">.
-					</div>
-					<input type="submit" value="Отправить приглашение">
-				</form>
-			</div>
-		</td>
-	</tr>
+
+	<form action="/auth?action=privacy" method="POST">
+		<tr>
+			<th class="head">Видимость</th>
+			<td class="input">
+				<div id="allPrivacy">
+					<span class="privacyTitle">Все в интернете</span>
+					<input name="1" type="checkbox" <?=$info['privacy']['all']['exp_ach'] ? 'checked' : ''?>>
+					<label>Опыт и достижения</label><br/>
+					<input name="2" type="checkbox" <?=$info['privacy']['all']['steam'] ? 'checked' : ''?>>
+					<label>Привязанный аккаунт Steam</label><br/>
+					<input name="4" type="checkbox" <?=$info['privacy']['all']['email'] ? 'checked' : ''?>>
+					<label>Адрес электронной почты</label>
+				</div>
+				<div id="registeredPrivacy">
+					<span class="privacyTitle">Зарегистрированные пользователи</span>
+					<input name="10" type="checkbox" <?=$info['privacy']['registered']['exp_ach'] ? 'checked' : ''?>>
+					<label>Опыт и достижения</label><br/>
+					<input name="20" type="checkbox" <?=$info['privacy']['registered']['steam'] ? 'checked' : ''?>>
+					<label>Привязанный аккаунт Steam</label><br/>
+					<input name="40" type="checkbox" <?=$info['privacy']['registered']['email'] ? 'checked' : ''?>>
+					<label>Адрес электронной почты</label>
+				</div>
+				<div id="friendsPrivacy">
+					<span class="privacyTitle">Друзья (пока что пригласивший и те, кого пригласили вы)</span>
+					<input name="100" type="checkbox" <?=$info['privacy']['friends']['exp_ach'] ? 'checked' : ''?>>
+					<label>Опыт и достижения</label><br/>
+					<input name="200" type="checkbox" <?=$info['privacy']['friends']['steam'] ? 'checked' : ''?>>
+					<label>Привязанный аккаунт Steam</label><br/>
+					<input name="400" type="checkbox" <?=$info['privacy']['friends']['email'] ? 'checked' : ''?>>
+					<label>Адрес электронной почты</label>
+				</div>
+			</td>
+			<td class="action">
+				<input type="submit" value="Сохранить">
+			</td>
+		</tr>
+	</form>
 </table>
 
 <h3>Ваши достижения (5 последних плюс только что полученные):</h3>

@@ -1,0 +1,30 @@
+<table id="playerList">
+	<tr>
+		<th>Ник на сайте</th>
+		<th>Ник в игре</th>
+		<th>Уровень</th>
+	</tr>
+	<?
+	foreach ($playerList as $player) {
+		?>
+		<tr>
+			<td><?=$player['nick']?></td>
+			<td><?=$player['mcname']?></td>
+			<td>
+				<?
+				if ($player['level'] != 'hidden') {
+					echo '<div class="level">' . $player['level']['level'] . '</div>
+								<div class="exp">' . $player['level']['signature'] . '
+									<div class="expBarEmpty"></div>
+									<div class="expBarFull" style="width: ' . (int)$player['level']['percent']*2 . 'px"></div>
+								</div>';
+				} else {
+					echo 'Игрок скрыл свой уровень от вас';
+				}
+				?>
+			</td>
+		</tr>
+		<?
+	}
+	?>
+</table>

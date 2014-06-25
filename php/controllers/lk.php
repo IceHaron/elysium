@@ -7,7 +7,7 @@
 
 if (!isset($cemail)) header('Location: /'); // Как бы сложно посмотреть свой ЛК, не залогинившись, выбрасываем на главную.
 
-$r = $db->query("SELECT `user`.`id`, `user`.`email`, `user`.`nick`, `user`.`mcname`, `user`.`steamid`, `user`.`exp`, `user`.`izumko`, `ref`.`nick` AS `referrer`
+$r = $db->query("SELECT `user`.`id`, `user`.`email`, `user`.`nick`, `user`.`mcname`, `user`.`steamid`, `user`.`exp`, `user`.`izumko`, `user`.`privacy`, `ref`.`nick` AS `referrer`
 									FROM `ololousers` AS `user`
 									LEFT JOIN `ololousers` as `ref` ON (`user`.`referrer` = `ref`.`id`)
 									WHERE `user`.`id` = $cid");
@@ -47,6 +47,7 @@ if ($level['level'] < 70) {
 $a = new achievement();
 // $a->check($r[0]['id']);
 $achievements = $a->getAch($r[0]['id']); // Понятное дело: получаем список ачивок
+$privacy = privacyParse($r[0]['privacy']);
 
 // Пишем в массив
 $info = array(
@@ -61,6 +62,7 @@ $info = array(
 	, 'referral' => 'http://' . $_SERVER['HTTP_HOST'] . '/auth?action=reg&referrer=' . base64_encode($r[0]['id'] . '_' . $r[0]['nick']) // Реферральная ссылка
 	, 'steamID' => $steamID // Steam ID, C.O.
 	, 'achievements' => array_slice($achievements, 0, 5) // Последние 5 достижений
+	, 'privacy' => $privacy // Настройки приватности в виде ассоциативного массива
 );
 
 if ($profile) {
@@ -68,4 +70,75 @@ if ($profile) {
 	$info['steamName'] = $profile['response']['players'][0]['personaname'];
 	$info['steamURL'] = $profile['response']['players'][0]['profileurl'];
 	$info['avatar'] = $profile['response']['players'][0]['avatar'];
+}
+
+
+/**
+* 
+* Функция разбора настроек приватности
+* 
+* Настройки приватности указаны в стиле Unix: трехзначным числом от 000 до 777, каждый знак означает уровень доступности сведений для:
+* - Друзья пользователя
+* - Зарегистрированные пользователи
+* - Все в интернете
+* 
+* Информация бывает следующая:
+* (0) Ник
+* (0) Ник в игре
+* (1) Накопленный опыт
+* (1) Достижения
+* (2) Привязанный Steam-аккаунт
+* (4) Адрес электронной почты
+* 
+* Соответственно, Ник на сайте и Ник в майнкрафте показываются всегда, а видимость остального устанавливается в стиле Unix:
+* 
+* 0 - Видны только ники
+* 1 - Видны ники, опыт и достижения
+* 2 - Видны ники, привязанный аккаунт Steam
+* 3 - Видны ники, опыт, достижения и привязанный Steam-аккаунт
+* 4 - Видны ники и мыло
+* 6 - Видны ники, привязанный Steam-аккаунт и мыло
+* 7 - Видно все
+* 
+* Если пользователь устанавливает приватность 000, то он не виден в списке пользователей
+* 
+**/
+function privacyParse($string) {
+	$privacy = array('friends' => $string[0], 'registered' => $string[1], 'all' => $string[2]);
+
+	foreach ($privacy as $key => $val) {
+		switch ($val) {
+
+			case 0:
+				$privacy[$key] = array('exp_ach' => FALSE, 'steam' => FALSE, 'email' => FALSE);
+			break; 
+
+			case 1:
+				$privacy[$key] = array('exp_ach' => TRUE, 'steam' => FALSE, 'email' => FALSE);
+			break; 
+
+			case 2:
+				$privacy[$key] = array('exp_ach' => FALSE, 'steam' => TRUE, 'email' => FALSE);
+			break; 
+
+			case 3:
+				$privacy[$key] = array('exp_ach' => TRUE, 'steam' => TRUE, 'email' => FALSE);
+			break; 
+
+			case 4:
+				$privacy[$key] = array('exp_ach' => FALSE, 'steam' => FALSE, 'email' => TRUE);
+			break; 
+
+			case 6:
+				$privacy[$key] = array('exp_ach' => FALSE, 'steam' => TRUE, 'email' => TRUE);
+			break; 
+
+			case 7:
+				$privacy[$key] = array('exp_ach' => TRUE, 'steam' => TRUE, 'email' => TRUE);
+			break; 
+
+			default:
+		}
+	}
+	return $privacy;
 }
