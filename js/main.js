@@ -42,16 +42,21 @@ $(document).ready(function(){
 	});
 
 	// При клике на кнопку банлиста, мы не по ссылке переходим, а отображаем банлист
-	$('#banlist').click(function(e) {
+	$('#banlist-button').click(function(e) {
 		e.preventDefault();
 		$('#shadow').show();
-		$('#basic-modal-content').show();
+		$('#banlist').show();
+	});
+
+	$('#refer').click(function() {
+		$('#shadow').show();
+		$('#referralForm').show();
 	});
 
 	// При клике на тень, скрываем все всплывающие какашки
 	$('#shadow').click(function() {
 		$('#shadow').hide();
-		$('#basic-modal-content').hide();
+		$('.modal').hide();
 	});
 
 	// Смена пароля в ЛК

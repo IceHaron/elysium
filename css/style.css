@@ -208,13 +208,16 @@ h4 {font-size:31px;color:#000;letter-spacing:-2px;margin-bottom:16px}
 #authPanel {
 	float: right;
 }
-#basic-modal-content {
+.modal {
 	display: none;
-	left: calc(100% / 2 - 250px);
+	top: 0;
+	left: calc(100% / 2 - 230px);
 	position: fixed;
 	width: 500px;
 	margin: 100px auto;
+	padding: 20px;
 	background-color: white;
+	border-radius: 10px;
 	z-index: 101;
 }
 
@@ -256,6 +259,25 @@ h4 {font-size:31px;color:#000;letter-spacing:-2px;margin-bottom:16px}
 .balance {
 	width: 200px;
 	text-align: center;
+}
+#referralForm h2 {
+	margin-bottom: 20px;
+}
+#referralForm label {
+	font-weight: bold;
+}
+#referralForm * {
+	margin: 5px;
+}
+#messageContainer {
+	width: 430px;
+	padding: 10px;
+	border: 1px dotted grey;
+}
+#referralMessage {
+	width: 420px;
+	min-height: 100px;
+	resize: vertical;
 }
 
 /* Достижения */

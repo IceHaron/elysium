@@ -80,7 +80,36 @@ if (!$_POST) {
 		<th class="head">Ваша реферральная ссылка</th>
 		<td class="input">
 			<input type="text" id="refLink" value="<?=$info['referral']?>" readonly size="50"></td>
-		<td class="action"></td>
+		<td class="action">
+			<button id="refer" data-link="<?=$info['referral']?>">Пригласить друга</button>
+			<div class="modal" id="referralForm">
+				<h2>Отправить приглашение по электронной почте</h2>
+				<form method="POST" action="/mail?action=refer">
+					<input type="hidden" name="user" value="<?=$cid?>">
+					<input type="hidden" name="from" value="<?=$info['email']?>">
+					<input type="hidden" name="subject" value="Вас приглашают на портал Elysium Game">
+					<input type="hidden" name="link" value="<?=$info['referral']?>">
+					<div>
+						<label>Кому: </label>
+						<input type="text" name="email" placeholder="e-Mail">
+					</div>
+					<div>
+						<label>Тема: </label>
+						<span>Вас приглашают на портал Elysium Game</span>
+					</div>
+					<label>Текст сообщения: </label><br/>
+					<div id="messageContainer">
+						<span>
+							Привет, <input type="text" name="name" placeholder="Имя друга">, хочу пригласить тебя зарегистрироваться на портале Elysium Game в качестве моего друга, подумай хорошенько, ведь за это и ты тоже получишь ништяки ;)<br/>
+							<a href="<?=$info['referral']?>">Вот ссылка на регистрацию по моему приглашению</a><br/>
+						</span>
+						<textarea id="referralMessage" name="message">Введите сюда свое сообщение</textarea>
+						С уважением, <input type="text" name="me" placeholder="Как представиться?">.
+					</div>
+					<input type="submit" value="Отправить приглашение">
+				</form>
+			</div>
+		</td>
 	</tr>
 </table>
 
