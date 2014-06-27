@@ -287,6 +287,26 @@ h4 {font-size:31px;color:#000;letter-spacing:-2px;margin-bottom:16px}
 }
 
 /* Достижения */
+.achCompHeaderHis {
+	width: 316px;
+	float: left;
+	margin-left: 100px;
+	text-align: center;
+	font-size: 20px;
+}
+.achCompHeaderYours {
+	width: 316px;
+	float: left;
+	margin-left: 25px;
+	text-align: center;
+	font-size: 20px;
+}
+#achMainCont {
+	margin-left: 100px;
+}
+#achMainCont .achievementStack, #achMainCont .achievementWrapper {
+	float: left;
+}
 .achievementStack {
 	width: 320px;
 	min-height: 60px;

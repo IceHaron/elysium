@@ -112,23 +112,18 @@ class achievement {
 * 
 **/
 	public function getAch($user) {
+		$all = $this->getAll();
 
-		$q = "SELECT `ua`.`achievement` AS `ach`, `a`.`name`, `a`.`desc`, FROM_UNIXTIME(`ua`.`ts`) as `ts`, `a`.`type`, `a`.`class`, `a`.`grade`, `a`.`req`, `ua`.`powah`
-					FROM `user_achievs` AS `ua`
-					LEFT JOIN `achievements` AS `a` ON (`ua`.`achievement` = `a`.`id`)
-					WHERE `ua`.`user` = $user ORDER BY `ua`.`ts` DESC;";
-		$r = $this->db->query($q);
 		$outArr = array();
 
-		foreach ($r as $ach) {
-			if ($ach['type'] == '1') $ach['progress'] = $this->prep($ach['ach']);
-
-			if (!isset($outArr[ $ach['ach'] ])) $outArr[ $ach['ach'] ] = $ach;
-
-			else if (!isset($outArr[ $ach['ach'] ][0])) $outArr[ $ach['ach'] ] = array(0 => $outArr[ $ach['ach'] ], 1 => $ach);
-
-			else $outArr[ $ach['ach'] ] = array_merge($outArr[ $ach['ach'] ], array($ach));
+		foreach ($all as $achID => $ach) {
+			if (isset($ach['users'][$user])) {
+				$last = max(array_keys($ach['users'][$user]));
+				$outArr[ $last ] = $ach;
+			}
 		}
+
+		krsort($outArr);
 
 		return $outArr;
 	}
@@ -146,16 +141,15 @@ class achievement {
 /**
 * 
 * Получить все ачивки
-* @param user - Айдишник юзера чтоб показывать полученные и неполученные
 * @return array - ачивки
 * 
 **/
 	public function getAll() {
 
 		// Считаем пользователей чтоб узнать проценты получения ачивок
-		$q = "SELECT count(*) AS `count` FROM `ololousers`";
+		$q = "SELECT `id` FROM `ololousers`";
 		$r = $this->db->query($q);
-		$userCount = $r[0]['count'];
+		$userCount = count($r);
 
 		$q = "SELECT `a`.`id`, `ua`.`user`, `a`.`name`, `a`.`desc`, `a`.`type`, `a`.`class`, `a`.`grade`, `ua`.`ts`, `ua`.`powah`
 					FROM `user_achievs` AS `ua`
@@ -167,7 +161,8 @@ class achievement {
 
 			if (!isset($output[ $ach['id'] ])) {
 				$output[ $ach['id'] ] = array(
-					  'name' => $ach['name']
+					  'id' => $ach['id']
+					, 'name' => $ach['name']
 					, 'desc' => $ach['desc']
 					, 'type' => $ach['type']
 					, 'class' => $ach['class']
@@ -176,8 +171,6 @@ class achievement {
 				);
 
 				if (isset($ach['user'])) $output[ $ach['id'] ]['users'][ $ach['user'] ][ $ach['ts'] ] = $ach['powah'];
-
-				if ($ach['type'] == '1' && $this->user) $output[ $ach['id'] ]['progress'] = $this->prep($ach['id']);
 
 			} else $output[ $ach['id'] ]['users'][ $ach['user'] ][ $ach['ts'] ] = $ach['powah'];
 
@@ -213,28 +206,29 @@ class achievement {
 /**
 * 
 * Узнать готовность достижения
-* @param id - айдишник достижения
+* @param achID - айдишник достижения
 * 
 **/
-	public function prep($id) {
-		$q = "SELECT `req` FROM `achievements` WHERE `id` = $id";
+	public function prep($achID, $userID) {
+		$userInfo = $this->user->getInfo($userID);
+		$q = "SELECT `req` FROM `achievements` WHERE `id` = $achID";
 		$r = $this->db->query($q);
 		$requirement = $r[0]['req'];
 
-		switch ($id) {
+		switch ($achID) {
 			case 5: case 10: case 13: case 21: case 30: case 42: case 50: case 70: // Уровни
-				$l = $this->user->getLevel($this->user->info['exp']);
+				$l = $this->user->getLevel($userInfo['exp']);
 				$progress = $l['level'];
 			break;
 
 			case 4: case 6: case 7:
-				$q = "SELECT count(*) AS `count` FROM `ololousers` WHERE `referrer` = {$this->user->info['id']}";
+				$q = "SELECT count(*) AS `count` FROM `ololousers` WHERE `referrer` = $userID";
 				$r = $this->db->query($q);
 				$progress = $r[0]['count'];
 			break;
 
 			case 100500: // Опыт
-				$progress = $this->user->info['exp'];
+				$progress = $userInfo['exp'];
 			break;
 
 			default: $progress = 0;
@@ -249,6 +243,107 @@ class achievement {
 			, 'prog' => $progress
 		);
 		
+		return $output;
+	}
+
+/**
+* 
+* Проверить, какие ачивки получил пользователь с момента последней такой проверки
+* @return array - полученные ачивки
+* 
+**/
+	public function getHTML($achInfo, $userID = FALSE) {
+		$output = '';
+		$add = '';
+
+		if ($userID === FALSE) $userID = isset($this->user) ? $this->user->info['id'] : FALSE;
+
+		if ($userID !== FALSE) {
+
+			if ($achInfo['type'] == 1) {
+				$progress = $this->prep($achInfo['id'], $userID);
+				$add .= '
+					<div class="achProgress">
+						Завершено на ' . $progress['perc'] . '% (' . $progress['prog'] . ' / ' . $progress['req'] . ')
+						<div class="expBarEmpty"></div>
+						<div class="expBarFull" style="width: ' . (int)$progress['perc']*2 . 'px"></div>
+					</div>';
+			}
+
+			if ($achInfo['type'] != '2') {
+				// Если мы залогинены, то нужно определить, какую ачивку мы получили, а какую - нет
+				if (!isset($achInfo['users'][$userID])) {
+					$class = 'achievementWrapper unclaimed';
+					$date = '';
+
+				} else {
+					$class = 'achievementWrapper';
+					$last = max(array_keys($achInfo['users'][$userID]));
+					$date = date('Y-m-d H:i:s', $last);
+
+					if ($achInfo['grade'] == 1) $add .= '<div><span class="achPowah">Мощь: ' . $achInfo['users'][$userID][$last] . '</span><div class="clear"></div></div>';
+
+				}
+
+				$output .= '
+					<div class="' . $class . '">
+						<div class="achievement grade_' . $achInfo['grade'] . '">
+							<span class="achTitle">' . $achInfo['name'] . '</span>
+							<span class="achDate">' . $date . '</span>
+							<span class="achDesc">' . $achInfo['desc'] . '</span>
+							' . $add . '
+						</div>
+					</div>';
+			} else {
+				if (isset($achInfo['users'][$userID])) {
+					krsort($achInfo['users'][$userID]);
+					$achi = array_slice($achInfo['users'][$userID], 0, 5, TRUE);
+					$output .= '<div class="achievementStack">';
+					$counter = 0;
+					foreach ($achi as $ts => $powah) {
+						$add = '';
+						$z_index = 5 - $counter;
+						$margin = count($achi)*5 - $counter * 5 - 5;
+						$date = date('Y-m-d H:i:s', $ts);
+						if ($achInfo['grade'] == 1) $add .= '<div><span class="achPowah">Мощь: ' . $powah . '</span><div class="clear"></div></div>';
+						$add .= '<div><span class="achCount">Всего таких ачивок: ' . count($achInfo['users'][$userID]) . '</span><div class="clear"></div></div>';
+						$counter++;
+						$output .= '
+							<div class="achievementWrapper improved" style="z-index: ' . $z_index . '; margin: ' . $margin . 'px;">
+								<div class="achievement grade_' . $achInfo['grade'] . '">
+									<span class="achTitle">' . $achInfo['name'] . '</span>
+									<span class="achDate">' . $date . '</span>
+									<span class="achDesc">' . $achInfo['desc'] . '</span>
+									' . $add . '
+								</div>
+							</div>';
+					}
+					$output .= '</div>';
+				} else {
+					$date = '';
+					$output .= '
+						<div class="achievementWrapper unclaimed">
+							<div class="achievement grade_' . $achInfo['grade'] . '">
+								<span class="achTitle">' . $achInfo['name'] . '</span>
+								<span class="achDate">' . $date . '</span>
+								<span class="achDesc">' . $achInfo['desc'] . '</span>
+							</div>
+						</div>';
+				}
+
+			}
+
+		} else {
+			echo '
+				<div class="achievementWrapper" style="float: left;">
+					<div class="achievement grade_' . $achInfo['grade'] . '">
+						<span class="achTitle">' . $achInfo['name'] . '</span>
+						<span class="achDesc">' . $achInfo['desc'] . '</span>
+					</div>
+				</div>';
+
+		}
+
 		return $output;
 	}
 

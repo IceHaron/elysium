@@ -19,6 +19,8 @@ if (isset($cid)) {
 
 	if (isset($toDel)) foreach ($toDel as $del) unset($achievs[$del]);
 
+	if (isset($_GET['compare'])) $compid = $_GET['compare'];
+
 } else {
 	// Если не залогинились, ставим другой флажок
 	$nouser = TRUE;

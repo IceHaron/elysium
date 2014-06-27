@@ -45,7 +45,8 @@ if ($action == 'reg' && isset($_POST['nick'])) {
 	$nick = $db->escape($_POST['nick']);
 	$pw = $db->escape($_POST['pw']);
 	$history = json_encode(array('created' => time()));
-	$q = "INSERT INTO `ololousers` (`nick`, `email`, `pw`, `history`, `referrer`) VALUES ('$nick', '$email', MD5('$pw'), '$history', '$referrer')";
+	$privacy = json_encode(array('friends' => array('exp' => 0, 'ach' => 0, 'steam' => 0), 'reg' => array('exp' => 0, 'ach' => 0, 'steam' => 0), 'all' => array('exp' => 0, 'ach' => 0, 'steam' => 0)));
+	$q = "INSERT INTO `ololousers` (`nick`, `email`, `pw`, `history`, `referrer`, `privacy`) VALUES ('$nick', '$email', MD5('$pw'), '$history', '$referrer', '$privacy')";
 	$answer = $db->query($q);
 
 	// Обрабатываем ошибки
@@ -203,13 +204,17 @@ if ($action == 'reg' && isset($_POST['nick'])) {
 * 
 **/
 } else if ($action == 'privacy') {
-	$privacy = 0;
-	foreach ($_POST as $value => $status) {
-		$privacy += (int)$value;
+	$privacy = array('friends' => array('exp' => 0, 'ach' => 0, 'steam' => 0), 'reg' => array('exp' => 0, 'ach' => 0, 'steam' => 0), 'all' => array('exp' => 0, 'ach' => 0, 'steam' => 0));
+
+	foreach ($_POST as $addr => $val) {
+		$a = explode('_', $addr);
+		$access = 1;
+		$privacy[ $a[0] ][ $a[1] ] = $access;
 	}
-	$q = "UPDATE `ololousers` SET `privacy` = '$privacy' WHERE `id` = {$user->info['id']}";
+
+	$privstr = json_encode($privacy);
+	$q = "UPDATE `ololousers` SET `privacy` = '$privstr' WHERE `id` = {$user->info['id']}";
 	$r = $db->query($q);
-	// var_dump($q);
 
 }
 ?>

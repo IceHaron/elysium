@@ -1,32 +1,30 @@
 <?
+$referrer = $cid ? $user->info['referrer'] : '';
+if ($cid) $standing = 'reg';
+else $standing = 'all';
 
-if ($cid) {
-	$referrer = $user->info['referrer'];
-	$q = "SELECT `id`, `nick`, `mcname`, `exp`, `steamid`, `email`, `privacy`, `referrer` FROM `ololousers` WHERE `privacy` != '000';";
+if (isset($_GET['id'])) {
+	$info = $user->getFullInfo($_GET['id']);
+
+	if ($info['referrer']['id'] == $cid || $_GET['id'] == $user->info['referrer']) $standing = 'friends';
+
+	$pagetype = 'unit';
+
+} else {
+
+	$q = "SELECT `id`, `nick`, `mcname`, `exp`, `steamid`, `email`, `privacy`, `referrer` FROM `ololousers` WHERE `id` != 0;";
 	$r = $db->query($q);
+
 	foreach ($r as $k => $player) {
-		$pass = FALSE;
 
-		if ($player['referrer'] == $cid || $player['id'] == $referrer) {
-			if (in_array($player['privacy'][0], array(1, 3, 7))) $pass = TRUE;
-		} else if (in_array($player['privacy'][1], array(1, 3, 7))) $pass = TRUE;
+		if ($player['referrer'] == $cid || $player['id'] == $referrer) $standing = 'friends';
 
-		if ($pass === TRUE) {
-			$level = $user->getLevel($player['exp']);
-			$player['level']['level'] = $level['level'];
-
-			if ($level['level'] < 70) {
-				$player['level']['percent'] = floor($level['exp'] / $level['need'] * 100);
-				$player['level']['signature'] = $level['exp'] . ' / ' . $level['need'] . ' exp (' . $player['level']['percent'] . '%)';
-
-			} else {
-				$player['level']['percent'] = 100;
-				$player['level']['signature'] = $level['exp'] . ' exp';
-			}
-
-		} else $player['level'] = 'hidden';
+		$player['level'] = $level = $user->getLevel($player['exp']);
+		$player['levelInfo'] = $user->getLevelHTML($level);
+		$player['privacy'] = json_decode($player['privacy'], TRUE);
 
 		$playerList[$k] = $player;
 	}
 	// var_dump($playerList);
+	$pagetype = 'list';
 }

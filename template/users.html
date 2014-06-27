@@ -1,30 +1,80 @@
-<table id="playerList">
-	<tr>
-		<th>Ник на сайте</th>
-		<th>Ник в игре</th>
-		<th>Уровень</th>
-	</tr>
-	<?
-	foreach ($playerList as $player) {
-		?>
+<?
+if ($pagetype == 'unit') {
+	?>
+	<h1 id="pageCaption">Страница пользователя</h1>
+
+	<table class="lk">
 		<tr>
-			<td><?=$player['nick']?></td>
-			<td><?=$player['mcname']?></td>
-			<td>
-				<?
-				if ($player['level'] != 'hidden') {
-					echo '<div class="level">' . $player['level']['level'] . '</div>
-								<div class="exp">' . $player['level']['signature'] . '
-									<div class="expBarEmpty"></div>
-									<div class="expBarFull" style="width: ' . (int)$player['level']['percent']*2 . 'px"></div>
-								</div>';
-				} else {
-					echo 'Игрок скрыл свой уровень от вас';
-				}
-				?>
+			<th class="head">Никнейм</th>
+			<td class="input"><?=$info['nick']?></td>
+			<td class="action"></td>
+		</tr>
+		<tr>
+			<th class="head">Имя в MineCraft`е</th>
+			<td class="input"><?=$info['mcName']?></td>
+			<td class="balance"></a></td>
+		</tr>
+		<tr>
+			<th class="head">Уровень аккаунта</th>
+			<td class="input" style="min-width: 240px;">
+				<? if ($info['privacy'][$standing]['exp']) echo $info['levelInfo']; else echo 'Информация скрыта'; ?>
 			</td>
+			<td class="action"></td>
+		</tr>
+		<tr>
+			<th class="head">Привязанный пользователь Steam</th>
+
+			<? if (!isset($info['steamURL'])) { ?>
+			<td class="input">Нет привязанного пользователя</td>
+			<? } else if (!$info['privacy'][$standing]['steam']) { ?>
+			<td class="input">Информация скрыта</td>
+			<? } else { ?>
+			<!-- Инфа о Steam-аккаунте: аватарка, ссылка и ник -->
+			<td class="input"><img src="<?=$info['avatar']?>"> <a href="<?=$info['steamURL']?>"><?=$info['steamName']?></a></td>
+			<? } ?>
+			<td class="action"></td>
+		</tr>
+		<tr>
+			<th class="head">Пригласивший человек</th>
+			<td class="input"><?=$info['referrer']['nick']?></td>
+			<td class="action"></td>
+		</tr>
+	</table>
+
+	<hr><br/>
+
+	<? if ($info['privacy'][$standing]['ach']) { ?><h2><a href="/achievements?compare=<?=$info['id']?>">Сравнить достижения</a></h2><? } ?>
+
+	<?
+} else if ($pagetype == 'list') {
+	?>
+	<table id="playerList">
+		<tr>
+			<th>Ник на сайте</th>
+			<th>Ник в игре</th>
+			<th>Уровень</th>
 		</tr>
 		<?
-	}
-	?>
-</table>
+		foreach ($playerList as $player) {
+			if ($cid == $player['id']) {
+				$nick = $player['nick'] . ' (Вы)';
+				$color = 'style="background-color: lightgrey"';
+			} else {
+				$nick = '<a href="/users?id=' . $player['id'] . '">' . $player['nick'] . '</a>';
+				$color = '';
+			}
+			?>
+			<tr <?=$color?>>
+				<td><?=$nick?></td>
+				<td><?=$player['mcname']?></td>
+				<td>
+					<? if ($player['privacy'][$standing]['exp']) echo $player['levelInfo']; else echo 'Информация скрыта'; ?>
+				</td>
+			</tr>
+			<?
+		}
+		?>
+	</table>
+	<?
+}
+?>

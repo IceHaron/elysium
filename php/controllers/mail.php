@@ -1,6 +1,6 @@
 <?
 
-GLOBAL $db, $user;
+// GLOBAL $db, $user;
 
 foreach ($_POST as $k => $v) {
 	$input[$k] = $db->escape($v);

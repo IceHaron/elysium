@@ -41,6 +41,55 @@ class user {
 
 /**
 * 
+* Получение информации о юзере
+* @param user - ник или почта юзера
+* @return array - инфа о юзере
+* 
+**/
+	public function getFullInfo($user) {
+		$u = $this->getInfo($user);
+		$referrer = $this->getInfo($u['referrer']);
+		$a = new achievement();
+		// $a->check($r[0]['id']);
+		$achievements = array_slice($a->getAch($u['id']), 0, 5); // Понятное дело: получаем список ачивок
+		$achHTML = '';
+
+		foreach ($achievements as $ach) {
+			$achHTML .= $a->getHTML($ach);
+		}
+
+		$privacy = json_decode($u['privacy'], TRUE);
+		// Собираем инфу о привязанном Steam-аккаунте, если он, конечно, есть
+		$steamID = isset($steamUser['uid']) ? $steamUser['uid'] : $u['steamid'];
+		// Profile
+		if ($steamID) $profile = $this->getSteam($steamID);
+		else $profile = FALSE;
+
+		$output = array(
+			  'email' => $u['email'] // Мыло
+			, 'nick' => $u['nick'] // Ник
+			, 'mcName' => $u['mcname'] // Имя в майнкрафте
+			, 'levelInfo' => $this->getLevelHTML($this->getLevel($u['exp'])) // Уровень учетки
+			, 'izum' => $u['izumko'] // Баланс изюма
+			, 'referrer' => $referrer // Пригласивший
+			, 'referral' => 'http://' . $_SERVER['HTTP_HOST'] . '/auth?action=reg&referrer=' . base64_encode($u['id'] . '_' . $u['nick']) // Реферральная ссылка
+			, 'steamID' => $steamID // Steam ID, C.O.
+			, 'achievements' => $achHTML // Последние 5 достижений
+			, 'privacy' => $privacy // Настройки приватности в виде ассоциативного массива
+		);
+
+		if ($profile) {
+			// Добавляем инфу от Steam если к нам привязан их акк
+			$output['steamName'] = $profile['response']['players'][0]['personaname'];
+			$output['steamURL'] = $profile['response']['players'][0]['profileurl'];
+			$output['avatar'] = $profile['response']['players'][0]['avatar'];
+		}
+
+		return $output;
+	}
+
+/**
+* 
 * Высчитать уровень по опыту, реюзабельность кода дофига
 * @param exp - Количество опыта
 * @return array - Уровень, количество экспы сверх уровня и требуемый опыт для получения следующего
@@ -67,6 +116,57 @@ class user {
 		);
 
 		return $ret;
+	}
+
+/**
+* 
+* Получение информации о юзере
+* @param user - ник или почта юзера
+* @return array - инфа о юзере
+* 
+**/
+	public function getSteam($steamID) {
+		$profile_str = file_get_contents('http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=0BE85074D210A01F70B48205C44D1D56&steamids=' . $steamID);
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		/////////////////////////////////////Нужно будет обязательно после регистрации домена получить API-Key для стима//////////////////////////////////////
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+		$profile = json_decode($profile_str, TRUE);
+		// Вот эта строка - и есть заглушка на случай если Steam недоступен
+		if (!isset($profile['response']['players'][0])) $profile = array('response'=> array('players' => array(0 => array("personaname" => "Dummy", "profileurl" => "http://google.com", "avatar" => "http://placehold.it/32x32"))));
+
+		return $profile;
+	}
+
+/**
+* 
+* Получение информации о юзере
+* @param user - ник или почта юзера
+* @return array - инфа о юзере
+* 
+**/
+	public function getLevelHTML($levelArr) {
+
+		if ($levelArr['level'] < 70) {
+			$percent = floor($levelArr['exp'] / $levelArr['need'] * 100);
+			$signature = $levelArr['exp'] . ' / ' . $levelArr['need'] . ' exp (' . $percent . '%)';
+
+		} else {
+			$percent = 100;
+			$signature = $levelArr['exp'] . ' exp';
+		}
+
+		$output = '
+			<div class="level">' . $levelArr['level'] . '</div>
+			<div class="exp">
+				' . $signature . '
+				<div class="expBarEmpty"></div>
+				<div class="expBarFull" style="width: ' . (int)$percent*2 . 'px"></div>
+			</div>';
+
+		return $output;
 	}
 
 }
