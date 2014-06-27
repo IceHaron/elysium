@@ -17,9 +17,8 @@ class user {
 * Получаем инфу о пользователе и запиливаем ее в параметр класса
 * 
 **/
-	public function user($id) {
-
-		$this->info = $this->getInfo($id);
+	public function user($id = '') {
+		if ($id != '') $this->info = $this->getInfo($id);
 	}
 
 /**
@@ -35,8 +34,10 @@ class user {
 		$q = "SELECT * FROM `ololousers` WHERE `id` = $user OR `nick` = '$user' OR `email` = $user";
 		$r = $db->query($q);
 		// Убираем пароль из массива, защита дохера
-		unset ($r[0]['pw']);
-		return $r[0];
+		if (isset($r[0]['pw'])) {
+			unset ($r[0]['pw']);
+			return $r[0];
+		} else return array();
 	}
 
 /**
@@ -66,7 +67,8 @@ class user {
 		else $profile = FALSE;
 
 		$output = array(
-			  'email' => $u['email'] // Мыло
+			  'id' => $u['id'] // Айдишник
+			, 'email' => $u['email'] // Мыло
 			, 'nick' => $u['nick'] // Ник
 			, 'mcName' => $u['mcname'] // Имя в майнкрафте
 			, 'levelInfo' => $this->getLevelHTML($this->getLevel($u['exp'])) // Уровень учетки

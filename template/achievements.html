@@ -1,6 +1,6 @@
 <h1 id="pageCaption">Обзор достижений</h1>
 <?
-if (isset($_GET['compare'])) {
+if (isset($_GET['compare']) && !$nouser) {
 	$his = $user->getInfo($_GET['compare']);
 	echo '
 		<div class="achCompHeaderHis">Достижения игрока ' . $his['nick'] . '</div>
@@ -20,14 +20,14 @@ if (isset($_GET['compare'])) {
 			echo $a->getHTML($ach, $cid);
 		}
 
-		if (!isset($_GET['compare'])) echo '
+		if (!isset($_GET['compare']) || !isset($cid)) echo '
 			<div class="achHoldersFill" style="width: ' . $ach['perc'] * 2 . 'px;">
 				<div class="achHolders">
 					<span class="achPercTitle">' . $ach['perc'] . '% игроков получили это достижение</span>
 				</div>
 			</div>
-			<div class="clear"></div>
-		</div>';
+			<div class="clear"></div>';
+		echo '</div>';
 	}
 	?>
 </div>

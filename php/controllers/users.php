@@ -1,23 +1,25 @@
 <?
-$referrer = $cid ? $user->info['referrer'] : '';
-if ($cid) $standing = 'reg';
-else $standing = 'all';
+$referrer = isset($cid) ? $user->info['referrer'] : '';
+$standing = 'all';
+$user = new user();
 
 if (isset($_GET['id'])) {
 	$info = $user->getFullInfo($_GET['id']);
 
-	if ($info['referrer']['id'] == $cid || $_GET['id'] == $user->info['referrer']) $standing = 'friends';
+	if (isset($cid) && ($info['referrer']['id'] == $cid || $_GET['id'] == $user->info['referrer'])) $standing = 'friends';
+	else if (isset($cid)) $standing = 'reg';
 
 	$pagetype = 'unit';
 
 } else {
 
-	$q = "SELECT `id`, `nick`, `mcname`, `exp`, `steamid`, `email`, `privacy`, `referrer` FROM `ololousers` WHERE `id` != 0;";
+	$q = "SELECT `id`, `nick`, `mcname`, `exp`, `steamid`, `email`, `privacy`, `referrer` FROM `ololousers` WHERE `id` NOT IN (0,1);";
 	$r = $db->query($q);
 
 	foreach ($r as $k => $player) {
 
-		if ($player['referrer'] == $cid || $player['id'] == $referrer) $standing = 'friends';
+		if (isset($cid) && ($player['referrer'] == $cid || $player['id'] == $referrer)) $standing = 'friends';
+		else if (isset($cid)) $standing = 'reg';
 
 		$player['level'] = $level = $user->getLevel($player['exp']);
 		$player['levelInfo'] = $user->getLevelHTML($level);

@@ -210,39 +210,40 @@ class achievement {
 * 
 **/
 	public function prep($achID, $userID) {
-		$userInfo = $this->user->getInfo($userID);
-		$q = "SELECT `req` FROM `achievements` WHERE `id` = $achID";
-		$r = $this->db->query($q);
-		$requirement = $r[0]['req'];
+		if ($userID) {
+			$userInfo = $this->user->getInfo($userID);
+			$q = "SELECT `req` FROM `achievements` WHERE `id` = $achID";
+			$r = $this->db->query($q);
+			$requirement = $r[0]['req'];
 
-		switch ($achID) {
-			case 5: case 10: case 13: case 21: case 30: case 42: case 50: case 70: // Уровни
-				$l = $this->user->getLevel($userInfo['exp']);
-				$progress = $l['level'];
-			break;
+			switch ($achID) {
+				case 5: case 10: case 13: case 21: case 30: case 42: case 50: case 70: // Уровни
+					$l = $this->user->getLevel($userInfo['exp']);
+					$progress = $l['level'];
+				break;
 
-			case 4: case 6: case 7:
-				$q = "SELECT count(*) AS `count` FROM `ololousers` WHERE `referrer` = $userID";
-				$r = $this->db->query($q);
-				$progress = $r[0]['count'];
-			break;
+				case 4: case 6: case 7:
+					$q = "SELECT count(*) AS `count` FROM `ololousers` WHERE `referrer` = $userID";
+					$r = $this->db->query($q);
+					$progress = $r[0]['count'];
+				break;
 
-			case 100500: // Опыт
-				$progress = $userInfo['exp'];
-			break;
+				case 100500: // Опыт
+					$progress = $userInfo['exp'];
+				break;
 
-			default: $progress = 0;
-		}
+				default: $progress = 0;
+			}
 
-		if ($progress <= $requirement) $percentage = round($progress / $requirement * 100);
-		else $percentage = 100;
+			if ($progress <= $requirement) $percentage = round($progress / $requirement * 100);
+			else $percentage = 100;
 
-		$output = array(
-			  'perc' => $percentage
-			, 'req' => $requirement
-			, 'prog' => $progress
-		);
-		
+			$output = array(
+					'perc' => $percentage
+				, 'req' => $requirement
+				, 'prog' => $progress
+			);
+		} else $output = FALSE;
 		return $output;
 	}
 
@@ -262,7 +263,7 @@ class achievement {
 
 			if ($achInfo['type'] == 1) {
 				$progress = $this->prep($achInfo['id'], $userID);
-				$add .= '
+				if ($progress) $add .= '
 					<div class="achProgress">
 						Завершено на ' . $progress['perc'] . '% (' . $progress['prog'] . ' / ' . $progress['req'] . ')
 						<div class="expBarEmpty"></div>

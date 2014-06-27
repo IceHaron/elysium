@@ -56,7 +56,7 @@ if ($pagetype == 'unit') {
 		</tr>
 		<?
 		foreach ($playerList as $player) {
-			if ($cid == $player['id']) {
+			if (isset($cid) && $cid == $player['id']) {
 				$nick = $player['nick'] . ' (Вы)';
 				$color = 'style="background-color: lightgrey"';
 			} else {
