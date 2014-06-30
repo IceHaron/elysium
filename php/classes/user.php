@@ -19,19 +19,51 @@ class user {
 **/
 	public function user($id = '') {
 		if ($id != '') $this->info = $this->getInfo($id);
+		else if (isset($_SESSION['login'])) {
+			$clogin = $_SESSION['login'];
+			$cemail = $_SESSION['email'];
+			$logged = $this->logIn($clogin, $cemail);
+			if (!$logged) {
+				unset($_SESSION['login']);
+				unset($_SESSION['email']);
+				header("Location: /");
+			}
+		}
+	}
+
+/**
+* 
+* Авторизация
+* @param nick - ник юзверя
+* @param mail - мыло юзверя
+* @return bool - пропускаем или нет
+* 
+**/
+	public function logIn($nick, $mail) {
+
+		GLOBAL $db;
+		$q = "SELECT `id` FROM `ololousers` WHERE `nick` = '$nick' AND `email` = '$mail'";
+		$r = $db->query($q);
+		// Убираем пароль из массива, защита дохера
+		if (count($r) == 1 && gettype($r) == 'array') {
+			$this->info = $this->getInfo($r[0]['id']);
+			return true;
+
+		} else return false;
+		
 	}
 
 /**
 * 
 * Получение информации о юзере
-* @param user - ник или почта юзера
+* @param user - айдишник юзверя
 * @return array - инфа о юзере
 * 
 **/
 	public function getInfo($user) {
 
 		GLOBAL $db;
-		$q = "SELECT * FROM `ololousers` WHERE `id` = $user OR `nick` = '$user' OR `email` = $user";
+		$q = "SELECT * FROM `ololousers` WHERE `id` = '$user'";
 		$r = $db->query($q);
 		// Убираем пароль из массива, защита дохера
 		if (isset($r[0]['pw'])) {
@@ -49,7 +81,8 @@ class user {
 **/
 	public function getFullInfo($user) {
 		$u = $this->getInfo($user);
-		$referrer = $this->getInfo($u['referrer']);
+		if ($u['referrer'] != 1) $referrer = $this->getInfo($u['referrer']);
+		else $referrer = array('id' => 0, 'nick' => '');
 		$a = new achievement();
 		// $a->check($r[0]['id']);
 		$achievements = array_slice($a->getAch($u['id']), 0, 5); // Понятное дело: получаем список ачивок

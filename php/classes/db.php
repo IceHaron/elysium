@@ -75,7 +75,7 @@ class db {
 * 
 **/
 	public function escape($str='') {
-
+		$str = htmlspecialchars($str);
 		return mysqli_real_escape_string($this->link, $str);
 	}
 

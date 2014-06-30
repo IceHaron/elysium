@@ -41,32 +41,36 @@ if ($action == 'reg' && isset($_POST['nick'])) {
 	if (!isset($referrer)) $referrer = 1; // Если нас не приглашали, то пригласивший - Харон =)
 
 	// Защищаемся от инъекций и записываем в базу нового игрока
-	$email = $db->escape($_POST['email']);
-	$nick = $db->escape($_POST['nick']);
-	$pw = $db->escape($_POST['pw']);
-	$history = json_encode(array('created' => time()));
-	$privacy = json_encode(array('friends' => array('exp' => 0, 'ach' => 0, 'steam' => 0), 'reg' => array('exp' => 0, 'ach' => 0, 'steam' => 0), 'all' => array('exp' => 0, 'ach' => 0, 'steam' => 0)));
-	$q = "INSERT INTO `ololousers` (`nick`, `email`, `pw`, `history`, `referrer`, `privacy`) VALUES ('$nick', '$email', MD5('$pw'), '$history', '$referrer', '$privacy')";
-	$answer = $db->query($q);
-
-	// Обрабатываем ошибки
-	if (strpos($answer, 'Duplicate entry') !== FALSE){
-
-		if (strpos($answer, 'for key \'email') !== FALSE)
-			$registered = 'Вы не можете зарегистрировать несколько аккаунтов на один адрес электронной почты';
-
-		if (strpos($answer, 'for key \'nick') !== FALSE)
-			$registered = 'Такое имя уже используется';
-
+	$email = substr($db->escape($_POST['email']), 0, 45);
+	$nick = substr($db->escape($_POST['nick']), 0, 45);
+	if (preg_match('/^[^A-Za-z0-9]|[^0-9A-Za-z\-\_]+/', $nick)) {
+		$registered = 'Вы пытаетесь сломать наш сайт, но мы будем сопротивляться!';
 	} else {
-		// Проверяем регистрацию, получаем ачивки
-		$q = "SELECT `id` FROM `ololousers` WHERE `nick` = '$nick' AND `email` = '$email'";
-		$r = $db->query($q);
-		$a->earn($r[0]['id'], 15);
+		$pw = $db->escape($_POST['pw']);
+		$history = json_encode(array('created' => time()));
+		$privacy = json_encode(array('friends' => array('exp' => 0, 'ach' => 0, 'steam' => 0), 'reg' => array('exp' => 0, 'ach' => 0, 'steam' => 0), 'all' => array('exp' => 0, 'ach' => 0, 'steam' => 0)));
+		$q = "INSERT INTO `ololousers` (`nick`, `email`, `pw`, `history`, `referrer`, `privacy`) VALUES ('$nick', '$email', MD5('$pw'), '$history', '$referrer', '$privacy')";
+		$answer = $db->query($q);
 
-		if ($referrer != 1) $a->earn($r[0]['id'], 8);
-		if ($referrer == 1) $a->earn($r[0]['id'], 14);
-		$registered = 'Регистрация прошла успешно';
+		// Обрабатываем ошибки
+		if (strpos($answer, 'Duplicate entry') !== FALSE){
+
+			if (strpos($answer, 'for key \'email') !== FALSE)
+				$registered = 'Вы не можете зарегистрировать несколько аккаунтов на один адрес электронной почты';
+
+			if (strpos($answer, 'for key \'nick') !== FALSE)
+				$registered = 'Такое имя уже используется';
+
+		} else {
+			// Проверяем регистрацию, получаем ачивки
+			$q = "SELECT `id` FROM `ololousers` WHERE `nick` = '$nick' AND `email` = '$email'";
+			$r = $db->query($q);
+			$a->earn($r[0]['id'], 15);
+
+			if ($referrer != 1) $a->earn($r[0]['id'], 8);
+			if ($referrer == 1) $a->earn($r[0]['id'], 14);
+			$registered = 'Регистрация прошла успешно';
+		}
 	}
 
 /**
@@ -85,7 +89,6 @@ if ($action == 'reg' && isset($_POST['nick'])) {
 
 	else {
 		// Запихиваем данные в сессию и прыгаем в ЛК
-		$_SESSION['id'] = $answer[0]['id'];
 		$_SESSION['login'] = $answer[0]['nick'];
 		$_SESSION['email'] = $answer[0]['email'];
 		header("Location: /lk");

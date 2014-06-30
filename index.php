@@ -30,10 +30,10 @@ $db = new db(); // ...создаем экземпляр
 session_start();
 // Логинимся
 if (isset($_SESSION['login'])) {
-	$cid = $_SESSION['id'];
-	$clogin = $_SESSION['login'];
-	$cemail = $_SESSION['email'];
-	$user = new user($cid);
+	$user = new user();
+	$cid = $user->info['id'];
+	$clogin = $user->info['nick'];
+	$cemail = $user->info['email'];
 } else $clogin = '';
 
 // Определяем нужный модуль, переменная используется прямо в макете /templates/main.html

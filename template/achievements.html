@@ -3,8 +3,11 @@
 if (isset($_GET['compare']) && !$nouser) {
 	$his = $user->getInfo($_GET['compare']);
 	echo '
-		<div class="achCompHeaderHis">Достижения игрока ' . $his['nick'] . '</div>
-		<div class="achCompHeaderYours">Ваши достижения</div>';
+		<div>
+			<div class="achCompHeaderHis">Достижения игрока ' . $his['nick'] . '</div>
+			<div class="achCompHeaderYours">Ваши достижения</div>
+			<div class="clear"></div>
+		</div>';
 }
 ?>
 <div id="achMainCont">
