@@ -43,13 +43,17 @@ if ($action == 'reg' && isset($_POST['nick'])) {
 	// Защищаемся от инъекций и записываем в базу нового игрока
 	$email = substr($db->escape($_POST['email']), 0, 45);
 	$nick = substr($db->escape($_POST['nick']), 0, 45);
-	if (preg_match('/^[^A-Za-z0-9]|[^0-9A-Za-z\-\_]+/', $nick)) {
-		$registered = 'Вы пытаетесь сломать наш сайт, но мы будем сопротивляться!';
+	if (preg_match('/^[^A-Za-z0-9]|[^0-9A-Za-z\-\_]+/', $nick) || strlen($nick) <= 2) {
+		$registered = 'Вы пытаетесь сломать наш сайт, но мы будем сопротивляться! (Неправильный ник)';
+	} else if (!preg_match('/^(\w|\.|\-)+\@\w+\.\w+/', $email) || strlen($email) <= 5) {
+		$registered = 'Вы пытаетесь сломать наш сайт, но мы будем сопротивляться! (Неправильная почта)';
 	} else {
 		$pw = $db->escape($_POST['pw']);
 		$history = json_encode(array('created' => time()));
 		$privacy = json_encode(array('friends' => array('exp' => 0, 'ach' => 0, 'steam' => 0), 'reg' => array('exp' => 0, 'ach' => 0, 'steam' => 0), 'all' => array('exp' => 0, 'ach' => 0, 'steam' => 0)));
-		$q = "INSERT INTO `ololousers` (`nick`, `email`, `pw`, `history`, `referrer`, `privacy`) VALUES ('$nick', '$email', MD5('$pw'), '$history', '$referrer', '$privacy')";
+		$q = "
+			INSERT INTO `ololousers` (`nick`, `email`, `pw`, `history`, `referrer`, `privacy`)
+				VALUES ('$nick', '$email', MD5('$pw'), '$history', '$referrer', '$privacy')";
 		$answer = $db->query($q);
 
 		// Обрабатываем ошибки
@@ -65,6 +69,17 @@ if ($action == 'reg' && isset($_POST['nick'])) {
 			// Проверяем регистрацию, получаем ачивки
 			$q = "SELECT `id` FROM `ololousers` WHERE `nick` = '$nick' AND `email` = '$email'";
 			$r = $db->query($q);
+
+			$from = array('id' => $r[0]['id'], 'email' => 'ice-haron@rambler.ru', 'name' => 'Elysium Game');
+			$to = array('email' => $email, 'name' => $nick);
+			$mailMessage = "Здравствуйте, это письмо пришло вам потому что на этот почтовый адрес был зарегистрирован аккаунт на портале Elysium Game\r\n";
+			$mailMessage .= "Для подтверждения регистрации перейдите по следующей ссылке:\r\n";
+			$mailMessage .= "http://" . $_SERVER['HTTP_HOST'] . "/auth?action=confirm&code=" . base64_encode($r[0]['id'] . '_' . $email . '_' . $nick) . "\r\n";
+			$mailMessage .= "В случае, если регистрация не будет подтверждена, аккаунт будет удален через 48 часов.\r\n";
+			$mailMessage .= "Спасибо за то, что вы с нами!\r\n";
+
+			$mailer->send('register', $from, $to, 'Вы зарегистрировали аккаунт на портале Elysium Game', $mailMessage);
+
 			$a->earn($r[0]['id'], 15);
 
 			if ($referrer != 1) $a->earn($r[0]['id'], 8);
@@ -72,6 +87,18 @@ if ($action == 'reg' && isset($_POST['nick'])) {
 			$registered = 'Регистрация прошла успешно';
 		}
 	}
+
+/**
+* 
+* Подтверждение
+* 
+**/
+} else if ($action == 'confirm' && isset($_GET['code'])) {
+	$confirm = explode('_', base64_decode($_GET['code']));
+	$q = "SELECT * FROM `ololousers` WHERE `id` = {$confirm[0]} AND `email` = '{$confirm[1]}' AND `nick` = '{$confirm[2]}';";
+	$r = $db->query($q);
+	if (gettype($r) == 'array') $db->query("UPDATE `ololousers` SET `status` = 1 WHERE `id` = {$confirm[0]};");
+	$registered = 'Поздравляем, вы активировали свой аккаунт!';
 
 /**
 * 

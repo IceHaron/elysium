@@ -8,20 +8,12 @@ foreach ($_POST as $k => $v) {
 
 $message = '';
 
-$header="Date: ".date("D, j M Y G:i:s")." +0300\r\n";
-$header.="From: =?utf-8?Q?".str_replace("+","_",str_replace("%","=",urlencode('Elysium Game')))."?= <ice-haron@rambler.ru>\r\n";
-$header.="X-Mailer: The Bat! (v3.99.3) Professional\r\n";
-$header.="X-Priority: 3 (Normal)\r\n";
-$header.="Message-ID: <172562218.".date("YmjHis")."@rambler.ru>\r\n";
-
 switch ($_GET['action']) {
 
 	case 'refer':
-		$action = 'refer';
-		$userID = $input['user'];
-		$mailTo = $input['email'];
-		$mailFrom = $input['from'];
-
+		$from = array('id' => $input['user'], 'email' => $input['from'], 'name' => $input['me']);
+		$to = array('email' => $input['email'], 'name' => $input['name']);
+		$subject = $input['subject'];
 		$confirmSubject = 'Ваше приглашение на портал Elysium Game успешно отправлено';
 		
 		$confirmText = "То, что вы читаете это письмо, означает, что скорее всего, приглашение успешно дошло до получателя и все у нас функционирует нормально. Если приглашение вашему другу не пришло, попробуйте выполнить следующие действия:\r\n";
@@ -31,36 +23,20 @@ switch ($_GET['action']) {
 		$confirmText .= "Если все-таки приглашение не пришло, пожалуйста, свяжитесь с кем-нибудь из администрации в любой социальной сети или по почте <ice-haron@rambler.ru>.\r\n";
 		$confirmText .= "Спасибо за то, что вы с нами!\r\n";
 
-		$confirmHeader=$header."Reply-To: =?utf-8?Q?".str_replace("+","_",str_replace("%","=",urlencode($input['me'])))."?= <$mailFrom>\r\n";
-		$confirmHeader.="To: =?utf-8?Q?".str_replace("+","_",str_replace("%","=",urlencode($input['me'])))."?= <$mailFrom>\r\n";
-		$confirmHeader.="Subject: =?utf-8?Q?".str_replace("+","_",str_replace("%","=",urlencode($confirmSubject)))."?=\r\n";
-		$confirmHeader.="MIME-Version: 1.0\r\n";
-		$confirmHeader.="Content-Type: text/plain; charset=utf-8\r\n";
-		$confirmHeader.="Content-Transfer-Encoding: 8bit\r\n";
-
-		$subject = $input['subject'];
-		$messageText = "Привет, " . $input['name'] . ", хочу пригласить тебя зарегистрироваться на портале Elysium Game в качестве моего друга, подумай хорошенько, ведь за это и ты тоже получишь ништяки ;)\r\n";
+		$messageText = "Привет, " . $to['name'] . ", хочу пригласить тебя зарегистрироваться на портале Elysium Game в качестве моего друга, подумай хорошенько, ведь за это и ты тоже получишь ништяки ;)\r\n";
 		$messageText .= "Вот ссылка на регистрацию по моему приглашению: " . $input['link'] . "\r\n";
 		$messageText .= $input['message'] . "\r\n";
-		$messageText .= "С уважением, " . $input['me'] . ".\r\n";
-
-		$header.="Reply-To: =?utf-8?Q?".str_replace("+","_",str_replace("%","=",urlencode($input['me'])))."?= <$mailFrom>\r\n";
-		$header.="To: =?utf-8?Q?".str_replace("+","_",str_replace("%","=",urlencode($input['name'])))."?= <$mailTo>\r\n";
-		$header.="Subject: =?utf-8?Q?".str_replace("+","_",str_replace("%","=",urlencode($subject)))."?=\r\n";
-		$header.="MIME-Version: 1.0\r\n";
-		$header.="Content-Type: text/plain; charset=utf-8\r\n";
-		$header.="Content-Transfer-Encoding: 8bit\r\n";
-
-		$query = "INSERT INTO `mail` (`action`, `userid`, `to`, `text`) VALUES ('$action', $userID, '$mailTo', '$messageText');";
+		$messageText .= "С уважением, " . $from['name'] . ".\r\n";
 
 		// $message .= $messageText;
 	break;
 	default: $message .= 'w00t?';
 }
 
-send($mailFrom, $mailTo, $header, $messageText);
-send($mailFrom, $mailFrom, $confirmHeader, $confirmText);
-$db->query($query);
+$s = $mailer->send('refer', $from, $to, $subject, $messageText);
+$r = $mailer->send('', array('id' => '0', 'email' => 'ice-haron@rambler.ru', 'name' => 'Elysium Game'), $from, $confirmSubject, $confirmText);
+
+// var_dump($s, $r);
 
 // $message .= $data;
 $message .= 'Отправка письма прошла успешно!';

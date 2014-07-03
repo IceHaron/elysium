@@ -393,3 +393,8 @@ h4 {font-size:31px;color:#000;letter-spacing:-2px;margin-bottom:16px}
 	padding: 5px;
 	border: 1px solid grey;
 }
+#playerList .admin a {
+	/*font-weight: bold;*/
+	font-size: 18px;
+	color: red;
+}

@@ -59,6 +59,9 @@ if ($pagetype == 'unit') {
 			if (isset($cid) && $cid == $player['id']) {
 				$nick = $player['nick'] . ' (Вы)';
 				$color = 'style="background-color: lightgrey"';
+			} else if ($player['id'] <= 10) {
+				$nick = '<span class="admin"><a href="/users?id=' . $player['id'] . '">' . $player['nick'] . '</a></span>';
+				$color = '';
 			} else {
 				$nick = '<a href="/users?id=' . $player['id'] . '">' . $player['nick'] . '</a>';
 				$color = '';

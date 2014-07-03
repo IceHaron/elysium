@@ -22,10 +22,12 @@ $gentoo = status($ip,25567);
 $postfix = '';
 
 // Подключаем классы...
-REQUIRE_ONCE('php/classes/db.php'); // ...для работы с базой
 REQUIRE_ONCE('php/classes/achievement.php'); // ...для работы с ачивками
+REQUIRE_ONCE('php/classes/db.php'); // ...для работы с базой
+REQUIRE_ONCE('php/classes/mail.php'); // ...для почтамта
 REQUIRE_ONCE('php/classes/user.php'); // ...для работы с пользователями
 $db = new db(); // ...создаем экземпляр
+$mailer = new mail(); // ...создаем экземпляр
 
 session_start();
 // Логинимся

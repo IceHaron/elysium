@@ -11,7 +11,10 @@ if (!$_POST) {
 
 } else if (isset($_POST['was']) && isset($_POST['want'])) {
 	// Если с постом, дак еще и с пополнением, то ты знаешь, что делать.
-	$amount = (int)$_POST['was'] + (int)$_POST['want'];
+	if ((int)$_POST['want'] > 99999) $want = 99999;
+	else $want = (int)$_POST['want'];
+
+	$amount = (int)$_POST['was'] + $want;
 	$q = "UPDATE `ololousers` SET `izumko` = $amount WHERE `id` = {$user->info['id']}";
 	$r = $db->query($q);
 

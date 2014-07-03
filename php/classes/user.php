@@ -44,7 +44,7 @@ class user {
 		GLOBAL $db;
 		$q = "SELECT `id` FROM `ololousers` WHERE `nick` = '$nick' AND `email` = '$mail'";
 		$r = $db->query($q);
-		// Убираем пароль из массива, защита дохера
+
 		if (count($r) == 1 && gettype($r) == 'array') {
 			$this->info = $this->getInfo($r[0]['id']);
 			return true;
