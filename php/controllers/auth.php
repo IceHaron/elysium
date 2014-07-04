@@ -6,7 +6,9 @@
 **/
 
 $action = $_GET['action'];
-$registered = '';
+$output = '';
+$registered = FALSE;
+$location = '';
 $message = '';
 $a = new achievement();
 
@@ -44,9 +46,9 @@ if ($action == 'reg' && isset($_POST['nick'])) {
 	$email = substr($db->escape($_POST['email']), 0, 45);
 	$nick = substr($db->escape($_POST['nick']), 0, 45);
 	if (preg_match('/^[^A-Za-z0-9]|[^0-9A-Za-z\-\_]+/', $nick) || strlen($nick) <= 2) {
-		$registered = 'Вы пытаетесь сломать наш сайт, но мы будем сопротивляться! (Неправильный ник)';
+		$output = 'Вы пытаетесь сломать наш сайт, но мы будем сопротивляться! (Неправильный ник)';
 	} else if (!preg_match('/^(\w|\.|\-)+\@\w+\.\w+/', $email) || strlen($email) <= 5) {
-		$registered = 'Вы пытаетесь сломать наш сайт, но мы будем сопротивляться! (Неправильная почта)';
+		$output = 'Вы пытаетесь сломать наш сайт, но мы будем сопротивляться! (Неправильная почта)';
 	} else {
 		$pw = $db->escape($_POST['pw']);
 		$history = json_encode(array('created' => time()));
@@ -60,10 +62,10 @@ if ($action == 'reg' && isset($_POST['nick'])) {
 		if (strpos($answer, 'Duplicate entry') !== FALSE){
 
 			if (strpos($answer, 'for key \'email') !== FALSE)
-				$registered = 'Вы не можете зарегистрировать несколько аккаунтов на один адрес электронной почты';
+				$output = 'Вы не можете зарегистрировать несколько аккаунтов на один адрес электронной почты';
 
 			if (strpos($answer, 'for key \'nick') !== FALSE)
-				$registered = 'Такое имя уже используется';
+				$output = 'Такое имя уже используется';
 
 		} else {
 			// Проверяем регистрацию, получаем ачивки
@@ -74,7 +76,7 @@ if ($action == 'reg' && isset($_POST['nick'])) {
 			$to = array('email' => $email, 'name' => $nick);
 			$mailMessage = "Здравствуйте, это письмо пришло вам потому что на этот почтовый адрес был зарегистрирован аккаунт на портале Elysium Game\r\n";
 			$mailMessage .= "Для подтверждения регистрации перейдите по следующей ссылке:\r\n";
-			$mailMessage .= "http://" . $_SERVER['HTTP_HOST'] . "/auth?action=confirm&code=" . base64_encode($r[0]['id'] . '_' . $email . '_' . $nick) . "\r\n";
+			$mailMessage .= "http://" . $_SERVER['HTTP_HOST'] . "/auth?action=confirm&code=" . base64_encode($r[0]['id'] . '|' . $email . '|' . $nick) . "\r\n";
 			$mailMessage .= "В случае, если регистрация не будет подтверждена, аккаунт будет удален через 48 часов.\r\n";
 			$mailMessage .= "Спасибо за то, что вы с нами!\r\n";
 
@@ -84,7 +86,9 @@ if ($action == 'reg' && isset($_POST['nick'])) {
 
 			if ($referrer != 1) $a->earn($r[0]['id'], 8);
 			if ($referrer == 1) $a->earn($r[0]['id'], 14);
-			$registered = 'Регистрация прошла успешно';
+			$output = 'Регистрация прошла успешно';
+			$registered = TRUE;
+			$location = '/auth?action=log';
 		}
 	}
 
@@ -94,11 +98,15 @@ if ($action == 'reg' && isset($_POST['nick'])) {
 * 
 **/
 } else if ($action == 'confirm' && isset($_GET['code'])) {
-	$confirm = explode('_', base64_decode($_GET['code']));
+	$confirm = explode('|', base64_decode($_GET['code']));
 	$q = "SELECT * FROM `ololousers` WHERE `id` = {$confirm[0]} AND `email` = '{$confirm[1]}' AND `nick` = '{$confirm[2]}';";
 	$r = $db->query($q);
-	if (gettype($r) == 'array') $db->query("UPDATE `ololousers` SET `status` = 1 WHERE `id` = {$confirm[0]};");
-	$registered = 'Поздравляем, вы активировали свой аккаунт!';
+
+	if (gettype($r) == 'array') {
+		$db->query("UPDATE `ololousers` SET `status` = 1 WHERE `id` = {$confirm[0]};");
+		$output = 'Поздравляем, вы активировали свой аккаунт!';
+		$location = '/auth?action=log';
+	} else $output = 'Что-то пошло не так.';
 
 /**
 * 
@@ -109,16 +117,22 @@ if ($action == 'reg' && isset($_POST['nick'])) {
 	// Защищаемся, проверяем валидность данных
 	$login = $db->escape($_POST['login']);
 	$pw = $db->escape($_POST['pw']);
-	$q = "SELECT `id`, `email`, `nick` FROM `ololousers` WHERE (`nick` = '$login' OR `email` = '$login') AND `pw` = MD5('$pw')";
+	$q = "SELECT `id`, `email`, `nick`, `status` FROM `ololousers` WHERE (`nick` = '$login' OR `email` = '$login') AND `pw` = MD5('$pw')";
 	$answer = $db->query($q);
 
-	if ($answer === NULL) $registered = 'Не найдено такой комбинации логина/почты и пароля'; // Нутыпонил
+	if ($answer === NULL) $output = 'Не найдено такой комбинации логина/почты и пароля'; // Нутыпонил
 
-	else {
+	else if ($answer[0]['status'] == '0') {
+
+		$output = 'Ваш аккаунт не активирован, сперва активируйте его. Письмо со ссылкой на активацию отправлено на вашу электронную почту, если же письма нет, напишите нам с указанного вами адреса. <a href="mailto:ice-haron@rambler.ru?subject=Не%20могу%20активировать%20аккаунт&body=Мой%20ник%20' . $answer[0]['nick'] . '">Вот на этот адрес</a>';
+
+	} else {
 		// Запихиваем данные в сессию и прыгаем в ЛК
 		$_SESSION['login'] = $answer[0]['nick'];
 		$_SESSION['email'] = $answer[0]['email'];
-		header("Location: /lk");
+		$output = 'Вы успешно авторизовались';
+		$location = '/lk';
+		$registered = TRUE;
 	}
 
 /**
@@ -131,7 +145,8 @@ if ($action == 'reg' && isset($_POST['nick'])) {
 	setcookie('login', NULL);
 	unset($_SESSION['login']);
 	unset($_SESSION['email']);
-	header("Location: /");
+	$location = '/';
+	header("Location: " . $location);
 
 /**
 * 
@@ -158,6 +173,8 @@ if ($action == 'reg' && isset($_POST['nick'])) {
 	} else {
 		$message = "Неверно указан старый пароль";
 	}
+
+	$location = '/lk';
 
 /**
 * 
@@ -202,6 +219,8 @@ if ($action == 'reg' && isset($_POST['nick'])) {
 
 	} else $message = "К вашей учетной записи уже привязан SteamID, сначала следует его отвязать";
 
+	$location = '/lk';
+
 /**
 * 
 * Отвязка Steam
@@ -245,6 +264,26 @@ if ($action == 'reg' && isset($_POST['nick'])) {
 	$privstr = json_encode($privacy);
 	$q = "UPDATE `ololousers` SET `privacy` = '$privstr' WHERE `id` = {$user->info['id']}";
 	$r = $db->query($q);
+	$location = '/lk';
+
+
+} else if ($action == 'send') {
+	$q = "SELECT `id`, `nick`, `email` FROM `ololousers`";
+	$r = $db->query($q);
+	$res = '';
+	foreach ($r as $recipient) {
+		$mail = "Здравствуйте, вы получили это письмо потому, что на этот адрес был зарегистрирован аккаунт на портале Elysium Game с ником {$recipient['nick']}.\r\nИзвещаем вас, что ваш аккаунт на данный момент является неактивированным и будет удален в день запуска нашего сервера, также, вы не можете авторизоваться на сайте. \r\n Для активации вашего аккаунта, вам нужно пройти по следующей ссылке:\r\n http://" . $_SERVER['HTTP_HOST'] . "/auth?action=confirm&code=" . base64_encode($recipient['id'] . '|' . $recipient['email'] . '|' . $recipient['nick']) . "\r\nСпасибо, что вы с нами!\r\nElysium Game.";
+		$from = array('id' => 0, 'email' => 'ice-haron@rambler.ru', 'name' => 'Elysium Game');
+		$to = array('email' => $recipient['email'], 'name' => $recipient['nick']);
+		$subject = 'Требуется активация аккаунта Elysium Game';
+		$res .= "Sending to: {$recipient['email']}\r\n";
+		$res .= $mailer->send('activation', $from, $to, $subject, $mail);
+		$res .= "\r\n";
+	}
+	echo '<pre>';
+	echo($res);
+	echo '</pre>';
+
 
 }
 ?>

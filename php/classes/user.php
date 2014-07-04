@@ -18,17 +18,25 @@ class user {
 * 
 **/
 	public function user($id = '') {
-		if ($id != '') $this->info = $this->getInfo($id);
-		else if (isset($_SESSION['login'])) {
+
+		if ($id != '') {
+			$this->info = $this->getInfo($id);
+			if ($this->info['status'] == '0') header("Location: /auth?action=off"); 
+
+		} else if (isset($_SESSION['login'])) {
 			$clogin = $_SESSION['login'];
 			$cemail = $_SESSION['email'];
 			$logged = $this->logIn($clogin, $cemail);
+
 			if (!$logged) {
 				unset($_SESSION['login']);
 				unset($_SESSION['email']);
 				header("Location: /");
-			}
+
+			} else if ($this->info['status'] == '0') header("Location: /auth?action=off");
+
 		}
+
 	}
 
 /**
