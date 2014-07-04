@@ -17,6 +17,7 @@ if (isset($_GET['id'])) {
 	$r = $db->query($q);
 
 	foreach ($r as $k => $player) {
+		$privacy = $player['privacy'];
 
 		if (isset($cid) && ($player['referrer'] == $cid || $player['id'] == $referrer)) $standing = 'friends';
 		else if (isset($cid)) $standing = 'reg';
@@ -25,7 +26,8 @@ if (isset($_GET['id'])) {
 		$player['levelInfo'] = $user->getLevelHTML($level);
 		$player['privacy'] = json_decode($player['privacy'], TRUE);
 
-		$playerList[$k] = $player;
+		if ($privacy != '{"friends":{"exp":0,"ach":0,"steam":0},"reg":{"exp":0,"ach":0,"steam":0},"all":{"exp":0,"ach":0,"steam":0}}')
+			$playerList[$k] = $player;
 	}
 	// var_dump($playerList);
 	$pagetype = 'list';
