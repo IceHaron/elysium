@@ -5,8 +5,7 @@
 * 
 **/
 
-$a = new achievement();
-$achievs = $a->getAll();
+$achievs = $achievement->getAll();
 
 if (isset($cid)) {
 	// Если залогинились, ставим флажок и модифицируем ачивки
@@ -24,4 +23,12 @@ if (isset($cid)) {
 } else {
 	// Если не залогинились, ставим другой флажок
 	$nouser = TRUE;
+
+	foreach ($achievs as $k => $ach) {
+		if ($ach['class'] == '2') $toDel[] = $k;
+		if ($ach['class'] == '1') $achievs[$k]['desc'] = '???';
+	}
+
+	if (isset($toDel)) foreach ($toDel as $del) unset($achievs[$del]);
+
 }

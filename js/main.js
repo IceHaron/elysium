@@ -79,6 +79,19 @@ $(document).ready(function(){
 		$(this).val(clear);
 	});
 
+	$('.diamond').dblclick(function() {
+		$.ajax({
+			  type: 'GET'
+			, url: '/ajax'
+			, data: {'mode': 'stealDiamond'}
+			, success: function(data) {
+				alert(data);
+				$('.diamond').remove();
+				$('.herobrine').attr('src','images/zomb_nodiamond.png');
+			}
+		});
+	});
+
 });
 
 /**

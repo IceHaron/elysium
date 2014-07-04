@@ -100,7 +100,7 @@ class achievement {
 
 			// Возвращаем код для отображения всплывающей ачивки
 			return '<script>showAchievement(' . $ach . ');</script>';
-		}
+		} else return FALSE;
 
 	}
 
@@ -126,6 +126,25 @@ class achievement {
 		krsort($outArr);
 
 		return $outArr;
+	}
+
+/**
+* 
+* Смотрим, есть ли определенное достижение у пользователя
+* @param userID - Айдишник пользователя
+* @param achID - Айдишник ачивки
+* @return bool - Наличие достижения у пользователя
+* 
+**/
+	public function look($userID, $achID) {
+
+		$q = "SELECT * FROM `user_achievs` WHERE `user` = $userID AND `achievement` = $achID";
+		$r = $this->db->query($q);
+
+		if (!$r) return FALSE;
+
+		else return TRUE;
+
 	}
 
 /**

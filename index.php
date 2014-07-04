@@ -38,6 +38,11 @@ if (isset($_SESSION['login'])) {
 	$cemail = $user->info['email'];
 } else $clogin = '';
 
+$achievement = new achievement(); // ...создаем экземпляр
+
+if (isset($cid)) $diamond = $achievement->look($cid, 17) ? FALSE : TRUE;
+else $diamond = TRUE;
+
 // Определяем нужный модуль, переменная используется прямо в макете /templates/main.html
 $module = preg_replace('/\/|\?.+$/', '', $_SERVER['REQUEST_URI']);
 if ($module == '') $module = 'news';

@@ -10,8 +10,7 @@ switch ($_GET['mode']) {
 
 	case 'achCheck':
 		// Просмотреть неполученные достижения
-		$ach = new achievement();
-		echo $ach->check();
+		echo $achievement->check();
 	break;
 
 	case 'getAchHtml':
@@ -28,6 +27,11 @@ switch ($_GET['mode']) {
 			</div>
 		</div>';
 		echo $output;
+	break;
+
+	case 'stealDiamond':
+		if (isset($cid)) $achievement->earn($cid, 17);
+		echo 'Diamond stolen! RUN!';
 	break;
 
 	default:

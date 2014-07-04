@@ -10,7 +10,6 @@ $output = '';
 $registered = FALSE;
 $location = '';
 $message = '';
-$a = new achievement();
 
 // Не, ну просто так мы сюда не попадаем, а большинство действий записываются в историю в базу, так что первы делом получаем историю, если мы конечно залогинены
 if (isset($_POST) && isset($cemail) && isset($clogin)) {
@@ -82,10 +81,10 @@ if ($action == 'reg' && isset($_POST['nick'])) {
 
 			$mailer->send('register', $from, $to, 'Вы зарегистрировали аккаунт на портале Elysium Game', $mailMessage);
 
-			$a->earn($r[0]['id'], 15);
+			$achievement->earn($r[0]['id'], 15);
 
-			if ($referrer != 1) $a->earn($r[0]['id'], 8);
-			if ($referrer == 1) $a->earn($r[0]['id'], 14);
+			if ($referrer != 1) $achievement->earn($r[0]['id'], 8);
+			if ($referrer == 1) $achievement->earn($r[0]['id'], 14);
 			$output = 'Регистрация прошла успешно';
 			$registered = TRUE;
 			$location = '/auth?action=log';
@@ -207,7 +206,7 @@ if ($action == 'reg' && isset($_POST['nick'])) {
 				if($r) $message = "Привязка прошла успешно";
 
 				else $message = "something broken";
-				$a->earn($id,1);
+				$achievement->earn($id,1);
 
 			} else $message = "Сервис uLogin вернул пустой ID, мы не знаем, почему."; // Shit happens
 
@@ -243,7 +242,7 @@ if ($action == 'reg' && isset($_POST['nick'])) {
 		if($r) $message = "Аккаунт Steam успешно отвязан";
 
 		else $message = "something broken"; // Shit happens sometimes again
-		$a->earn($id,2);
+		$achievement->earn($id,2);
 	// Ну это уже против утырков
 	} else $message = "По какой-то причине привязанный к вашей учетной записи аккаунт Steam отличается от того, который вы пытаетесь отвязать";
 
@@ -268,7 +267,7 @@ if ($action == 'reg' && isset($_POST['nick'])) {
 
 } else if ($action == 'send') {
 	$output = 'Саусэм глюпи, Уася?';
-	if (isset($cid)) $a->earn($cid, 18);
+	if (isset($cid)) $achievement->earn($cid, 18);
 /*
 	$q = "SELECT `id`, `nick`, `email` FROM `ololousers`";
 	$r = $db->query($q);

@@ -100,7 +100,7 @@
 <div id="shadow"></div>
 <div id="popupAch"></div>
 <div id="banlist" class="modal">
-	<center><h3>Список Банов</h3></center>
+	<h3>Список Банов</h3>
 	<script type="text/javascript">
 		(function($) {
 			$.fn.textDropShadow = function(ShdwClass){
@@ -110,7 +110,7 @@
 		})(jQuery);
 	</script>
 	<h2 class="shadowed header"></h2>
-	<center><p style="color:gray">(разбаненные игроки здесь не отображаются)</p></center>
+	<p style="color:gray">(разбаненные игроки здесь не отображаются)</p>
 </div>
 <div style='display:none'>
 	<img src='images/x.png' alt='' />
@@ -199,7 +199,13 @@
 			</div>
 			<!-- <script type='text/javascript' src='js/ban.js'></script>
 			<script type='text/javascript' src='js/banb.js'></script> Хер его знает, зачем это надо -->
-			<div class="extra"><img src="images/zomb.png" alt="" /></div>
+			<? if ($diamond && isset($cid)) { ?>
+				<div class="extra"><img src="images/zomb.png" alt="" class="herobrine" /><div class="diamond"></div></div>
+			<? } else if (!isset($cid)) { ?>
+				<div class="extra"><img src="images/zomb.png" alt="" class="herobrine" /></div>
+			<? } else { ?>
+				<div class="extra"><img src="images/zomb_nodiamond.png" alt="" class="herobrine" /></div>
+			<? } ?>
 			<!-- / Нижний блок -->
 
 			<!-- Подвал -->

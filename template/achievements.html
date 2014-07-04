@@ -15,12 +15,13 @@ if (isset($_GET['compare']) && !$nouser) {
 	foreach ($achievs as $ach) {
 		echo '<div>';
 
-		if ($nouser) echo $a->getHTML($ach);
+		if ($nouser) echo $achievement->getHTML($ach);
 
 		else {
 
-			if (isset($_GET['compare'])) echo $a->getHTML($ach, $_GET['compare']) . '<div style="width: 25px; height: 1px; float: left"></div>';
-			echo $a->getHTML($ach, $cid);
+			if (isset($_GET['compare']))
+				echo $achievement->getHTML($ach, $_GET['compare']) . '<div style="width: 25px; height: 1px; float: left"></div>';
+			echo $achievement->getHTML($ach, $cid);
 		}
 
 		if (!isset($_GET['compare']) || !isset($cid)) echo '
