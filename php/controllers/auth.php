@@ -266,8 +266,10 @@ if ($action == 'reg' && isset($_POST['nick'])) {
 	$r = $db->query($q);
 	$location = '/lk';
 
-
 } else if ($action == 'send') {
+	$output = 'Саусэм глюпи, Уася?';
+	if (isset($cid)) $a->earn($cid, 18);
+/*
 	$q = "SELECT `id`, `nick`, `email` FROM `ololousers`";
 	$r = $db->query($q);
 	$res = '';
@@ -283,7 +285,7 @@ if ($action == 'reg' && isset($_POST['nick'])) {
 	echo '<pre>';
 	echo($res);
 	echo '</pre>';
-
+*/
 
 }
 ?>
