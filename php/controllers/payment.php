@@ -12,6 +12,7 @@ if (!$_POST) {
 } else if (isset($_POST['was']) && isset($_POST['want'])) {
 	// Если с постом, дак еще и с пополнением, то ты знаешь, что делать.
 	if ((int)$_POST['want'] > 99999) $want = 99999;
+	else if ((int)$_POST['want'] < 100) $want = 100;
 	else $want = (int)$_POST['want'];
 
 	$amount = (int)$_POST['was'] + $want;

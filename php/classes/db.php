@@ -19,12 +19,8 @@ class db {
 **/
 	public function db() {
 
-		$server = "localhost";
-		$dbuser = "srv44030_elysium";
-		// $dbpass = "olokari";
-		$dbpass = "230105";
-		$dbname = "srv44030_elysium";
-
+		REQUIRE_ONCE('/settings.php');
+	
 		$link = mysqli_connect($server, $dbuser, $dbpass, $dbname);
 
 		if (!$link) {
