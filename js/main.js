@@ -66,6 +66,7 @@ $(document).ready(function(){
 		var repw = $('input[name="repw"]').val();
 		if (oldpw != '' && newpw != '' && newpw == repw)
 			$('#changePw').submit();
+		else alert("Неправильное подтверждение пароля!");
 	});
 
 	// При клике на поле с реферральной ссылкой, выделяем ее всю

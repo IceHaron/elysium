@@ -21,7 +21,7 @@ class user {
 
 		if ($id != '') {
 			$this->info = $this->getInfo($id);
-			if ($this->info['status'] == '0') header("Location: /auth?action=off"); 
+			if ($this->info['group'] == '0') header("Location: /auth?action=off"); 
 
 		} else if (isset($_SESSION['login'])) {
 			$clogin = $_SESSION['login'];
@@ -33,7 +33,7 @@ class user {
 				unset($_SESSION['email']);
 				header("Location: /");
 
-			} else if ($this->info['status'] == '0') header("Location: /auth?action=off");
+			} else if ($this->info['group'] == '0') header("Location: /auth?action=off");
 
 		}
 

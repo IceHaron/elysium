@@ -1,7 +1,7 @@
 /* Теги */
 * {margin:0;padding:0}
 html {min-width:920px}
-body {background:#2f373a;font-family: 'Cuprum', arial, serif;font-size:100%;line-height:1em;color:#4e4e4e;min-width:920px;border-top:10px solid #0c0e0e}
+body {background:#2f373a;font-family: 'Cuprum', arial, serif;font-size:100%;line-height:1em;color:#555;min-width:920px;border-top:10px solid #0c0e0e}
 /*object {vertical-align:top;outline:none}*/
 input, textarea, select {font-family: 'Cuprum', arial, serif;font-size:1.2em;vertical-align:middle;font-weight:normal}
 fieldset {border:0}

@@ -13,7 +13,7 @@ if (isset($_GET['id'])) {
 
 } else {
 
-	$q = "SELECT `id`, `nick`, `mcname`, `exp`, `steamid`, `email`, `privacy`, `referrer` FROM `ololousers` WHERE `id` NOT IN (0);";
+	$q = "SELECT `id`, `nick`, `mcname`, `exp`, `steamid`, `email`, `privacy`, `referrer`, `group` FROM `ololousers` WHERE `group` NOT IN (0, 100);";
 	$r = $db->query($q);
 
 	foreach ($r as $k => $player) {

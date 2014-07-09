@@ -21,6 +21,7 @@ $backtrack = status($ip,25566);
 $gentoo = status($ip,25567);
 $postfix = '';
 
+REQUIRE_ONCE('settings.php');
 // Подключаем классы...
 REQUIRE_ONCE('php/classes/achievement.php'); // ...для работы с ачивками
 REQUIRE_ONCE('php/classes/db.php'); // ...для работы с базой

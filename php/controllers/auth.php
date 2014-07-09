@@ -46,7 +46,7 @@ if ($action == 'reg' && isset($_POST['nick'])) {
 	$nick = substr($db->escape($_POST['nick']), 0, 45);
 	if (preg_match('/^[^A-Za-z0-9]|[^0-9A-Za-z\-\_]+/', $nick) || strlen($nick) <= 2) {
 		$output = 'Вы пытаетесь сломать наш сайт, но мы будем сопротивляться! (Неправильный ник)';
-	} else if (!preg_match('/^(\w|\.|\-)+\@\w+\.\w+/', $email) || strlen($email) <= 5) {
+	} else if (!preg_match('/^(\w|\.|\-|\_)+\@\w+\.\w+/', $email) || strlen($email) <= 5) {
 		$output = 'Вы пытаетесь сломать наш сайт, но мы будем сопротивляться! (Неправильная почта)';
 	} else {
 		$pw = $db->escape($_POST['pw']);
@@ -71,7 +71,7 @@ if ($action == 'reg' && isset($_POST['nick'])) {
 			$q = "SELECT `id` FROM `ololousers` WHERE `nick` = '$nick' AND `email` = '$email'";
 			$r = $db->query($q);
 
-			$from = array('id' => $r[0]['id'], 'email' => 'ice-haron@rambler.ru', 'name' => 'Elysium Game');
+			$from = array('id' => $r[0]['id'], 'email' => 'ice_haron@mail.ru', 'name' => 'Elysium Game');
 			$to = array('email' => $email, 'name' => $nick);
 			$mailMessage = "Здравствуйте, это письмо пришло вам потому что на этот почтовый адрес был зарегистрирован аккаунт на портале Elysium Game\r\n";
 			$mailMessage .= "Для подтверждения регистрации перейдите по следующей ссылке:\r\n";
@@ -102,7 +102,7 @@ if ($action == 'reg' && isset($_POST['nick'])) {
 	$r = $db->query($q);
 
 	if (gettype($r) == 'array') {
-		$db->query("UPDATE `ololousers` SET `status` = 1 WHERE `id` = {$confirm[0]};");
+		$db->query("UPDATE `ololousers` SET `group` = 1 WHERE `id` = {$confirm[0]};");
 		$output = 'Поздравляем, вы активировали свой аккаунт!';
 		$location = '/auth?action=log';
 	} else $output = 'Что-то пошло не так.';
@@ -116,14 +116,14 @@ if ($action == 'reg' && isset($_POST['nick'])) {
 	// Защищаемся, проверяем валидность данных
 	$login = $db->escape($_POST['login']);
 	$pw = $db->escape($_POST['pw']);
-	$q = "SELECT `id`, `email`, `nick`, `status` FROM `ololousers` WHERE (`nick` = '$login' OR `email` = '$login') AND `pw` = MD5('$pw')";
+	$q = "SELECT `id`, `email`, `nick`, `group` FROM `ololousers` WHERE (`nick` = '$login' OR `email` = '$login') AND `pw` = MD5('$pw')";
 	$answer = $db->query($q);
 
 	if ($answer === NULL) $output = 'Не найдено такой комбинации логина/почты и пароля'; // Нутыпонил
 
-	else if ($answer[0]['status'] == '0') {
+	else if ($answer[0]['group'] == '0') {
 
-		$output = 'Ваш аккаунт не активирован, сперва активируйте его. Письмо со ссылкой на активацию отправлено на вашу электронную почту, если же письма нет, напишите нам с указанного вами адреса. <a href="mailto:ice-haron@rambler.ru?subject=Не%20могу%20активировать%20аккаунт&body=Мой%20ник%20' . $answer[0]['nick'] . '">Вот на этот адрес</a>';
+		$output = 'Ваш аккаунт не активирован, сперва активируйте его. Письмо со ссылкой на активацию отправлено на вашу электронную почту, если же письма нет, напишите нам с указанного вами адреса. <a href="mailto:ice_haron@mail.ru?subject=Не%20могу%20активировать%20аккаунт&body=Мой%20ник%20' . $answer[0]['nick'] . '">Вот на этот адрес</a> (Менять что-либо в заголовке и тексте сообщения не рекомендуем.)';
 
 	} else {
 		// Запихиваем данные в сессию и прыгаем в ЛК
@@ -152,25 +152,32 @@ if ($action == 'reg' && isset($_POST['nick'])) {
 * Смена пароля
 * 
 **/
-} else if ($action == 'changepw' && isset($_POST['oldpw']) && isset($_POST['newpw'])) {
-	// Проверяем совпадение старого пароля, если все хорошо, пишем новый пароль
-	$q = "SELECT IF(MD5('{$_POST['oldpw']}') = `pw`, 1, 0) as `pass` FROM `ololousers` WHERE `id` = $cid";
-	$r = $db->query($q);
-	$pass = $r[0]['pass'];
-
-	if($pass) {
-		// Ну и конечно же, пишем в историю
-		$history['changedPw'][] = time();
-		$h = json_encode($history);
-		$q = "UPDATE `ololousers` SET `pw` = MD5('{$_POST['newpw']}'), `history` = '$h' WHERE `id` = $cid";
+} else if ($action == 'changepw' && isset($_POST['oldpw']) && isset($_POST['newpw']) && isset($_POST['repw'])) {
+	$oldpw = $db->escape($_POST['oldpw']);
+	$newpw = $db->escape($_POST['newpw']);
+	$repw = $db->escape($_POST['repw']);
+	if ($newpw == $repw) {
+		// Проверяем совпадение старого пароля, если все хорошо, пишем новый пароль
+		$q = "SELECT IF(MD5('{$oldpw}') = `pw`, 1, 0) as `pass` FROM `ololousers` WHERE `id` = $cid";
 		$r = $db->query($q);
+		$pass = $r[0]['pass'];
 
-		if($r) $message = "Пароль успешно изменен";
+		if($pass) {
+			// Ну и конечно же, пишем в историю
+			$history['changedPw'][] = time();
+			$h = json_encode($history);
+			$q = "UPDATE `ololousers` SET `pw` = MD5('{$newpw}'), `history` = '$h' WHERE `id` = $cid";
+			$r = $db->query($q);
 
-		else $message = "something broken";
+			if($r) $message = "Пароль успешно изменен";
 
+			else $message = "something broken";
+
+		} else {
+			$message = "Неверно указан старый пароль";
+		}
 	} else {
-		$message = "Неверно указан старый пароль";
+		$message = "Вы умудрились ввести неправильное подтверждение пароля";
 	}
 
 	$location = '/lk';
@@ -274,7 +281,7 @@ if ($action == 'reg' && isset($_POST['nick'])) {
 	$res = '';
 	foreach ($r as $recipient) {
 		$mail = "Здравствуйте, вы получили это письмо потому, что на этот адрес был зарегистрирован аккаунт на портале Elysium Game с ником {$recipient['nick']}.\r\nИзвещаем вас, что ваш аккаунт на данный момент является неактивированным и будет удален в день запуска нашего сервера, также, вы не можете авторизоваться на сайте. \r\n Для активации вашего аккаунта, вам нужно пройти по следующей ссылке:\r\n http://" . $_SERVER['HTTP_HOST'] . "/auth?action=confirm&code=" . base64_encode($recipient['id'] . '|' . $recipient['email'] . '|' . $recipient['nick']) . "\r\nСпасибо, что вы с нами!\r\nElysium Game.";
-		$from = array('id' => 0, 'email' => 'ice-haron@rambler.ru', 'name' => 'Elysium Game');
+		$from = array('id' => 0, 'email' => 'ice_haron@mail.ru', 'name' => 'Elysium Game');
 		$to = array('email' => $recipient['email'], 'name' => $recipient['nick']);
 		$subject = 'Требуется активация аккаунта Elysium Game';
 		$res .= "Sending to: {$recipient['email']}\r\n";

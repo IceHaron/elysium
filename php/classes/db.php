@@ -18,9 +18,7 @@ class db {
 * 
 **/
 	public function db() {
-
-		REQUIRE_ONCE('settings.php');
-	
+		GLOBAL $server, $dbuser, $dbpass, $dbname;
 		$link = mysqli_connect($server, $dbuser, $dbpass, $dbname);
 
 		if (!$link) {
