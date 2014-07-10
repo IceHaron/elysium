@@ -22,6 +22,7 @@ $gentoo = status($ip,25567);
 $postfix = '';
 
 REQUIRE_ONCE('settings.php');
+REQUIRE_ONCE('php/functions.php'); // самопальные функции
 // Подключаем классы...
 REQUIRE_ONCE('php/classes/achievement.php'); // ...для работы с ачивками
 REQUIRE_ONCE('php/classes/db.php'); // ...для работы с базой
@@ -46,9 +47,22 @@ else $diamond = TRUE;
 
 // Определяем нужный модуль, переменная используется прямо в макете /templates/main.html
 $module = preg_replace('/\/|\?.+$/', '', $_SERVER['REQUEST_URI']);
+
+if ($module == 'troll') {
+
+	if (!isset($cid) || $user->info['group'] != '777') $module = '404';
+	else {
+		REQUIRE_ONCE("php/controllers/$module.php");
+		REQUIRE_ONCE("template/$module.html");
+		exit;
+	}
+
+}
+
 if ($module == '') $module = 'news';
 // Подгружаем контроллер, если таковой существует
 if (glob("php/controllers/$module.php")) INCLUDE_ONCE("php/controllers/$module.php");
+else if (!glob("template/$module.html")) $module = '404';
 
 // Подключаем основной макет
 if (strpos($_SERVER['REQUEST_URI'], '/ajax') === FALSE) REQUIRE_ONCE('template/main.html');

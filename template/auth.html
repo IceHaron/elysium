@@ -1,4 +1,4 @@
-<? echo '<h1>' . $output . '</h1>';
+<? echo $output;
 
 	 if ($action == 'reg' && !$registered) { ?>
 	<form method="POST">
@@ -18,8 +18,6 @@
 
 <? } else if ($registered) { ?>
 	<!-- <h4><?=$message?></h4> -->
-	<span>Страница будет перезагружена, если уже вечереет, но этого не произошло, ткните <a href="<?=$location?>">сюда</a></span>
-
 <? } else if ($action == 'log' && !$registered) { ?>
 	<form method="POST">
 
@@ -28,6 +26,7 @@
 		<input type="password" name="pw" placeholder="Password">
 		<input type="submit" name="reg" value="Login">
 	</form>
+	<p><a href="/auth?action=reset">Забыл свой пароль</a></p>
 
 <? } else if ($action == 'off') { ?>
 	<span>Разлогиниваемся, ждите.</span>
@@ -35,7 +34,10 @@
 <? } else { ?>
 <!-- Это для всяких разных штук типа смены пароля и привязки/отвязки Steam -->
 <h4><?=$message?></h4>
-<span>Страница будет перезагружена, если уже вечереет, но этого не произошло, ткните <a href="<?=$location?>">сюда</a></span>
+
 <? } ?>
 
-<? if ($location != '') { ?><meta http-equiv="refresh" content="3; url=<?=$location?>"><? } ?>
+<? if ($location != '') { ?>
+	<span>Страница будет перезагружена, если уже вечереет, но этого не произошло, ткните <a href="<?=$location?>">сюда</a></span>
+	<meta http-equiv="refresh" content="3; url=<?=$location?>">
+<? } ?>

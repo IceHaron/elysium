@@ -205,25 +205,6 @@ class achievement {
 
 /**
 * 
-* Ну это зерофилл, что тут можно сказать?
-* @param str - строка/число
-* @param outLen - требуемая длина
-* @return string - отформатированная строка
-* 
-**/
-	public function zerofill($str, $outLen) {
-		$inpLen = strlen((string)$str);
-		$addLen = $outLen - $inpLen;
-		$addStr = '';
-		for ($i = 0; $i < $addLen; $i++) {
-			$addStr .= '0';
-		}
-		$addStr .= $str;
-		return $addStr;
-	}
-
-/**
-* 
 * Узнать готовность достижения
 * @param achID - айдишник достижения
 * 

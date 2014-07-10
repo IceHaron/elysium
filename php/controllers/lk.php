@@ -16,3 +16,5 @@ $translate = array(
 		, 'ach' => 'Достижения'
 		, 'steam' => 'Привязанный аккаунт Steam'
 	);
+
+purgeSteam();

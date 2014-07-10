@@ -11,18 +11,12 @@ $registered = FALSE;
 $location = '';
 $message = '';
 
-// Не, ну просто так мы сюда не попадаем, а большинство действий записываются в историю в базу, так что первы делом получаем историю, если мы конечно залогинены
-if (isset($_POST) && isset($cemail) && isset($clogin)) {
-	$h = $db->query("SELECT `history` FROM `ololousers` WHERE `email` = '$cemail' AND `nick` = '$clogin'");
-	$history = json_decode($h[0]['history'], TRUE); // Декодим историю в ассоциативный массив
-}
-
 /**
 * 
 * Регистрация
 * 
 **/
-if ($action == 'reg' && isset($_POST['nick'])) {
+if ($action == 'reg' && isset($_POST['nick']) && !isset($cid)) {
 
 	// Нас пригласили?
 	if (isset($_GET['referrer'])) {
@@ -44,10 +38,13 @@ if ($action == 'reg' && isset($_POST['nick'])) {
 	// Защищаемся от инъекций и записываем в базу нового игрока
 	$email = substr($db->escape($_POST['email']), 0, 45);
 	$nick = substr($db->escape($_POST['nick']), 0, 45);
+
 	if (preg_match('/^[^A-Za-z0-9]|[^0-9A-Za-z\-\_]+/', $nick) || strlen($nick) <= 2) {
 		$output = 'Вы пытаетесь сломать наш сайт, но мы будем сопротивляться! (Неправильный ник)';
+
 	} else if (!preg_match('/^(\w|\.|\-|\_)+\@\w+\.\w+/', $email) || strlen($email) <= 5) {
 		$output = 'Вы пытаетесь сломать наш сайт, но мы будем сопротивляться! (Неправильная почта)';
+
 	} else {
 		$pw = $db->escape($_POST['pw']);
 		$history = json_encode(array('created' => time()));
@@ -84,6 +81,7 @@ if ($action == 'reg' && isset($_POST['nick'])) {
 			$achievement->earn($r[0]['id'], 15);
 
 			if ($referrer != 1) $achievement->earn($r[0]['id'], 8);
+
 			if ($referrer == 1) $achievement->earn($r[0]['id'], 14);
 			$output = 'Регистрация прошла успешно';
 			$registered = TRUE;
@@ -93,7 +91,7 @@ if ($action == 'reg' && isset($_POST['nick'])) {
 
 /**
 * 
-* Подтверждение
+* Подтверждение 
 * 
 **/
 } else if ($action == 'confirm' && isset($_GET['code'])) {
@@ -102,9 +100,21 @@ if ($action == 'reg' && isset($_POST['nick'])) {
 	$r = $db->query($q);
 
 	if (gettype($r) == 'array') {
-		$db->query("UPDATE `ololousers` SET `group` = 1 WHERE `id` = {$confirm[0]};");
-		$output = 'Поздравляем, вы активировали свой аккаунт!';
-		$location = '/auth?action=log';
+
+		if ($r[0]['group'] != '0') {
+			$output = 'Ваш аккаунт уже был активирован ранее';
+
+		} else {
+			$r = $db->query("UPDATE `ololousers` SET `group` = 1 WHERE `id` = {$confirm[0]};");
+
+			if ($r) {
+				$output = 'Поздравляем, вы активировали свой аккаунт!';
+				$location = '/auth?action=log';
+				writeHistory($confirm[0], 'activated', time());
+			}
+
+		}
+
 	} else $output = 'Что-то пошло не так.';
 
 /**
@@ -112,7 +122,7 @@ if ($action == 'reg' && isset($_POST['nick'])) {
 * Авторизация
 * 
 **/
-} else if ($action == 'log' && isset($_POST['login'])) {
+} else if ($action == 'log' && isset($_POST['login']) && !isset($cid)) {
 	// Защищаемся, проверяем валидность данных
 	$login = $db->escape($_POST['login']);
 	$pw = $db->escape($_POST['pw']);
@@ -129,7 +139,7 @@ if ($action == 'reg' && isset($_POST['nick'])) {
 		// Запихиваем данные в сессию и прыгаем в ЛК
 		$_SESSION['login'] = $answer[0]['nick'];
 		$_SESSION['email'] = $answer[0]['email'];
-		$output = 'Вы успешно авторизовались';
+		$output = '<h1>Вы успешно авторизовались</h1>';
 		$location = '/lk';
 		$registered = TRUE;
 	}
@@ -156,26 +166,28 @@ if ($action == 'reg' && isset($_POST['nick'])) {
 	$oldpw = $db->escape($_POST['oldpw']);
 	$newpw = $db->escape($_POST['newpw']);
 	$repw = $db->escape($_POST['repw']);
+
 	if ($newpw == $repw) {
 		// Проверяем совпадение старого пароля, если все хорошо, пишем новый пароль
-		$q = "SELECT IF(MD5('{$oldpw}') = `pw`, 1, 0) as `pass` FROM `ololousers` WHERE `id` = $cid";
+		$q = "SELECT IF(MD5('$oldpw') = `pw`, 1, 0) as `pass` FROM `ololousers` WHERE `id` = $cid";
 		$r = $db->query($q);
 		$pass = $r[0]['pass'];
 
 		if($pass) {
-			// Ну и конечно же, пишем в историю
-			$history['changedPw'][] = time();
-			$h = json_encode($history);
-			$q = "UPDATE `ololousers` SET `pw` = MD5('{$newpw}'), `history` = '$h' WHERE `id` = $cid";
+			$q = "UPDATE `ololousers` SET `pw` = MD5('$newpw') WHERE `id` = $cid";
 			$r = $db->query($q);
 
-			if($r) $message = "Пароль успешно изменен";
+			if($r) {
+				$message = "Пароль успешно изменен";
+				// Ну и конечно же, пишем в историю
+				writeHistory($cid, 'changedPw', time());
 
-			else $message = "something broken";
+			} else $message = "something broken";
 
 		} else {
 			$message = "Неверно указан старый пароль";
 		}
+
 	} else {
 		$message = "Вы умудрились ввести неправильное подтверждение пароля";
 	}
@@ -204,15 +216,15 @@ if ($action == 'reg' && isset($_POST['nick'])) {
 
 			if ($steamUser != '') {
 				// Если акк ни к кому не привязан, и авторизация в Steam удалась, то привязываемся и пишем в историю
-				$history['steamBindingSet'][$steamUser['uid']] = time();
-				$h = json_encode($history);
+				writeHistory($id, 'steamBindingSet', array($steamUser['uid'] => time()));
 				$exp += 500;
-				$q = "UPDATE `ololousers` SET `steamid` = '{$steamUser['uid']}', `history` = '$h', `exp` = $exp WHERE `id` = $cid";
+				$q = "UPDATE `ololousers` SET `steamid` = '{$steamUser['uid']}', `exp` = $exp WHERE `id` = $cid";
 				$r = $db->query($q);
 
 				if($r) $message = "Привязка прошла успешно";
 
 				else $message = "something broken";
+
 				$achievement->earn($id,1);
 
 			} else $message = "Сервис uLogin вернул пустой ID, мы не знаем, почему."; // Shit happens
@@ -240,17 +252,19 @@ if ($action == 'reg' && isset($_POST['nick'])) {
 		// Если мы действительно хотим отвязать тот айдишник, который привязан, то все хорошо
 		$exp = $r[0]['exp'];
 		$id = $r[0]['id'];
-		$history['steamBindingBroken'][ $_POST['unbindID'] ] = time();
-		$h = json_encode($history);
+		$unbindID = $db->escape($_POST['unbindID']);
+		writeHistory($id, 'steamBindingBroken', array($unbindID => time()));
 		$exp -= 500;
-		$q = "UPDATE `ololousers` SET `steamid` = NULL, `history` = '$h', `exp` = $exp WHERE `id` = $cid";
+		$q = "UPDATE `ololousers` SET `steamid` = NULL, `exp` = $exp WHERE `id` = $cid";
 		$r = $db->query($q);
 
 		if($r) $message = "Аккаунт Steam успешно отвязан";
 
 		else $message = "something broken"; // Shit happens sometimes again
+
 		$achievement->earn($id,2);
 	// Ну это уже против утырков
+
 	} else $message = "По какой-то причине привязанный к вашей учетной записи аккаунт Steam отличается от того, который вы пытаетесь отвязать";
 
 /**
@@ -272,8 +286,60 @@ if ($action == 'reg' && isset($_POST['nick'])) {
 	$r = $db->query($q);
 	$location = '/lk';
 
+/**
+* 
+* Сброс пароля
+* 
+**/
+} else if ($action == 'reset' && !isset($cid)) {
+
+	if (isset($_GET['token'])) {
+		$player = tokenDecode($_GET['token']);
+		$newpw = getRandomString(6);
+
+		if ($player) $q = "UPDATE `ololousers` SET `pw` = MD5('$newpw') WHERE `id` = {$player['id']}";
+		else exit('Wrong token');
+
+		$r = $db->query($q);
+
+		if ($r) {
+			writeHistory($player['id'], 'pwReset', time());
+			$from = array('id' => $player['id'], 'email' => 'ice_haron@mail.ru', 'name' => 'Elysium Game');
+			$to = array('email' => $player['email'], 'name' => $player['nick']);
+			$mailer->send('pwreset', $from, $to, 'Ваш новый пароль', "Вы успешно сбросили пароль, теперь он у вас такой:\r\n" . $newpw . "\r\nРекомендуем сразу же после входа на сайт, сменить пароль на другой.");
+		}
+
+	} else if (isset($_POST['email'])) {
+		$email = $db->escape($_POST['email']);
+		$nick = $db->escape($_POST['nick']);
+		$q = "SELECT `id` FROM `ololousers` WHERE `email` = '$email' AND `nick` = '$nick'";
+		$r = $db->query($q);
+
+		if (gettype($r) == 'array' && count($r) == 1) {
+			$id = $r[0]['id'];
+			$token = tokenEncode($id, $email, $nick);
+			$from = array('id' => $id, 'email' => 'ice_haron@mail.ru', 'name' => 'Elysium Game');
+			$to = array('email' => $email, 'name' => $nick);
+			$mailMessage = "Вам пришло это письмо так как вы запрашивали сброс пароля своего аккаунта, если это так, то пройдите, пожалуйста по ссылке:\r\nhttp://" . $_SERVER['HTTP_HOST'] . '/auth?action=reset&token=' . $token . "\r\n" . 'Если же вы не запрашивали сброс пароля, просто проигнорируйте это письмо, но знайте: вас заметили и пытаются затроллить!';
+			$mailer->send('resetpw', $from, $to, 'Сброс пароля', $mailMessage);
+			$output = "Письмо с инструкциями для смены пароля было выслано на вашу электронную почту";
+
+		} else $output = 'По-моему, вы нас хотите обмануть. Не найдено такого сочетания e-mail + nick';
+
+	} else {
+		$output = '
+			<p>Для сброса пароля введите свой Электронный адрес и Ник на сайте</p>
+			<form method="POST">
+				<input type="text" name="email" placeholder="E-Mail" required>
+				<input type="text" name="nick" placeholder="Ник" required>
+				<input type="submit" value="Сбросить пароль">
+			</form>
+		';
+	}
+
 } else if ($action == 'send') {
-	$output = 'Саусэм глюпи, Уася?';
+	$output = '<h1>Саусэм глюпи, Уася?</h1>';
+	
 	if (isset($cid)) $achievement->earn($cid, 18);
 /*
 	$q = "SELECT `id`, `nick`, `email` FROM `ololousers`";
@@ -293,5 +359,13 @@ if ($action == 'reg' && isset($_POST['nick'])) {
 	echo '</pre>';
 */
 
+
+/**
+* 
+* Для тех, кто уже авторизован ни к чему посещать страницы авторизации, регистрации и сброса пароля, выбрасываем в ЛК
+* 
+**/
+} else if (($action == 'log' || $action == 'reg' || $action == 'reset') && isset($cid)) {
+	header("Location: /lk");
 }
 ?>

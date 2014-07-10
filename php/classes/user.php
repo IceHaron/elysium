@@ -185,9 +185,9 @@ class user {
 
 /**
 * 
-* Получение информации о юзере
-* @param user - ник или почта юзера
-* @return array - инфа о юзере
+* Получение HTML уровня
+* @param levelArr - информация об уровне массивом из функции getLevel
+* @return string - HTML
 * 
 **/
 	public function getLevelHTML($levelArr) {

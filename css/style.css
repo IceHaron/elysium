@@ -113,6 +113,7 @@ h4 {font-size:31px;color:#000;letter-spacing:-2px;margin-bottom:16px}
 #content .nocol {
 	min-height: 100px;
 	padding-top: 20px;
+	padding-left: 3px;
 }
 .inner_copy, .inner_copy a {border:0;float:right;background:#f00;color:#f00;width:35%;line-height:10px;font-size:10px;margin:-220% 0 0 0;overflow:hidden;padding:0}
 #content .indent {padding:33px 33px 50px 37px}
