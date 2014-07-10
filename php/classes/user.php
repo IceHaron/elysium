@@ -88,9 +88,16 @@ class user {
 * 
 **/
 	public function getFullInfo($user) {
+		GLOBAL $db;
 		$u = $this->getInfo($user);
+
 		if ($u['referrer'] != 1) $referrer = $this->getInfo($u['referrer']);
 		else $referrer = array('id' => 0, 'nick' => '');
+
+		$q = "SELECT * FROM `usergroups` WHERE `id` = {$u['group']}";
+		$r = $db->query($q);
+		$groupName = $r[0]['name'];
+
 		$a = new achievement();
 		// $a->check($r[0]['id']);
 		$achievements = array_slice($a->getAch($u['id']), 0, 5); // Понятное дело: получаем список ачивок
@@ -119,6 +126,7 @@ class user {
 			, 'steamID' => $steamID // Steam ID, C.O.
 			, 'achievements' => $achHTML // Последние 5 достижений
 			, 'privacy' => $privacy // Настройки приватности в виде ассоциативного массива
+			, 'groupName' => $groupName
 		);
 
 		if ($profile) {

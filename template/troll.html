@@ -1,1 +1,150 @@
-<h1>Ololo Trololo</h1>
+<!DOCTYPE html>
+<head>
+<title>Elysium Game</title>
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link href="/css/troll.css" rel="stylesheet" type="text/css" />
+<link type='text/css' href='css/basic.css' rel='stylesheet' media='screen' />
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.3/jquery.min.js"></script>
+<script type="text/javascript" src="/js/troll.js"></script>
+<link href='http://fonts.googleapis.com/css?family=Cuprum&subset=cyrillic,latin' rel='stylesheet' type='text/css'></link>
+<script language="JavaScript" type="text/javascript" src="/js/whizzywig63.js"></script>
+</head>
+
+<body>
+	<div class="trollmenu">
+		<ul type="circle">
+			<li><a href="/">Главная</a></li>
+			<li><a href="/troll">Корень</a></li>
+			<li><a href="/troll?mod=news">Новости</a></li>
+			<li><a href="/troll?mod=users">Пользователи</a></li>
+			<li><a href="/troll?mod=mail">Автопроверка почты</a></li>
+		</ul>
+		<div class="modmenu">
+
+			<? if ($mod == 'news' && $action == NULL) { ?>
+			<a href="/troll?mod=news&action=add"><button>Добавить новость</button></a>
+			<input type="submit" form="newsaction" name="action" value="Delete">
+			<? } else if ($mod == 'users' && $action == NULL) { ?>
+			<input type="submit" form="usersaction" name="action" value="Delete">
+			<? } ?>
+
+		</div>
+	</div>
+	<div class="trollcontent">
+
+		<?
+		if ($mod == 'news') {
+			if ($action == NULL) {
+			?>
+			<form method="POST" id="newsaction">
+				<table class="newstable">
+					<tr>
+						<th>Заголовок</th>
+						<th>Введение</th>
+						<th>Текст</th>
+						<th>Дата</th>
+						<th></th>
+					</tr>
+
+					<? foreach ($news as $item) { ?>
+					<tr>
+						<td><?=$item['title']?></td>
+						<td><?=$item['intro']?></td>
+						<td><?=$item['text']?></td>
+						<td><?=$item['date']?></td>
+						<td>
+							<input type="checkbox" name="item[<?=$item['id']?>]">
+							<a href="/troll?mod=news&action=edit&id=<?=$item['id']?>">Edit</a>
+						</td>
+					</tr>
+					<? } ?>
+
+				</table>
+			</form>
+
+			<? } else if ($action == 'add') { ?>
+			<form action="/troll?mod=news" method="POST" id="newsAddForm">
+				<input type="text" name="title" size="45" placeholder="Заголовок новости" required>
+				<input type="hidden" name="action" value="add">
+				<textarea name="intro" id="intro" style="width: 100%" required><p>Краткое введение</p></textarea>
+				<textarea name="text" id="text" style="width: 100%" required><p>Текст новости</p></textarea>
+				<button id="newsCreate">Создать новость</button>
+			</form>
+
+			<? } else if ($action == 'edit') { ?>
+			<form action="/troll?mod=news" method="POST" id="newsEditForm">
+				<input type="text" name="title" size="45" placeholder="Заголовок новости" required value="<?=$item['title']?>">
+				<input type="hidden" name="id" value="<?=$item['id']?>">
+				<input type="hidden" name="action" value="edit">
+				<textarea name="intro" id="intro" style="width: 100%" required><?=$item['intro']?></textarea>
+				<textarea name="text" id="text" style="width: 100%" required><?=$item['text']?></textarea>
+				<button id="newsEdit">Сохранить</button>
+			</form>
+			<?
+			}
+		} else if ($mod == 'users') {
+			if ($action == NULL) {
+			?>
+			<form method="POST" id="usersaction">
+				<table class="userstable">
+					<tr>
+						<th>E-Mail</th>
+						<th>Ник на сайте</th>
+						<th>Ник в игре</th>
+						<th>Steam</th>
+						<th>Опыт</th>
+						<th>История</th>
+						<th>Пригласивший</th>
+						<th>Изюм</th>
+						<th>Приватность</th>
+						<th>Группа</th>
+						<th></th>
+					</tr>
+
+					<? foreach ($users as $item) { ?>
+					<tr>
+						<td><?=$item['email']?></td>
+						<td><?=$item['nick']?></td>
+						<td><?=$item['mcname']?></td>
+						<td><?=$item['steamid']?></td>
+						<td><?=$item['exp']?></td>
+						<td><?=$item['history']?></td>
+						<td><?=$item['referrer']?></td>
+						<td><?=$item['izumko']?></td>
+						<td><?=$item['privacy']?></td>
+						<td><?=$item['group']?></td>
+						<td>
+							<input type="checkbox" name="item[<?=$item['id']?>]">
+							<a href="/troll?mod=users&action=edit&id=<?=$item['id']?>">Edit</a>
+						</td>
+					</tr>
+					<? } ?>
+
+				</table>
+			</form>
+
+			<? } else if ($action == 'edit') { ?>
+			<form action="/troll?mod=users" method="POST" id="usersEditForm">
+				<input type="hidden" name="action" value="edit">
+				<input type="hidden" name="id" value="<?=$item['id']?>">
+				<label>E-Mail</label><input type="text" name="email" placeholder="E-Mail" required value="<?=$item['email']?>"><br/>
+				<label>Ник на сайте</label><input type="text" name="nick" placeholder="Ник на сайте" required value="<?=$item['nick']?>"><br/>
+				<label>Ник в игре</label><input type="text" name="mcname" placeholder="Ник в игре" value="<?=$item['mcname']?>"><br/>
+				<label>Steam</label><input type="text" name="steamid" placeholder="Steam" value="<?=$item['steamid']?>"><br/>
+				<label>Опыт</label><input type="text" name="exp" placeholder="Опыт" required value="<?=$item['exp']?>"><br/>
+				<label>История</label><input type="text" name="history" placeholder="История" required value="<?=$item['history']?>"><br/>
+				<label>Пригласивший</label><input type="text" name="referrer" placeholder="Пригласивший" required value="<?=$item['referrer']?>"><br/>
+				<label>Изюм</label><input type="text" name="izumko" placeholder="Изюм" required value="<?=$item['izumko']?>"><br/>
+				<label>Приватность</label><input type="text" name="privacy" placeholder="Приватность" required value="<?=$item['privacy']?>"><br/>
+				<label>Группа</label><input type="text" name="group" placeholder="Группа" required value="<?=$item['group']?>"><br/>
+				<button id="usersEdit">Сохранить</button>
+			</form>
+			<?
+			}
+		}
+		?>
+
+	</div>
+</body>

@@ -1,0 +1,25 @@
+.trollmenu {
+	width: 180px;
+	float: left;
+	/*padding: 10px;*/
+}
+.trollcontent {
+	width: calc(100% - 250px);
+	float: left;
+	padding: 10px;
+}
+.newstable, .userstable {
+	width: 90%;
+	font-family: 'Cuprum', arial, serif;
+}
+.newstable th, .newstable td, .userstable th, .userstable td {
+	padding: 5px;
+	border: 1px solid lightgrey;
+}
+textarea {
+	width: 100%;
+	min-height: 150px;
+}
+form * {
+	margin: 2px;
+}

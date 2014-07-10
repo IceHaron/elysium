@@ -140,7 +140,7 @@ class mail {
 							$db->query("UPDATE `ololousers` SET `group` = 1 WHERE `id` = {$player[0]['id']}");
 							$answer = 'Аккаунт успешно активирован';
 						} else $answer = 'Аккаунт с ником "' . $nickname . '" уже был активирован ранее';
-					else $answer = 'Неправильно указан ник: "' . $text . '"';
+					else $answer = 'Неправильно указан ник: "' . $nickname . '"';
 				}
 				$mails = $db->query("SELECT * FROM `mail` WHERE `to` = '$email' AND `text` = '$answer'");
 				if ($mails === NULL && isset($answer)) {
