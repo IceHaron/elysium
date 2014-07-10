@@ -55,16 +55,3 @@ function writeHistory($id, $key, $value) {
 	$r = $db->query($q);
 	return $r;
 }
-
-function purgeSteam() {
-	GLOBAL $db;
-	$q = "SELECT * FROM `ololousers`";
-	$r = $db->query($q);
-	foreach ($r as $player) {
-		$history = json_decode($player['history'], TRUE);
-		unset($history['steamBindingSet'], $history['steamBindingBroken']);
-		$str = json_encode($history);
-		$q = "UPDATE `ololousers` SET `steamid` = NULL, `history` = '$str' WHERE `id` = {$player['id']}";
-		$r = $db->query($q);
-	}
-}
