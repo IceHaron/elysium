@@ -111,7 +111,7 @@ class mail {
 		// echo '<pre>';
 		// echo "\n\n";
 		$count = imap_num_msg($box);
-		echo $count;
+		// echo $count;
 
 		$fringe = max($count-100, 0);
 
