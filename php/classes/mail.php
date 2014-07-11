@@ -42,7 +42,7 @@ class mail {
 		$toName = $to['name'];
 
 		$header="Date: ".date("D, j M Y G:i:s")." +0300\r\n";
-		$header.="From: =?utf-8?Q?".str_replace("+","_",str_replace("%","=",urlencode('Elysium Game')))."?= <ice_haron@mail.ru>\r\n";
+		$header.="From: =?utf-8?Q?".str_replace("+","_",str_replace("%","=",urlencode('Elysium Game')))."?= <alphatest@inextinctae.ru>\r\n";
 		$header.="X-Mailer: The Bat! (v3.99.3) Professional\r\n";
 		$header.="X-Priority: 3 (Normal)\r\n";
 		$header.="Message-ID: <172562218.".date("YmjHis")."@mail.ru>\r\n";
@@ -54,7 +54,7 @@ class mail {
 		$header.="Content-Type: text/plain; charset=utf-8\r\n";
 		$header.="Content-Transfer-Encoding: 8bit\r\n";
 
-		$smtp_conn = fsockopen("smtp.mail.ru", 25, $errno, $errstr, 10);
+		$smtp_conn = fsockopen("smtp.ht-systems.ru", 25, $errno, $errstr, 10);
 		if ($smtp_conn !== FALSE) {
 			$data = $this->get_data($smtp_conn) . "<br/>";
 			fputs($smtp_conn,"EHLO mail.ru\r\n");
@@ -104,13 +104,14 @@ class mail {
 
 	public function receive() {
 		GLOBAL $db;
-		$address = "pop.mail.ru";  // адрес pop3-сервера 
-		$port    = "995";          // порт (стандартный pop3 - 110)
+		$address = "pop3.ht-systems.ru";  // адрес pop3-сервера 
+		$port    = "110";          // порт (стандартный pop3 - 110)
 
-		$box = imap_open("{" . $address . ":" . $port . "/pop3/ssl}", $this->login, $this->pw);
+		$box = imap_open("{" . $address . ":" . $port . "/pop3}", $this->login, $this->pw);
 		// echo '<pre>';
 		// echo "\n\n";
 		$count = imap_num_msg($box);
+		echo $count;
 
 		$fringe = max($count-100, 0);
 
@@ -166,7 +167,7 @@ class mail {
 				$mails = $db->query("SELECT * FROM `mail` WHERE `to` = '$email' AND `text` = '$answer'");
 
 				if ($mails === NULL && isset($answer)) {
-					$from = array('id' => isset($player[0]['id']) ? $player[0]['id'] : 0, 'email' => 'ice_haron@mail.ru', 'name' => 'Elysium Game');
+					$from = array('id' => isset($player[0]['id']) ? $player[0]['id'] : 0, 'email' => 'alphatest@inextinctae.ru', 'name' => 'Elysium Game');
 					$to = array('email' => $email, 'name' => isset($nickname) ? $nickname : 'unknown');
 					$this->send('activation request', $from, $to, 'Результат активации аккаунта', $answer);
 				}
