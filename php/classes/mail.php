@@ -54,11 +54,6 @@ class mail {
 		$header.="Content-Type: text/plain; charset=utf-8\r\n";
 		$header.="Content-Transfer-Encoding: 8bit\r\n";
 
-		if ($action) {
-			$query = "INSERT INTO `mail` (`action`, `userid`, `to`, `text`) VALUES ('$action', '$fromID', '$toMail', '$message');";
-			$db->query($query);
-		}
-
 		$smtp_conn = fsockopen("smtp.mail.ru", 25, $errno, $errstr, 10);
 		if ($smtp_conn !== FALSE) {
 			$data = $this->get_data($smtp_conn) . "<br/>";
@@ -89,9 +84,22 @@ class mail {
 			fputs($smtp_conn,"QUIT\r\n");
 			$data .= $this->get_data($smtp_conn) . "<br/>";
 
+			if ($action) {
+				$query = "INSERT INTO `mail` (`action`, `userid`, `to`, `text`) VALUES ('$action', '$fromID', '$toMail', '$message');";
+				$db->query($query);
+			}
+
 			return $data;
 
-		} else return FALSE;
+		} else {
+			
+			if ($action) {
+				$query = "INSERT INTO `mail` (`action`, `userid`, `to`, `text`) VALUES ('$action fail', '$fromID', '$toMail', '$errstr');";
+				$db->query($query);
+			}
+
+			return FALSE;
+		}
 	}
 
 	public function receive() {
