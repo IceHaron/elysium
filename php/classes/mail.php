@@ -108,7 +108,6 @@ class mail {
 		$port    = "110";          // порт (стандартный pop3 - 110)
 
 		$box = imap_open("{" . $address . ":" . $port . "/pop3}", $this->login, $this->pw);
-		var_dump(imap_check($box));
 		// echo '<pre>';
 		// echo "\n\n";
 		$count = imap_num_msg($box);
