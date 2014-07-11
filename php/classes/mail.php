@@ -143,7 +143,8 @@ class mail {
 				// echo "\n" . 'Base64: '. imap_base64($body);
 				// echo "\n" . 'QPrint->UTF-8: '. imap_qprint(imap_utf8($body));
 				// echo "\n" . 'UTF-8->QPrint: '. imap_utf8(imap_qprint($body));
-				$text = base64_decode(imap_qprint(imap_utf8($body)));
+				// $text = base64_decode(imap_qprint(imap_utf8($body)));
+				$text = base64_decode(imap_utf8($body));
 				$pass = preg_match('/\w+$/', trim($text), $matches);
 
 				if (!$pass) $answer = 'Неправильно указан ник: "' . $text . '"';
