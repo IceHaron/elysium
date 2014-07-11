@@ -60,35 +60,38 @@ class mail {
 		}
 
 		$smtp_conn = fsockopen("smtp.mail.ru", 25, $errno, $errstr, 10);
-		$data = $this->get_data($smtp_conn) . "<br/>";
-		fputs($smtp_conn,"EHLO mail.ru\r\n");
-		$data .= $this->get_data($smtp_conn) . "<br/>";
+		if ($smtp_conn !== FALSE) {
+			$data = $this->get_data($smtp_conn) . "<br/>";
+			fputs($smtp_conn,"EHLO mail.ru\r\n");
+			$data .= $this->get_data($smtp_conn) . "<br/>";
 
-		fputs($smtp_conn,"AUTH LOGIN\r\n");
-		$data .= $this->get_data($smtp_conn) . "<br/>";
+			fputs($smtp_conn,"AUTH LOGIN\r\n");
+			$data .= $this->get_data($smtp_conn) . "<br/>";
 
-		fputs($smtp_conn,base64_encode($this->login)."\r\n");
-		$data .= $this->get_data($smtp_conn) . "<br/>";
+			fputs($smtp_conn,base64_encode($this->login)."\r\n");
+			$data .= $this->get_data($smtp_conn) . "<br/>";
 
-		fputs($smtp_conn,base64_encode($this->pw)."\r\n");
-		$data .= $this->get_data($smtp_conn) . "<br/>";
+			fputs($smtp_conn,base64_encode($this->pw)."\r\n");
+			$data .= $this->get_data($smtp_conn) . "<br/>";
 
-		fputs($smtp_conn,"MAIL FROM:$fromMail\r\n"); // Заменить на почту проекта
-		$data .= $this->get_data($smtp_conn) . "<br/>";
+			fputs($smtp_conn,"MAIL FROM:$fromMail\r\n"); // Заменить на почту проекта
+			$data .= $this->get_data($smtp_conn) . "<br/>";
 
-		fputs($smtp_conn,"RCPT TO:$toMail\r\n");
-		$data .= $this->get_data($smtp_conn) . "<br/>";
+			fputs($smtp_conn,"RCPT TO:$toMail\r\n");
+			$data .= $this->get_data($smtp_conn) . "<br/>";
 
-		fputs($smtp_conn,"DATA\r\n");
-		$data .= $this->get_data($smtp_conn) . "<br/>";
+			fputs($smtp_conn,"DATA\r\n");
+			$data .= $this->get_data($smtp_conn) . "<br/>";
 
-		fputs($smtp_conn,$header."\r\n".$message."\r\n.\r\n");
-		$data .= $this->get_data($smtp_conn) . "<br/>";
+			fputs($smtp_conn,$header."\r\n".$message."\r\n.\r\n");
+			$data .= $this->get_data($smtp_conn) . "<br/>";
 
-		fputs($smtp_conn,"QUIT\r\n");
-		$data .= $this->get_data($smtp_conn) . "<br/>";
+			fputs($smtp_conn,"QUIT\r\n");
+			$data .= $this->get_data($smtp_conn) . "<br/>";
 
-		return $data;
+			return $data;
+
+		} else return FALSE;
 	}
 
 	public function receive() {
@@ -116,9 +119,11 @@ class mail {
 			$smthn = $matches[2];
 			$textArr = $matches[3];
 			$subject = '';
+
 			foreach ($textArr as $part) $subject .= base64_decode($part);
+
 			if ($subject == 'Не могу активировать аккаунт') {
-				unset($answer, $nickname, $email);
+				unset($answer, $nickname, $email, $player);
 				// echo $subject;
 				// echo "\n\n***************\n\n";
 				$header = imap_header($box, $i);
@@ -131,18 +136,27 @@ class mail {
 				// echo "\n" . 'UTF-8->QPrint: '. imap_utf8(imap_qprint($body));
 				$text = base64_decode(imap_qprint(imap_utf8($body)));
 				$pass = preg_match('/\w+$/', trim($text), $matches);
+
 				if (!$pass) $answer = 'Неправильно указан ник: "' . $text . '"';
 				else {
 					$nickname = $matches[0];
 					$player = $db->query("SELECT `id`, `group` FROM `ololousers` WHERE `email` = '$email' AND `nick` = '$nickname'");
+
 					if (isset($player[0]))
+
 						if ($player[0]['group'] == '0') {
+
 							$db->query("UPDATE `ololousers` SET `group` = 1 WHERE `id` = {$player[0]['id']}");
 							$answer = 'Аккаунт успешно активирован';
+
 						} else $answer = 'Аккаунт с ником "' . $nickname . '" уже был активирован ранее';
+
 					else $answer = 'Неправильно указан ник: "' . $nickname . '"';
+
 				}
+
 				$mails = $db->query("SELECT * FROM `mail` WHERE `to` = '$email' AND `text` = '$answer'");
+
 				if ($mails === NULL && isset($answer)) {
 					$from = array('id' => isset($player[0]['id']) ? $player[0]['id'] : 0, 'email' => 'ice_haron@mail.ru', 'name' => 'Elysium Game');
 					$to = array('email' => $email, 'name' => isset($nickname) ? $nickname : 'unknown');

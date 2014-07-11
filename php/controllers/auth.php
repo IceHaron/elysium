@@ -306,7 +306,9 @@ if ($action == 'reg' && isset($_POST['nick']) && !isset($cid)) {
 			writeHistory($player['id'], 'pwReset', time());
 			$from = array('id' => $player['id'], 'email' => 'ice_haron@mail.ru', 'name' => 'Elysium Game');
 			$to = array('email' => $player['email'], 'name' => $player['nick']);
-			$mailer->send('pwreset', $from, $to, 'Ваш новый пароль', "Вы успешно сбросили пароль, теперь он у вас такой:\r\n" . $newpw . "\r\nРекомендуем сразу же после входа на сайт, сменить пароль на другой.");
+			$sent = $mailer->send('pwreset', $from, $to, 'Ваш новый пароль', "Вы успешно сбросили пароль, теперь он у вас такой:\r\n" . $newpw . "\r\nРекомендуем сразу же после входа на сайт, сменить пароль на другой.");
+			if ($sent !== FALSE) $output = "Сброс пароля прошел удачно";
+			else $output = "Подключение к почтовому серверу не удалось, пожалуйста, попробуйте обновить страницу чуть позже.";
 		}
 
 	} else if (isset($_POST['email'])) {
@@ -321,8 +323,9 @@ if ($action == 'reg' && isset($_POST['nick']) && !isset($cid)) {
 			$from = array('id' => $id, 'email' => 'ice_haron@mail.ru', 'name' => 'Elysium Game');
 			$to = array('email' => $email, 'name' => $nick);
 			$mailMessage = "Вам пришло это письмо так как вы запрашивали сброс пароля своего аккаунта, если это так, то пройдите, пожалуйста по ссылке:\r\nhttp://" . $_SERVER['HTTP_HOST'] . '/auth?action=reset&token=' . $token . "\r\n" . 'Если же вы не запрашивали сброс пароля, просто проигнорируйте это письмо, но знайте: вас заметили и пытаются затроллить!';
-			$mailer->send('resetpw', $from, $to, 'Сброс пароля', $mailMessage);
-			$output = "Письмо с инструкциями для смены пароля было выслано на вашу электронную почту";
+			$sent = $mailer->send('resetpw', $from, $to, 'Сброс пароля', $mailMessage);
+			if ($sent !== FALSE) $output = "Письмо с инструкциями для смены пароля было выслано на вашу электронную почту";
+			else $output = "Подключение к почтовому серверу не удалось, пожалуйста, попробуйте обновить страницу чуть позже.";
 
 		} else $output = 'По-моему, вы нас хотите обмануть. Не найдено такого сочетания e-mail + nick';
 
