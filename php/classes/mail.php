@@ -123,6 +123,7 @@ class mail {
 			// echo "\n" . 'Base64 тема: '. imap_base64($overview[0]->subject);
 			// echo "\n" . 'QPrint->UTF-8: '. imap_qprint(imap_utf8($overview[0]->subject));
 			// echo "\n" . 'UTF-8->QPrint: '. imap_utf8(imap_qprint($overview[0]->subject));
+			if (!isset($overview[0]->subject)) continue;
 			preg_match_all('/=\?([A-z0-9\-]+)\?(\w)\?([A-z0-9\+=\/]+)\?=\s?/', $overview[0]->subject, $matches);
 			$encoding = $matches[1];
 			$smthn = $matches[2];
