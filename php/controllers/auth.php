@@ -363,6 +363,51 @@ if ($action == 'reg' && isset($_POST['nick']) && !isset($cid)) {
 	echo '</pre>';
 */
 
+/**
+* 
+* Смена ника
+* 
+**/
+} else if (($action == 'sitenick' || $action == 'mcnick') && isset($cid)) {
+
+	if ($action == 'sitenick') $what = 'nick';
+	else $what = 'mcname';
+
+	if (isset($_POST['newnick'])) {
+
+		if ((int)$user->info['tokens']['changename'] > 0) {
+			$newNick = substr($db->escape($_POST['newnick']), 0, 45);
+
+			if (preg_match('/^[^A-Za-z0-9]|[^0-9A-Za-z\-\_]+/', $newNick) || strlen($newNick) <= 2) {
+				$output = '<b>Вы пытаетесь сломать наш сайт, но мы будем сопротивляться! (Неправильный ник)</b>';
+				$registered = TRUE;
+
+			} else {
+				$remainTokens = (int)$user->info['tokens']['changename'] - 1;
+				$answerUsers = $db->query("UPDATE `ololousers` SET `$what` = '$newNick' WHERE `id` = $cid");
+				$answerTokens = $db->query("DELETE FROM `tokens` WHERE `user` = $cid AND `action` = 'changename' LIMIT 1;");
+
+				if ($answerUsers === TRUE && $answerTokens === TRUE) {
+					if ($action == 'sitenick') $_SESSION['login'] = $newNick;
+					writeHistory($cid, 'changed' . $action, json_encode(array(time() => array('old' => $user->info['nick'], 'new' => $newNick))));
+					$output = 'Ник сменен успешно';
+					$location = '/lk';
+
+				} else {
+					$output = 'Произошла какая-то ошибка, если вы не знаете, как такое могло произойти, <a href="mailto:alphatest@inextinctae.ru?subject=Не%20меняется%20ник&body=Ваше%20сообщение">Напишите нам</a>';
+				}
+
+			}
+
+		} else $output = 'У вас недостаточно токенов на смену ника';
+
+	} else {
+
+		if ((int)$user->info['tokens']['changename'] <= 0) $output = 'У вас недостаточно токенов на смену ника';
+		else $registered = TRUE;
+
+	}
+
 
 /**
 * 

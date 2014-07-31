@@ -12,18 +12,23 @@ if (!$_POST) {
 	</tr>
 	<tr>
 		<th class="head">Ваш никнейм</th>
-		<td class="input"><?=$info['nick']?></td>
+		<td class="input"><?=$nick?></td>
 		<td class="balance"><?=$info['izum']?> izum</td>
 	</tr>
 	<tr>
 		<th class="head">Ваше имя в MineCraft`е</th>
-		<td class="input"><?=$info['mcName']?></td>
+		<td class="input"><?=$mcnick?></td>
 		<td class="balance"><a href="/payment">MOAR IZUM!!!</a></td>
+	</tr>
+	<tr>
+		<th class="head"></th>
+		<td class="input">Количество токенов на смену ников: <?=$info['tokens']['changename']?></td>
+		<td class="balance"></td>
 	</tr>
 	<tr>
 		<th class="head">Вы находитесь в группе</th>
 		<td class="input"><?=$info['groupName']?></td>
-		<td class="balance"></td>
+		<td class="action"></td>
 	</tr>
 	<tr>
 		<th class="head">Ваш уровень аккаунта</th>

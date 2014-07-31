@@ -69,7 +69,7 @@ if (!isset($_GET['mod'])) {
 		if ($_POST['action'] == 'edit') {
 
 			foreach ($_POST as $key => $value) {
-				if ($key != 'action') $$key = $db->escape($_POST[$key]);
+				if (array_search($key, array('action', 'history', 'privacy')) === FALSE) $$key = $db->escape($_POST[$key]);
 			}
 			$q = "
 				UPDATE `ololousers` SET 
@@ -104,7 +104,21 @@ if (!isset($_GET['mod'])) {
 	$q = "SELECT * FROM `ololousers`";
 	$users = $db->query($q);
 	$mod = 'users';
+
 } else if ($_GET['mod'] == 'mail') {
 	$mailer->receive();
 	$mod = 'mail';
+
+} else if ($_GET['mod'] == 'changenametokens') {
+	$q = "SELECT * FROM `ololousers`";
+	$users = $db->query($q);
+	$values = '';
+
+	foreach ($users as $u) {
+		$values .= ",('{$u['id']}', 'changename')";
+	}
+	
+	$q = "INSERT INTO `tokens` (`user`, `action`) VALUES " . substr($values, 1);
+	$db->query($q);
+	$mod = 'changenametokens';
 }

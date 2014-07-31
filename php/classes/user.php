@@ -71,11 +71,20 @@ class user {
 	public function getInfo($user) {
 
 		GLOBAL $db;
+		$tokens = array('changename' => 0);
+		$q = "SELECT `action`, count(*) AS `count` FROM `tokens` WHERE `user` = {$user} GROUP BY `action`";
+		$r = $db->query($q);
+
+		foreach ($r as $token) {
+			$tokens[ $token['action'] ] = $token['count'];
+		}
+
 		$q = "SELECT * FROM `ololousers` WHERE `id` = '$user'";
 		$r = $db->query($q);
 		// Убираем пароль из массива, защита дохера
 		if (isset($r[0]['pw'])) {
 			unset ($r[0]['pw']);
+			$r[0]['tokens'] = $tokens;
 			return $r[0];
 		} else return array();
 	}
@@ -126,7 +135,8 @@ class user {
 			, 'steamID' => $steamID // Steam ID, C.O.
 			, 'achievements' => $achHTML // Последние 5 достижений
 			, 'privacy' => $privacy // Настройки приватности в виде ассоциативного массива
-			, 'groupName' => $groupName
+			, 'groupName' => $groupName // Название группы, в которой состоит пользователь
+			, 'tokens' => $u['tokens'] // Токены
 		);
 
 		if ($profile) {
