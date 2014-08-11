@@ -70,6 +70,7 @@ if (!isset($_GET['mod'])) {
 
 			foreach ($_POST as $key => $value) {
 				if (array_search($key, array('action', 'history', 'privacy')) === FALSE) $$key = $db->escape($_POST[$key]);
+				else if (array_search($key, array('history', 'privacy')) !== FALSE) $$key = $_POST[$key];
 			}
 			$q = "
 				UPDATE `ololousers` SET 
@@ -109,6 +110,28 @@ if (!isset($_GET['mod'])) {
 	$mailer->receive();
 	$mod = 'mail';
 
+} else if ($_GET['mod'] == 'deleteusers') {
+	$q = "SELECT `id`, `email`, `nick`, `history`, `group` FROM `ololousers`";
+	$r = $db->query($q);
+
+	foreach ($r as $unit) {
+		$hist = json_decode($unit['history'], TRUE);
+
+		if (time() - $hist['created'] && $unit['group'] == 0) {
+			$q = "DELETE FROM `ololousers` WHERE `id` = {$unit['id']}";
+			$r = $db->query($q);
+			$from = array('id' => $unit['id'], 'email' => 'alphatext@inextinctae.ru', 'name' => 'Elysium Game');
+			$to = array('email' => $unit['email'], 'name' => $unit['nick']);
+			$subject = 'Ваш аккаунт на сайте Elysium Game удален';
+			$message = 'В связи с тем, что вы создали аккаунт и за двое суток не активировали его, аккаунт был безвозвратно удален.';
+			$s = $mailer->send('userdeleted', $from, $to, $subject, $message);
+			echo 'Удален аккаунт ' . $unit['id'] . ' с ником "' . $unit['nick'] . '"<br/>';
+
+		}
+
+	}
+	$mod = 'deleteusers';
+
 } else if ($_GET['mod'] == 'changenametokens') {
 	$q = "SELECT * FROM `ololousers`";
 	$users = $db->query($q);
@@ -121,4 +144,32 @@ if (!isset($_GET['mod'])) {
 	$q = "INSERT INTO `tokens` (`user`, `action`) VALUES " . substr($values, 1);
 	$db->query($q);
 	$mod = 'changenametokens';
+
+} else if ($_GET['mod'] == 'transfer') {
+	$a = $db->query("DELETE FROM `user_achievs` WHERE `achievement` IN (5,10,11,13,21,30,42,50,70,100500);");
+	$b = $db->query("UPDATE `ololousers` SET `izumko` = 0;");
+	$c = $db->query("DELETE FROM `ololousers` WHERE `group` = 0;");
+	$q = "SELECT `user_achievs`.`user` FROM `user_achievs` LEFT JOIN `ololousers` ON (`user_achievs`.`user` = `ololousers`.`id`) WHERE `ololousers`.`id` IS NULL GROUP BY `user`;";
+	$r = $db->query($q);
+	$str = '5';
+	foreach ($r as $u) {
+		$str .= ',' . $u['user'];
+	}
+	$d = $db->query("DELETE FROM `user_achievs` WHERE `user` IN ($str);");
+	$q = "
+		SELECT `ololousers`.`id`, SUM(`achievements`.`xpcost`) AS `xp`
+		FROM `ololousers`
+		JOIN `user_achievs` ON (`ololousers`.`id` = `user_achievs`.`user`)
+		JOIN `achievements` ON (`achievements`.`id` = `user_achievs`.`achievement`)
+		GROUP BY `ololousers`.`id`;";
+	$r = $db->query($q);
+	$e = $db->query('TRUNCATE TABLE `tokens`;');
+	foreach ($r as $u) {
+		$f = $db->query("UPDATE `ololousers` SET `exp` = {$u['xp']} WHERE `id` = {$u['id']};");
+		$g = $db->query("INSERT INTO `tokens` VALUES ({$u['id']}, 'changename');");
+		$h = $db->query("SELECT count(*) as `c` FROM `mail` WHERE `userid` = {$u['id']} AND `action` = 'refer'");
+		$i = $db->query("SELECT count(*) as `c` FROM `ololousers` WHERE `referrer` = {$u['id']}");
+		if ($h[0]['c'] >= 3 && $i[0]['c'] == 0) $achievement->earn($u['id'], 20);
+	}
+	$mod = 'transfer';
 }

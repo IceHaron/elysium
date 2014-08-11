@@ -78,7 +78,7 @@ if ($action == 'reg' && isset($_POST['nick']) && !isset($cid)) {
 
 			$mailer->send('register', $from, $to, 'Вы зарегистрировали аккаунт на портале Elysium Game', $mailMessage);
 
-			$achievement->earn($r[0]['id'], 15);
+			$achievement->earn($r[0]['id'], 22);
 
 			if ($referrer != 1) $achievement->earn($r[0]['id'], 8);
 
@@ -110,6 +110,8 @@ if ($action == 'reg' && isset($_POST['nick']) && !isset($cid)) {
 			if ($r) {
 				$output = 'Поздравляем, вы активировали свой аккаунт!';
 				$location = '/auth?action=log';
+				$q = "INSERT INTO `tokens` (`user`, `action`) VALUES ({$confirm[0]}, 'changename'),({$confirm[0]}, 'changename');";
+				$r = $db->query($q);
 				writeHistory($confirm[0], 'activated', time());
 			}
 
@@ -389,7 +391,7 @@ if ($action == 'reg' && isset($_POST['nick']) && !isset($cid)) {
 
 				if ($answerUsers === TRUE && $answerTokens === TRUE) {
 					if ($action == 'sitenick') $_SESSION['login'] = $newNick;
-					writeHistory($cid, 'changed' . $action, json_encode(array(time() => array('old' => $user->info['nick'], 'new' => $newNick))));
+					writeHistory($cid, 'changed' . $action, array(time() => array('old' => $user->info['nick'], 'new' => $newNick)));
 					$output = 'Ник сменен успешно';
 					$location = '/lk';
 

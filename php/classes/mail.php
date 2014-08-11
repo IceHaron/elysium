@@ -162,7 +162,7 @@ class mail {
 
 						} else $answer = 'Аккаунт с ником "' . $nickname . '" уже был активирован ранее';
 
-					else $answer = 'Неправильно указан ник: "' . $nickname . '"';
+					else $answer = 'Не найдено такого сочетания почты и ника: "' . $email . '" и "' . $nickname . '"';
 
 				}
 
