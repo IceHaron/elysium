@@ -75,6 +75,7 @@ class user {
 		$q = "SELECT `action`, count(*) AS `count` FROM `tokens` WHERE `user` = {$user} GROUP BY `action`";
 		$r = $db->query($q);
 
+		if (count($r) == 0) return array();
 		foreach ($r as $token) {
 			$tokens[ $token['action'] ] = $token['count'];
 		}

@@ -19,7 +19,7 @@ if (isset($_POST['was']) && isset($_POST['want'])) {
 	// $q = "UPDATE `ololousers` SET `izumko` = $amount WHERE `id` = {$user->info['id']}";
 	// $r = $db->query($q);
 
-	// if (!$r) exit('Произошла какая-то хрень <a href="/lk">Уйти в ЛК</a>');
+	if (!$r) exit('Произошла какая-то хрень <a href="/lk">Уйти в ЛК</a>');
 	
 	else {
 		$achievement->earn($user->info['id'], 11, 0); // Добавил выдачу опыта за покупку Изюма, обязательно нужно будет убрать
