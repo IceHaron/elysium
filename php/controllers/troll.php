@@ -7,10 +7,9 @@
 
 $action = isset($_GET['action']) ? $_GET['action'] : NULL;
 
-if (!isset($_GET['mod'])) {
-	$mod = 'index';
+$mod = isset($_GET['mod']) ? $_GET['mod'] : 'index';
 
-} else if ($_GET['mod'] == 'news') {
+if ($_GET['mod'] == 'news') {
 
 	if ($action == 'edit') {
 		$r = $db->query("SELECT * FROM `news` WHERE `id` = {$_GET['id']}");
@@ -53,7 +52,6 @@ if (!isset($_GET['mod'])) {
 
 	$q = "SELECT * FROM `news` ORDER BY `date` DESC";
 	$news = $db->query($q);
-	$mod = 'news';
 
 } else if ($_GET['mod'] == 'users') {
 
@@ -104,11 +102,9 @@ if (!isset($_GET['mod'])) {
 
 	$q = "SELECT * FROM `ololousers`";
 	$users = $db->query($q);
-	$mod = 'users';
 
 } else if ($_GET['mod'] == 'mail') {
 	$mailer->receive();
-	$mod = 'mail';
 
 } else if ($_GET['mod'] == 'deleteusers') {
 	$q = "SELECT `id`, `email`, `nick`, `history`, `group` FROM `ololousers`";
@@ -130,7 +126,6 @@ if (!isset($_GET['mod'])) {
 		}
 
 	}
-	$mod = 'deleteusers';
 
 } else if ($_GET['mod'] == 'changenametokens') {
 	$q = "SELECT * FROM `ololousers`";
@@ -171,5 +166,30 @@ if (!isset($_GET['mod'])) {
 		$i = $db->query("SELECT count(*) as `c` FROM `ololousers` WHERE `referrer` = {$u['id']}");
 		if ($h[0]['c'] >= 3 && $i[0]['c'] == 0) $achievement->earn($u['id'], 20);
 	}
-	$mod = 'transfer';
+
+} else if ($_GET['mod'] == 'grantachievement') {
+	$message = '';
+	$q = "SELECT * FROM `achievements`;";
+	$r = $db->query($q);
+	$htmlach = '';
+	foreach ($r as $ach) {
+		$title = $ach['id'] . ' - ' . $ach['name'] . ' (' . $ach['xpcost'] . ')';
+		// $aarr[ $ach['id'] ] = $title;
+		$htmlach .= '<option value="' . $ach['id'] . '">' . $title . '</option>';
+	}
+
+	$q = "SELECT * FROM `ololousers`;";
+	$r = $db->query($q);
+	$htmluser = '';
+	foreach ($r as $u) {
+		$title = $u['id'] . ' - ' . $u['nick'] . ' (' . $u['mcname'] . ')';
+		// $uarr[ $u['id'] ] = $title;
+		$htmluser .= '<option value="' . $u['id'] . '">' . $title . '</option>';
+	}
+	if (isset($_POST['user']) && isset($_POST['ach']) && isset($_POST['exp'])) {
+		$exp = intval($_POST['exp']);
+		$result = $achievement->earn($_POST['user'], $_POST['ach'], $exp);
+		$message = ($result === FALSE) ? 'Ачивка уже есть у пользователя' : 'Ачивка выдана.';
+	}
+
 }

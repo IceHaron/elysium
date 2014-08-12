@@ -22,7 +22,7 @@
 			<li><a href="/troll?mod=mail">Автопроверка почты</a></li>
 			<li><a href="/troll?mod=deleteusers">Удаление устаревших акков</a></li>
 			<li><a href="/troll?mod=changenametokens">Раздать всем по одному токену на смену ника</a></li>
-			<li><a href="/troll?mod=transfer">Переезд</a></li>
+			<li><a href="/troll?mod=grantachievement">Подарить ачивку</a></li>
 		</ul>
 		<div class="modmenu">
 
@@ -146,8 +146,23 @@
 			</form>
 			<?
 			}
-		}
-		?>
+		} else if ($mod == 'grantachievement') { ?>
+			<?=$message?>
+			<form method="POST">
+				<label>Пользователю</label>
+				<select name="user">
+					<?=$htmluser?>
+				</select>
+				<label>Выдать ачивку</label>
+				<select name="ach">
+					<?=$htmlach?>
+				</select>
+				<label>, насыпать экспы (только для Improved ачивок)</label>
+				<input type="text" name="exp" value="0">
+				<input type="submit">
+			</form>
+
+		<? } ?>
 
 	</div>
 </body>
