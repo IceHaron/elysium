@@ -75,10 +75,11 @@ class user {
 		$q = "SELECT `action`, count(*) AS `count` FROM `tokens` WHERE `user` = {$user} GROUP BY `action`";
 		$r = $db->query($q);
 
-		if (count($r) == 0) return array();
-		foreach ($r as $token) {
-			$tokens[ $token['action'] ] = $token['count'];
-		}
+		if (count($r) != 0)
+			foreach ($r as $token) {
+				$tokens[ $token['action'] ] = $token['count'];
+			}
+		else $tokens = array();
 
 		$q = "SELECT * FROM `ololousers` WHERE `id` = '$user'";
 		$r = $db->query($q);

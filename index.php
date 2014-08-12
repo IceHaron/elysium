@@ -1,6 +1,6 @@
 <?
 
-if ($_SERVER['HTTP_HOST'] == 'elysium.inextinctae.ru') ini_set('display_errors', 0);
+if ($_SERVER['HTTP_HOST'] == 'elysiumgame.ru') ini_set('display_errors', 0);
 
 /* Получение статуса сервера, наследие прошлой жизни */
 function status($ip, $port){
