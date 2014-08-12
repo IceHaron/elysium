@@ -50,8 +50,8 @@ if ($action == 'reg' && isset($_POST['nick']) && !isset($cid)) {
 		$history = json_encode(array('created' => time()));
 		$privacy = json_encode(array('friends' => array('exp' => 0, 'ach' => 0, 'steam' => 0), 'reg' => array('exp' => 0, 'ach' => 0, 'steam' => 0), 'all' => array('exp' => 0, 'ach' => 0, 'steam' => 0)));
 		$q = "
-			INSERT INTO `ololousers` (`nick`, `email`, `pw`, `history`, `referrer`, `privacy`)
-				VALUES ('$nick', '$email', MD5('$pw'), '$history', '$referrer', '$privacy')";
+			INSERT INTO `ololousers` (`nick`, `mcname`, `email`, `pw`, `history`, `referrer`, `privacy`)
+				VALUES ('$nick', '$nick', '$email', MD5('$pw'), '$history', '$referrer', '$privacy')";
 		$answer = $db->query($q);
 
 		// Обрабатываем ошибки
