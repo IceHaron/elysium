@@ -25,8 +25,9 @@ if (isset($_GET['id'])) {
 		$player['level'] = $level = $user->getLevel($player['exp']);
 		$player['levelInfo'] = $user->getLevelHTML($level);
 		$player['privacy'] = json_decode($player['privacy'], TRUE);
+		$player['hidden'] = $privacy == '{"friends":{"exp":0,"ach":0,"steam":0},"reg":{"exp":0,"ach":0,"steam":0},"all":{"exp":0,"ach":0,"steam":0}}';
 
-		if ($privacy != '{"friends":{"exp":0,"ach":0,"steam":0},"reg":{"exp":0,"ach":0,"steam":0},"all":{"exp":0,"ach":0,"steam":0}}')
+		if ($user->info['group'] > 1 || $privacy != '{"friends":{"exp":0,"ach":0,"steam":0},"reg":{"exp":0,"ach":0,"steam":0},"all":{"exp":0,"ach":0,"steam":0}}')
 			$playerList[$k] = $player;
 	}
 	// var_dump($playerList);

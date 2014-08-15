@@ -17,7 +17,7 @@ if ($pagetype == 'unit') {
 		<tr>
 			<th class="head">Уровень аккаунта</th>
 			<td class="input" style="min-width: 240px;">
-				<? if ($info['privacy'][$standing]['exp']) echo $info['levelInfo']; else echo 'Информация скрыта'; ?>
+				<? if ($user->info['group'] > 1 || $info['privacy'][$standing]['exp']) echo $info['levelInfo']; else echo 'Информация скрыта'; ?>
 			</td>
 			<td class="action"></td>
 		</tr>
@@ -26,7 +26,7 @@ if ($pagetype == 'unit') {
 
 			<? if (!isset($info['steamURL'])) { ?>
 			<td class="input">Нет привязанного пользователя</td>
-			<? } else if (!$info['privacy'][$standing]['steam']) { ?>
+			<? } else if ($user->info['group'] <= 1 && !$info['privacy'][$standing]['steam']) { ?>
 			<td class="input">Информация скрыта</td>
 			<? } else { ?>
 			<!-- Инфа о Steam-аккаунте: аватарка, ссылка и ник -->
@@ -43,9 +43,8 @@ if ($pagetype == 'unit') {
 
 	<hr><br/>
 
-	<? if ($info['privacy'][$standing]['ach']) { ?><h2><a href="/achievements?compare=<?=$info['id']?>">Сравнить достижения</a></h2><? } ?>
+	<? if ($user->info['group'] > 1 || $info['privacy'][$standing]['ach']) { ?><h2><a href="/achievements?compare=<?=$info['id']?>">Сравнить достижения</a></h2><? }
 
-	<?
 } else if ($pagetype == 'list') {
 	?>
 	<table id="playerList">
@@ -62,6 +61,9 @@ if ($pagetype == 'unit') {
 			} else if ($player['group'] == 777) {
 				$nick = '<span class="admin"><a href="/users?id=' . $player['id'] . '">' . $player['nick'] . '</a></span>';
 				$color = '';
+			} else if ($player['hidden'] == TRUE) {
+				$nick = '<span class="hiddenUser"><a href="/users?id=' . $player['id'] . '">' . $player['nick'] . '</a></span>';
+				$color = '';
 			} else {
 				$nick = '<a href="/users?id=' . $player['id'] . '">' . $player['nick'] . '</a>';
 				$color = '';
@@ -71,7 +73,7 @@ if ($pagetype == 'unit') {
 				<td><?=$nick?></td>
 				<td><?=$player['mcname']?></td>
 				<td>
-					<? if ($player['privacy'][$standing]['exp']) echo $player['levelInfo']; else echo 'Информация скрыта'; ?>
+					<? if ($user->info['group'] > 1 || $player['privacy'][$standing]['exp']) echo $player['levelInfo']; else echo 'Информация скрыта'; ?>
 				</td>
 			</tr>
 			<?

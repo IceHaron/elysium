@@ -406,3 +406,6 @@ h4 {font-size:31px;color:#000;letter-spacing:-2px;margin-bottom:16px}
 	font-size: 18px;
 	color: red;
 }
+#playerList .hiddenUser a {
+	color: grey;
+}
