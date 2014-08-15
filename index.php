@@ -9,7 +9,8 @@ function status($ip, $port){
 		@stream_set_timeout($fp, 10);
 		fwrite($fp,chr(0xFE));
 		$shiza = fread($fp, 2048);
-		$status = explode('§', substr($shiza,1));
+		$symbol = iconv('utf-8', 'windows-1251', '§');
+		$status = explode($symbol, substr($shiza,1));
 		return $status;
 		fclose ($fp);
 		
@@ -17,12 +18,26 @@ function status($ip, $port){
 
 }
 
+function pingMCServer($server,$port=25565,$timeout=2){
+	$socket=socket_create(AF_INET,SOCK_STREAM,getprotobyname('tcp')); // set up socket holder
+	socket_connect($socket,$server,$port); // connect to minecraft server on port 25565
+	socket_send($socket,chr(254).chr(1),2,null); // send 0xFE 01 -- tells the server we want pinglist info
+	socket_recv($socket,$buf,3,null); // first 3 bytes indicate the len of the reply. not necessary but i'm not one for hacky socket read loops
+	$buf=substr($buf,1,2); // always pads it with 0xFF to indicate an EOF message
+	$len=unpack('n',$buf); // gives us 1/2 the length of the reply
+	socket_recv($socket,$buf,$len[1]*2,null); // read $len*2 bytes and hang u[
+	$data=explode(chr(0).chr(0),$buf); // explode on nul-dubs
+	array_shift($data); // remove separator char
+	return $data; // boom sucka
+}
+
 // Получаем статусы всех серверов, это тоже - наследие
-$ip='78.46.52.181';
+$ip='109.174.77.145';
 $kernel = status($ip,25565);
-$backtrack = status($ip,25566);
-$gentoo = status($ip,25567);
+// $backtrack = status($ip,25566);
+// $gentoo = status($ip,25567);
 $postfix = '';
+// var_dump(pingMCServer($ip), $kernel);
 
 REQUIRE_ONCE('settings.php');
 REQUIRE_ONCE('php/functions.php'); // самопальные функции

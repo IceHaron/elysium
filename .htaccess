@@ -8,6 +8,7 @@ RewriteRule ^(.*)$ /index.php [NC,L]
 
 RewriteCond %{REQUEST_FILENAME} (.*html)|(.*php)
 RewriteCond %{REQUEST_FILENAME} !(/index.php)
+RewriteCond %{REQUEST_FILENAME} !(/files)
 RewriteRule ^(.*)$ /index.php [NC,L]
 
 ErrorDocument 401 "Bad username or password
