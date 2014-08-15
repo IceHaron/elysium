@@ -2,22 +2,6 @@
 
 if ($_SERVER['HTTP_HOST'] == 'elysiumgame.ru') ini_set('display_errors', 0);
 
-/* Получение статуса сервера, наследие прошлой жизни */
-function status($ip, $port){
-
-	if ($fp = @stream_socket_client("tcp://".$ip.":".$port,$e, $e1, 10)) {
-		@stream_set_timeout($fp, 10);
-		fwrite($fp,chr(0xFE));
-		$shiza = fread($fp, 2048);
-		$symbol = iconv('utf-8', 'windows-1251', '§');
-		$status = explode($symbol, substr($shiza,1));
-		return $status;
-		fclose ($fp);
-		
-	} else return null;
-
-}
-
 function pingMCServer($server,$port=25565,$timeout=2){
 	$socket=socket_create(AF_INET,SOCK_STREAM,getprotobyname('tcp')); // set up socket holder
 	socket_connect($socket,$server,$port); // connect to minecraft server on port 25565
@@ -33,11 +17,12 @@ function pingMCServer($server,$port=25565,$timeout=2){
 
 // Получаем статусы всех серверов, это тоже - наследие
 $ip='109.174.77.145';
-$kernel = status($ip,25565);
-// $backtrack = status($ip,25566);
-// $gentoo = status($ip,25567);
+$kernel = pingMCServer($ip, 25565);
+$backtrack = array();
+$gentoo = array();
+// $backtrack = pingMCServer($ip,25566);
+// $gentoo = pingMCServer($ip,25567);
 $postfix = '';
-// var_dump(pingMCServer($ip), $kernel);
 
 REQUIRE_ONCE('settings.php');
 REQUIRE_ONCE('php/functions.php'); // самопальные функции
@@ -76,6 +61,14 @@ if ($module == 'troll') {
 	}
 
 }
+
+$q = "
+	SELECT `players`.`nick` AS `player`, `reason`, `banners`.`nick` AS `admin`, `ban`, `unban`
+	FROM `banlist`
+	JOIN `ololousers` AS `players` ON (`banlist`.`player` = `players`.`id`)
+	JOIN `ololousers` AS `banners` ON (`banlist`.`admin` = `banners`.`id`)
+	WHERE `ban` < NOW() AND (`unban` > NOW() OR `unban` IS NULL);";
+$banlist = $db->query($q);
 
 if ($module == '') $module = 'news';
 // Подгружаем контроллер, если таковой существует

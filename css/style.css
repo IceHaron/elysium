@@ -83,7 +83,7 @@ h4 {font-size:31px;color:#000;letter-spacing:-2px;margin-bottom:16px}
 #header .row-2 ul li.m5 a.active {background:url(/images/m5-act.png)}
 
 /* Кнопка */
-#header .row-2 ul li.m6 a {width:105px;background:url(images/m6.png)}
+#header .row-2 ul li.m6 a {width:105px;background:url(/images/m6.png)}
 #header .row-2 ul li.m6 a:hover, #header .row-2 ul li.m6 a.active {background:url(/images/m6-act.png)}
 #header .row-3 {padding:62px 0 0 77px}
 
@@ -173,14 +173,13 @@ h4 {font-size:31px;color:#000;letter-spacing:-2px;margin-bottom:16px}
 }
 #nav {
 	height:40px;
+	width: 500px;
 	border-bottom:1px solid #ddd;
 	position:fixed;
 	top:0px;
-	left:0px;
-	right:0px;
+	left: calc(50% - 460px);
 	background:#fff /*url(gusland/images/nav.png) repeat center left*/;
-	z-index: 5;
-	display:none;
+	z-index: 10;
 }
 #nav ul {
 	height:25px;
