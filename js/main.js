@@ -116,7 +116,7 @@ function pingServer(server) {
 		, data: {'mode': 'pingServer', 'server': server}
 		, dataType: 'json'
 		, success: function(data) {
-			if (data.players || data.limit) $('.' + server + '-status').css('color','darkgreen').text(data.players + '/' + data.limit);
+			if (data) $('.' + server + '-status').css('color','darkgreen').text(data.players + '/' + data.limit);
 			else $('.' + server + '-status').css('color','darkred').text('Timeout (5s)');
 		}
 		, error: function() {

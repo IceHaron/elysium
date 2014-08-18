@@ -128,7 +128,7 @@ if ($action == 'reg' && isset($_POST['nick']) && !isset($cid)) {
 	// Защищаемся, проверяем валидность данных
 	$login = $db->escape($_POST['login']);
 	$pw = $db->escape($_POST['pw']);
-	saltPw($pw);
+	$check = saltPw($pw);
 	$q = "SELECT `id`, `email`, `nick`, `group` FROM `ololousers` WHERE (`nick` = '$login' OR `email` = '$login') AND `pw` = MD5('$pw')";
 	$answer = $db->query($q);
 
