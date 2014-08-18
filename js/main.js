@@ -5,10 +5,13 @@ $(document).ready(function(){
 	$("#back-top").hide(); // Скрываем банлист
 
 	// Пингуем серваки раз в пять минут и один раз при загрузке страницы
-	for (i in servers) {
-		server = servers[i];
-		pingServer(server);
-	}
+	// for (i in servers) {
+	// 	server = servers[i];
+	// 	pingServer(server);
+	// }
+		pingServer('kernel');
+			$('.backtrack-status').css('color','darkred').text('Timeout (5s)');
+			$('.gentoo-status').css('color','darkred').text('Timeout (5s)');
 
 	// Если мы залогинены, проверяем неполученные ачивки сразу и запускаем проверку каждые 5 минут
 	if ($('.logged').length != 0) {

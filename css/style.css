@@ -212,6 +212,18 @@ h4 {font-size:31px;color:#000;letter-spacing:-2px;margin-bottom:16px}
 .newsSplit {
 
 }
+.pager {
+	margin: 5px;
+}
+.page {
+	display: inline-block;
+	padding: 5px;
+	margin: 5px;
+}
+a .page:hover {
+	background-color: lightgrey;
+}
+
 #authPanel {
 	float: right;
 }
