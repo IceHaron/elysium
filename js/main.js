@@ -1,6 +1,14 @@
+var servers = new Array('kernel', 'backtrack', 'gentoo');
+
 $(document).ready(function(){
 
 	$("#back-top").hide(); // Скрываем банлист
+
+	// Пингуем серваки раз в пять минут и один раз при загрузке страницы
+	for (i in servers) {
+		server = servers[i];
+		pingServer(server);
+	}
 
 	// Если мы залогинены, проверяем неполученные ачивки сразу и запускаем проверку каждые 5 минут
 	if ($('.logged').length != 0) {
@@ -94,6 +102,28 @@ $(document).ready(function(){
 	});
 
 });
+
+/**
+* 
+* Пингуем серваки
+* 
+**/
+function pingServer(server) {
+	$.ajax({
+		  type: 'GET'
+		, url: '/ajax'
+		// , async: false
+		, data: {'mode': 'pingServer', 'server': server}
+		, dataType: 'json'
+		, success: function(data) {
+			if (data.players || data.limit) $('.' + server + '-status').css('color','darkgreen').text(data.players + '/' + data.limit);
+			else $('.' + server + '-status').css('color','darkred').text('Timeout (5s)');
+		}
+		, error: function() {
+			$('.' + server + '-status').css('color','darkred').text('Timeout (5s)');
+		}
+	});
+}
 
 /**
 * 

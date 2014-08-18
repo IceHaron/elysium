@@ -3,8 +3,10 @@
 if ($_SERVER['HTTP_HOST'] == 'elysiumgame.ru') ini_set('display_errors', 0);
 
 function pingMCServer($server,$port=25565,$timeout=2){
+	$fp = fsockopen($server, $port, $errno, $errstr, 5);
+	if (!$fp) exit();
 	$socket=socket_create(AF_INET,SOCK_STREAM,getprotobyname('tcp')); // set up socket holder
-	socket_connect($socket,$server,$port); // connect to minecraft server on port 25565
+	$con = socket_connect($socket,$server,$port); // connect to minecraft server on port 25565
 	socket_send($socket,chr(254).chr(1),2,null); // send 0xFE 01 -- tells the server we want pinglist info
 	socket_recv($socket,$buf,3,null); // first 3 bytes indicate the len of the reply. not necessary but i'm not one for hacky socket read loops
 	$buf=substr($buf,1,2); // always pads it with 0xFF to indicate an EOF message
@@ -15,13 +17,6 @@ function pingMCServer($server,$port=25565,$timeout=2){
 	return $data; // boom sucka
 }
 
-// Получаем статусы всех серверов, это тоже - наследие
-$ip='109.174.77.145';
-$kernel = pingMCServer($ip, 25565);
-$backtrack = array();
-$gentoo = array();
-// $backtrack = pingMCServer($ip,25566);
-// $gentoo = pingMCServer($ip,25567);
 $postfix = '';
 
 REQUIRE_ONCE('settings.php');

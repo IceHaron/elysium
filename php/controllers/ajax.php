@@ -34,6 +34,18 @@ switch ($_GET['mode']) {
 		echo 'Diamond stolen! RUN!';
 	break;
 
+	case 'pingServer':
+		$server = $db->escape($_GET['server']);
+		// Получаем статусы всех серверов
+		$ip = '109.174.77.145';
+		$port = array('kernel' => 25565, 'backtrack' => 25566, 'gentoo' => 25567);
+		$status = pingMCServer($ip, $port[$server]);
+		// $backtrack = pingMCServer($ip,25566);
+		// $gentoo = pingMCServer($ip,25567);
+		$output = json_encode(array('players' => (int)str_replace(chr(0), '', $status[3]), 'limit' => (int)str_replace(chr(0), '', $status[4])));
+		echo $output;
+	break;
+
 	default:
 		// Какая-то хрень
 		echo 'wrong mode';

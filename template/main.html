@@ -49,30 +49,15 @@
 	<ul>
 		<li>
 			<b>Kernel[Classic]</b>
-			<? 
-			if($kernel[2]) {
-				echo '<br><text style="color:darkgreen">'.$kernel[3].'/'.$kernel[4].'</text>';
-			} else
-				echo '<br><text style="color:darkred">Timeout</text></br>';
-			?>
+			<br><text class="kernel-status">Pinging...</text>
 		</li>
   	<li>
 			<b>BackTrack[IC2+RP2]</b>
-			<?
-			if(isset($backtrack[2])) {
-				echo '<br><text style="color:darkgreen">: '.$backtrack[1].'/'.$backtrack[2].'</text></br>';
-			} else
-				echo '<br><text style="color:darkred">Timeout</text></br>';
-			?>
+			<br><text class="backtrack-status">Pinging...</text>
 		</li>
 		<li>
 			<b>Gentoo[FullPVP]</b>
-			<?
-				if(isset($gentoo[2])) {
-					echo '<br><text style="color:darkgreen">: '.$gentoo[1].'/'.$gentoo[2].'</text></br>';
-				} else
-					echo '<br><text style="color:darkred">Timeout</text></br>';
-			?>
+			<br><text class="gentoo-status">Pinging...</text>
 		</li>
 		<? if (false) { ?><li class="banner"><a href="http://mctop.su/rating/vote/airbreaker" style="border: 0;"><img src="http://mctop.su/counter/p4587" /></a></li>
 		<li class="banner"><a href="http://www.want2vote.com/info.php?id=1104" style="border: 0;"><img src="http://w2v.biz/_status/pictures/status_votebanner/1104.jpg"></a></li><? } ?>
