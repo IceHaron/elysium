@@ -37,7 +37,7 @@ switch ($_GET['mode']) {
 	case 'pingServer':
 		$server = $db->escape($_GET['server']);
 		// Получаем статусы всех серверов
-		$ip = '109.174.77.145';
+		$ip = '144.76.111.114';
 		$port = array('kernel' => 25565, 'backtrack' => 25566, 'gentoo' => 25567);
 		$status = pingMCServer($ip, $port[$server]);
 		// $backtrack = pingMCServer($ip,25566);
