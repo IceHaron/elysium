@@ -71,7 +71,6 @@ class user {
 	public function getInfo($user) {
 
 		GLOBAL $db;
-		$tokens = array('changename' => 0);
 		$q = "SELECT `action`, count(*) AS `count` FROM `tokens` WHERE `user` = {$user} GROUP BY `action`";
 		$r = $db->query($q);
 
@@ -79,7 +78,7 @@ class user {
 			foreach ($r as $token) {
 				$tokens[ $token['action'] ] = $token['count'];
 			}
-		else $tokens = array();
+		else $tokens = array('changename' => 0);
 
 		$q = "SELECT * FROM `ololousers` WHERE `id` = '$user'";
 		$r = $db->query($q);
