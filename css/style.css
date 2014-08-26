@@ -407,17 +407,31 @@ a .page:hover {
 
 /* Список игроков */
 #playerList {
-	width: 100%;
+	width: calc(100% - 300px);
+	float: left;
 }
 #playerList td {
 	padding: 5px;
 	border: 1px solid grey;
 }
-#playerList .admin a {
+.creator {
 	/*font-weight: bold;*/
 	font-size: 18px;
 	color: red;
 }
-#playerList .hiddenUser a {
-	color: grey;
+.admin { color: red; }
+.smoder { color: orange; }
+.moderator { color: goldenrod; }
+.tester { color: #A5A500; }
+.platinum { color: yellowgreen; }
+.goldvip { color: #00AA00; }
+.vip { color: #00C49D; }
+.verified { color: #20b7c9; }
+.hiddenUser { color: grey; }
+.legend {
+	float: left;
+	padding: 15px;
+}
+.legend p {
+	margin-bottom: 5px;
 }

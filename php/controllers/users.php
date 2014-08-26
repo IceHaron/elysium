@@ -13,11 +13,19 @@ if (isset($_GET['id'])) {
 
 } else {
 
-	$q = "SELECT `id`, `nick`, `mcname`, `exp`, `steamid`, `email`, `privacy`, `referrer`, `group` FROM `ololousers` WHERE `group` NOT IN (0, 100);";
+	$q = "SELECT `id`,`alias` FROM `usergroups`";
+	$r = $db->query($q);
+
+	foreach ($r as $group) {
+		$alias[ $group['id'] ] = $group['alias'];
+	}
+
+	$q = "SELECT `id`, `nick`, `mcname`, `exp`, `privacy`, `referrer`, `group` FROM `ololousers` WHERE `group` NOT IN (0, 100);";
 	$r = $db->query($q);
 
 	foreach ($r as $k => $player) {
 		$privacy = $player['privacy'];
+		$groupid = $player['group'];
 
 		if (isset($cid) && ($player['referrer'] == $cid || $player['id'] == $referrer)) $standing = 'friends';
 		else if (isset($cid)) $standing = 'reg';
@@ -26,8 +34,9 @@ if (isset($_GET['id'])) {
 		$player['levelInfo'] = $user->getLevelHTML($level);
 		$player['privacy'] = json_decode($player['privacy'], TRUE);
 		$player['hidden'] = $privacy == '{"friends":{"exp":0,"ach":0,"steam":0},"reg":{"exp":0,"ach":0,"steam":0},"all":{"exp":0,"ach":0,"steam":0}}';
+		$player['group'] = $alias[$groupid];
 
-		if ($user->info['group'] > 1 || $privacy != '{"friends":{"exp":0,"ach":0,"steam":0},"reg":{"exp":0,"ach":0,"steam":0},"all":{"exp":0,"ach":0,"steam":0}}')
+		if ($user->info['group'] >= 50 || $privacy != '{"friends":{"exp":0,"ach":0,"steam":0},"reg":{"exp":0,"ach":0,"steam":0},"all":{"exp":0,"ach":0,"steam":0}}')
 			$playerList[$k] = $player;
 	}
 	// var_dump($playerList);

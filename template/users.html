@@ -58,14 +58,11 @@ if ($pagetype == 'unit') {
 			if (isset($cid) && $cid == $player['id']) {
 				$nick = $player['nick'] . ' (Вы)';
 				$color = 'style="background-color: lightgrey"';
-			} else if ($player['group'] == 777) {
-				$nick = '<span class="admin"><a href="/users?id=' . $player['id'] . '">' . $player['nick'] . '</a></span>';
-				$color = '';
 			} else if ($player['hidden'] == TRUE) {
-				$nick = '<span class="hiddenUser"><a href="/users?id=' . $player['id'] . '">' . $player['nick'] . '</a></span>';
+				$nick = '<span><a class="hiddenUser" href="/users?id=' . $player['id'] . '">' . $player['nick'] . '</a></span>';
 				$color = '';
 			} else {
-				$nick = '<a href="/users?id=' . $player['id'] . '">' . $player['nick'] . '</a>';
+				$nick = '<span><a class="' . $player['group'] . '" href="/users?id=' . $player['id'] . '">' . $player['nick'] . '</a></span>';
 				$color = '';
 			}
 			?>
@@ -80,6 +77,16 @@ if ($pagetype == 'unit') {
 		}
 		?>
 	</table>
+	<div class="legend">
+		<p class="creator">Создатель</p>
+		<p class="admin">Администратор</p>
+		<p class="smoder">Старший модератор</p>
+		<p class="moderator">Модератор</p>
+		<p class="platinum">Platinum</p>
+		<p class="goldvip">GoldVIP</p>
+		<p class="vip">VIP</p>
+		<p class="verified">Верифицированный</p>
+	</div>
 	<?
 }
 ?>
