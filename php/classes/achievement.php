@@ -464,6 +464,14 @@ class achievement {
 					}
 					break;
 
+				case '24':
+					// Мы - тестер
+					if ($info['group'] == 5) {
+						$this->earn($id, 24);
+						$output[] = $ach['id'];
+					}
+					break;
+
 				case '30':
 					// Достигнут 30 уровень
 					if ($level['level'] >= $ach['req']) {
