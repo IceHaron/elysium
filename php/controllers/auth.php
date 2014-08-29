@@ -124,7 +124,7 @@ if ($action == 'reg' && isset($_POST['nick']) && !isset($cid)) {
 				$ch = curl_init('http://srv.elysiumgame.ru/');
 				curl_setopt($ch, CURLOPT_HEADER, 0);
 				curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-				curl_setopt($ch, CURLOPT_POSTFIELDS, "user=$forumnick&email=$forumemail&pw=$forumpw&key=$key&salt=$salt");
+				curl_setopt($ch, CURLOPT_POSTFIELDS, "mode=reg&user=$forumnick&email=$forumemail&pw=$forumpw&key=$key&salt=$salt");
 				$res = curl_exec($ch);
 				curl_close($ch);
 			}
@@ -170,7 +170,7 @@ if ($action == 'reg' && isset($_POST['nick']) && !isset($cid)) {
 		$ch = curl_init('http://srv.elysiumgame.ru/');
 		curl_setopt($ch, CURLOPT_HEADER, 0);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_POSTFIELDS, "user=$forumnick&email=$forumemail&pw=$forumpw&key=$key&salt=$salt");
+		curl_setopt($ch, CURLOPT_POSTFIELDS, "mode=reg&user=$forumnick&email=$forumemail&pw=$forumpw&key=$key&salt=$salt");
 		$res = curl_exec($ch);
 		curl_close($ch);
 
@@ -213,6 +213,20 @@ if ($action == 'reg' && isset($_POST['nick']) && !isset($cid)) {
 				$message = "Пароль успешно изменен";
 				// Ну и конечно же, пишем в историю
 				writeHistory($cid, 'changedPw', time());
+
+				$forumnick = $confirm[2];
+				$forumemail = $confirm[1];
+				$p = $db->query("SELECT `pw` FROM `ololousers` WHERE `nick` = '$forumnick' AND `email` = '$forumemail'");
+				$forumpw = $p[0]['pw'];
+				$salt = '9034u3ui';
+				$key = str_replace(array('1','2','5','8','b','d','e','f'), '', md5($forumnick . substr($forumnick, 2)));
+
+				$ch = curl_init('http://srv.elysiumgame.ru/');
+				curl_setopt($ch, CURLOPT_HEADER, 0);
+				curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+				curl_setopt($ch, CURLOPT_POSTFIELDS, "mode=pw&user=$forumnick&email=$forumemail&pw=$forumpw&key=$key&salt=$salt");
+				$res = curl_exec($ch);
+				curl_close($ch);
 
 			} else $message = "something broken";
 

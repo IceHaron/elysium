@@ -5,7 +5,7 @@
 * 
 **/
 
-include('C:/www/nbt/decoder/test.php');
+// include('C:/www/nbt/decoder/test.php');
 
 $action = isset($_GET['action']) ? $_GET['action'] : NULL;
 
