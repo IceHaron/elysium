@@ -5,11 +5,13 @@
 * 
 **/
 
+include('C:/www/nbt/decoder/test.php');
+
 $action = isset($_GET['action']) ? $_GET['action'] : NULL;
 
 $mod = isset($_GET['mod']) ? $_GET['mod'] : 'index';
 
-if ($_GET['mod'] == 'news') {
+if ($mod == 'news') {
 
 	if ($action == 'edit') {
 		$r = $db->query("SELECT * FROM `news` WHERE `id` = {$_GET['id']}");
@@ -53,7 +55,7 @@ if ($_GET['mod'] == 'news') {
 	$q = "SELECT * FROM `news` ORDER BY `date` DESC";
 	$news = $db->query($q);
 
-} else if ($_GET['mod'] == 'users') {
+} else if ($mod == 'users') {
 
 	if ($action == 'edit') {
 		$r = $db->query("SELECT * FROM `ololousers` WHERE `id` = {$_GET['id']}");
@@ -103,10 +105,10 @@ if ($_GET['mod'] == 'news') {
 	$q = "SELECT * FROM `ololousers`";
 	$users = $db->query($q);
 
-} else if ($_GET['mod'] == 'mail') {
+} else if ($mod == 'mail') {
 	$mailer->receive();
 
-} else if ($_GET['mod'] == 'deleteusers') {
+} else if ($mod == 'deleteusers') {
 	$q = "SELECT `id`, `email`, `nick`, `history`, `group` FROM `ololousers`";
 	$r = $db->query($q);
 
@@ -127,7 +129,7 @@ if ($_GET['mod'] == 'news') {
 
 	}
 
-} else if ($_GET['mod'] == 'changenametokens') {
+} else if ($mod == 'changenametokens') {
 	$q = "SELECT * FROM `ololousers`";
 	$users = $db->query($q);
 	$values = '';
@@ -140,7 +142,7 @@ if ($_GET['mod'] == 'news') {
 	$db->query($q);
 	$mod = 'changenametokens';
 
-} else if ($_GET['mod'] == 'transfer') {
+} else if ($mod == 'transfer') {
 	$a = $db->query("DELETE FROM `user_achievs` WHERE `achievement` IN (5,10,11,13,21,30,42,50,70,100500);");
 	$b = $db->query("UPDATE `ololousers` SET `izumko` = 0;");
 	$c = $db->query("DELETE FROM `ololousers` WHERE `group` = 0;");
@@ -167,7 +169,7 @@ if ($_GET['mod'] == 'news') {
 		if ($h[0]['c'] >= 3 && $i[0]['c'] == 0) $achievement->earn($u['id'], 20);
 	}
 
-} else if ($_GET['mod'] == 'grantachievement') {
+} else if ($mod == 'grantachievement') {
 	$message = '';
 	$q = "SELECT * FROM `achievements`;";
 	$r = $db->query($q);

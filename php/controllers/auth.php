@@ -113,6 +113,20 @@ if ($action == 'reg' && isset($_POST['nick']) && !isset($cid)) {
 				$q = "INSERT INTO `tokens` (`user`, `action`) VALUES ({$confirm[0]}, 'changename'),({$confirm[0]}, 'changename');";
 				$r = $db->query($q);
 				writeHistory($confirm[0], 'activated', time());
+
+				$forumnick = $confirm[2];
+				$forumemail = $confirm[1];
+				$p = $db->query("SELECT `pw` FROM `ololousers` WHERE `nick` = '$forumnick' AND `email` = '$forumemail'");
+				$forumpw = $p[0]['pw'];
+				$salt = '9034u3ui';
+				$key = str_replace(array('1','2','5','8','b','d','e','f'), '', md5($forumnick . substr($forumnick, 2)));
+
+				$ch = curl_init('http://srv.elysiumgame.ru/');
+				curl_setopt($ch, CURLOPT_HEADER, 0);
+				curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+				curl_setopt($ch, CURLOPT_POSTFIELDS, "user=$forumnick&email=$forumemail&pw=$forumpw&key=$key&salt=$salt");
+				$res = curl_exec($ch);
+				curl_close($ch);
 			}
 
 		}
@@ -145,6 +159,21 @@ if ($action == 'reg' && isset($_POST['nick']) && !isset($cid)) {
 		$output = '<h1>Вы успешно авторизовались</h1>';
 		$location = '/lk';
 		$registered = TRUE;
+
+		$forumnick = $answer[0]['nick'];
+		$forumemail = $answer[0]['email'];
+		$p = $db->query("SELECT `pw` FROM `ololousers` WHERE `nick` = '$forumnick' AND `email` = '$forumemail'");
+		$forumpw = $p[0]['pw'];
+		$salt = '9034u3ui';
+		$key = str_replace(array('1','2','5','8','b','d','e','f'), '', md5($forumnick . substr($forumnick, 2)));
+
+		$ch = curl_init('http://srv.elysiumgame.ru/');
+		curl_setopt($ch, CURLOPT_HEADER, 0);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, "user=$forumnick&email=$forumemail&pw=$forumpw&key=$key&salt=$salt");
+		$res = curl_exec($ch);
+		curl_close($ch);
+
 	}
 
 /**
