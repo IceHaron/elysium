@@ -31,7 +31,7 @@ $mailer = new mail(); // ...создаем экземпляр
 
 session_set_cookie_params(86400);
 session_start();
-session_regenerate_id(TRUE);
+session_regenerate_id();
 // Логинимся
 if (isset($_SESSION['login'])) {
 	$user = new user();
