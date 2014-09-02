@@ -109,7 +109,7 @@
 							<? if ($clogin != '') { ?>
 								<span class="logged">Вы вошли как <?=$clogin?></span><br/>
 								<a href="lk">Личный кабинет</a><br/>
-								<a href="auth?action=off">Выйти</a>
+								<a href="auth?action=off&hash=<?=session_id();?>">Выйти</a>
 							<? } else { ?>
 								<a href="auth?action=reg">Регистрация</a><br/>
 								<a href="auth?action=log">Авторизация</a>

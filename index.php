@@ -29,9 +29,10 @@ REQUIRE_ONCE('php/classes/user.php'); // ...для работы с пользо�
 $db = new db(); // ...создаем экземпляр
 $mailer = new mail(); // ...создаем экземпляр
 
-session_set_cookie_params(604800);
+ini_set('session.gc_maxlifetime', 604800);
+ini_set('session.cookie_lifetime', 604800);
 session_start();
-session_regenerate_id();
+// session_regenerate_id();
 // Логинимся
 if (isset($_SESSION['login'])) {
 	$user = new user();

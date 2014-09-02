@@ -183,9 +183,12 @@ if ($action == 'reg' && isset($_POST['nick']) && !isset($cid)) {
 **/
 } else if ($action == 'off') {
 	// Очищаем куки (для упорышей) и переменные сессии
-	setcookie('login', NULL);
-	unset($_SESSION['login']);
-	unset($_SESSION['email']);
+	if ($_GET['hash'] == session_id()) {
+		session_unset();
+		session_destroy();
+		unset($_COOKIE['PHPSESSID']);
+		setcookie('PHPSESSID', NULL);
+	}
 	$location = '/';
 	header("Location: " . $location);
 
