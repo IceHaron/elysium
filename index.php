@@ -29,7 +29,9 @@ REQUIRE_ONCE('php/classes/user.php'); // ...для работы с пользо�
 $db = new db(); // ...создаем экземпляр
 $mailer = new mail(); // ...создаем экземпляр
 
+session_set_cookie_params(86400);
 session_start();
+session_regenerate_id(TRUE);
 // Логинимся
 if (isset($_SESSION['login'])) {
 	$user = new user();
