@@ -73,23 +73,6 @@
 	<h3>Список Банов</h3>
 	<p style="color:gray">(разбаненные игроки здесь не отображаются)</p>
 	<table width="100%">
-		<tr>
-			<th>Игрок</th>
-			<th>Причина</th>
-			<th>Забанивший</th>
-			<th>Забанен от</th>
-			<th>Забанен до</th>
-		</tr>
-		<? foreach ($banlist as $ban) {
-			echo '
-				<tr>
-					<td>' . $ban['player'] . '</td>
-					<td>' . $ban['reason'] . '</td>
-					<td>' . $ban['admin'] . '</td>
-					<td>' . $ban['ban'] . '</td>
-					<td>' . ($ban['unban'] ? $ban['unban'] : 'Навечно') . '</td>
-				</tr>';
-		} ?>
 	</table>
 </div>
 <div style='display:none'>
@@ -127,7 +110,7 @@
 							<li class="m4"><a href="/rules">Правила</a></li>
 							<li class="m5"><a href="/achievements">Ачивки</a></li>
 							<li class="m6"><a href="http://forum.elysiumgame.ru" target="blank">Форум</a></li>
-							<!-- <li class="m6" id="banlist-button"><a href="">Банлист</a></li> -->
+							<li class="m6" id="banlist-button"><a href="">Банлист</a></li>
 							<!-- <li class="m6"><a href="/donate">Донат</a></li> -->
 						</ul>
 					</div>

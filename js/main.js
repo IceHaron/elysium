@@ -9,9 +9,9 @@ $(document).ready(function(){
 	// 	server = servers[i];
 	// 	pingServer(server);
 	// }
-		pingServer('kernel');
-			$('.backtrack-status').css('color','darkred').text('Timeout (5s)');
-			$('.gentoo-status').css('color','darkred').text('Timeout (5s)');
+	pingServer('kernel');
+	$('.backtrack-status').css('color','darkred').text('Timeout (5s)');
+	$('.gentoo-status').css('color','darkred').text('Timeout (5s)');
 
 	// Если мы залогинены, проверяем неполученные ачивки сразу и запускаем проверку каждые 5 минут
 	if ($('.logged').length != 0) {
@@ -55,6 +55,25 @@ $(document).ready(function(){
 	// При клике на кнопку банлиста, мы не по ссылке переходим, а отображаем банлист
 	$('#banlist-button').click(function(e) {
 		e.preventDefault();
+		$.ajax({
+			  type: 'GET'
+			, url: '/ajax'
+			// , async: false
+			, data: {'mode': 'checkBL'}
+			, dataType: 'json'
+			, success: function(data) {
+				// if (data) $('.' + server + '-status').css('color','darkgreen').text(data.players + '/' + data.limit);
+				// else $('.' + server + '-status').css('color','darkred').text('Timeout (5s)');
+				$('#banlist table').html('<tr><th>Игрок</th><th>Причина</th><th>Забанивший</th><th>Забанен от</th><th>Забанен до</th></tr>');
+				for (i in data) {
+					var ban = data[i];
+					$('#banlist table').append('<tr><td>' + ban.player + '</td><td>' + ban.reason + '</td><td>' + ban.admin + '</td><td>' + ban.ban + '</td><td>' + (ban.unban ? ban.unban : 'Навечно') + '</td></tr>');
+				}
+			}
+			, error: function() {
+				// $('.' + server + '-status').css('color','darkred').text('Timeout (5s)');
+			}
+		});
 		$('#shadow').show();
 		$('#banlist').show();
 	});
