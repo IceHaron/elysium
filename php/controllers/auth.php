@@ -42,7 +42,7 @@ if ($action == 'reg' && isset($_POST['nick']) && !isset($cid)) {
 	if (preg_match('/^[^A-Za-z0-9]|[^0-9A-Za-z\-\_]+/', $nick) || strlen($nick) <= 2) {
 		$output = 'Вы пытаетесь сломать наш сайт, но мы будем сопротивляться! (Неправильный ник)';
 
-	} else if (!preg_match('/^(\w|\.|\-|\_)+\@\w+\.\w+/', $email) || strlen($email) <= 5 || preg_match('/^\@mailinator/', $email)) {
+	} else if (!preg_match('/^(\w|\.|\-|\_)+\@\w+\.\w+/', $email) || strlen($email) <= 5 || preg_match('/\@mailinator/', $email)) {
 		$output = 'Вы пытаетесь сломать наш сайт, но мы будем сопротивляться! (Неправильная почта)';
 
 	} else {
