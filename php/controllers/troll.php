@@ -22,6 +22,7 @@ foreach ($p as $u) {
 	curl_setopt($ch, CURLOPT_POSTFIELDS, "mode=reg&user=$forumnick&email=$forumemail&pw=$forumpw&key=$key&salt=$salt");
 	$res = curl_exec($ch);
 	curl_close($ch);
+	var_dump($res, '<br/>');
 }
 
 
