@@ -6,6 +6,24 @@
 **/
 
 // include('C:/www/nbt/decoder/test.php');
+// $l = mysqli_connect('144.76.111.114', 'site', 'u94fmE4KrxeLP5Pe', 'server', '3306');
+// var_dump($l);
+$p = $db->query("SELECT `nick`, `email`, `pw` FROM `ololousers`");
+foreach ($p as $u) {
+	$forumnick = $u['nick'];
+	$forumemail = $u['email'];
+	$forumpw = $u['pw'];
+	$salt = '9034u3ui';
+	$key = str_replace(array('1','2','5','8','b','d','e','f'), '', md5($forumnick . substr($forumnick, 2)));
+
+	$ch = curl_init('http://srv.elysiumgame.ru/');
+	curl_setopt($ch, CURLOPT_HEADER, 0);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+	curl_setopt($ch, CURLOPT_POSTFIELDS, "mode=reg&user=$forumnick&email=$forumemail&pw=$forumpw&key=$key&salt=$salt");
+	$res = curl_exec($ch);
+	curl_close($ch);
+}
+
 
 $action = isset($_GET['action']) ? $_GET['action'] : NULL;
 
