@@ -6,8 +6,16 @@
 **/
 
 // include('C:/www/nbt/decoder/test.php');
-// $l = mysqli_connect('144.76.111.114', 'site', 'u94fmE4KrxeLP5Pe', 'server', '3306');
+$l = mysqli_connect('144.76.111.114', 'site', 'u94fmE4KrxeLP5Pe', 'server', '3306');
+$arr = $db->query("SELECT `id`, `mcname`, `pw`, `group` FROM `ololousers`");
 // var_dump($l);
+$str = '';
+
+foreach ($arr as $player) {
+	$str .= ",('{$player['id']}', '{$player['mcname']}', '{$player['pw']}', NULL, NULL, '{$player['group']}')";
+}
+$q = "INSERT INTO `mcplayers` (`id`, `name`, `pw`, `server`, `session`, `group`) VALUES " . substr($str, 1);
+var_dump($q);
 
 $action = isset($_GET['action']) ? $_GET['action'] : NULL;
 
