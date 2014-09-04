@@ -62,16 +62,11 @@ $(document).ready(function(){
 			, data: {'mode': 'checkBL'}
 			, dataType: 'json'
 			, success: function(data) {
-				// if (data) $('.' + server + '-status').css('color','darkgreen').text(data.players + '/' + data.limit);
-				// else $('.' + server + '-status').css('color','darkred').text('Timeout (5s)');
 				$('#banlist table').html('<tr><th>Игрок</th><th>Причина</th><th>Забанивший</th><th>Забанен от</th><th>Забанен до</th></tr>');
 				for (i in data) {
 					var ban = data[i];
-					$('#banlist table').append('<tr><td>' + ban.player + '</td><td>' + ban.reason + '</td><td>' + ban.admin + '</td><td>' + ban.ban + '</td><td>' + (ban.unban ? ban.unban : 'Навечно') + '</td></tr>');
+					$('#banlist table').append('<tr><td>' + ban.player + '</td><td>' + ban.reason + '</td><td>' + ban.admin + '</td><td>' + ban.ban + '</td><td>' + ban.unban + '</td></tr>');
 				}
-			}
-			, error: function() {
-				// $('.' + server + '-status').css('color','darkred').text('Timeout (5s)');
 			}
 		});
 		$('#shadow').show();

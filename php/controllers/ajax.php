@@ -48,10 +48,10 @@ switch ($_GET['mode']) {
 
 	case 'checkBL':
 		$l = mysqli_connect('144.76.111.114', 'site', 'u94fmE4KrxeLP5Pe', 'server', '3306');
-		$q = "SELECT * FROM `banlist`";
+		$q = "SELECT * FROM `banlist` LIMIT 0,10";
 		$b = mysqli_query($l, $q);
 		while ($ban = mysqli_fetch_assoc($b)) {
-			$bans[] = array('player' => $ban['name'], 'reason' => $ban['reason'], 'admin' => $ban['admin'], 'ban' => $ban['time'], 'unban' => $ban['temptime']);
+			$bans[] = array('player' => $ban['name'], 'reason' => $ban['reason'], 'admin' => $ban['admin'], 'ban' => date("d-m-Y H:i", $ban['time']), 'unban' => ($ban['temptime'] ? date("d-m-Y H:i", $ban['temptime']) : 'Навечно'));
 		}
 		echo json_encode($bans);
 	break;
