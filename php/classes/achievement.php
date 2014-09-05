@@ -456,6 +456,14 @@ class achievement {
 					}
 					break;
 
+				case '16':
+					// Я по делу
+					if ($info['group'] == '5') {
+						$this->earn($id, 16);
+						$output[] = $ach['id'];
+					}
+					break;
+
 				case '21':
 					// Достигнут 21 уровень
 					if ($level['level'] >= $ach['req']) {

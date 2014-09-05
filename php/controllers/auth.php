@@ -78,11 +78,6 @@ if ($action == 'reg' && isset($_POST['nick']) && !isset($cid)) {
 
 			$mailer->send('register', $from, $to, 'Вы зарегистрировали аккаунт на портале Elysium Game', $mailMessage);
 
-			$achievement->earn($r[0]['id'], 22);
-
-			if ($referrer != 1) $achievement->earn($r[0]['id'], 8);
-
-			if ($referrer == 1) $achievement->earn($r[0]['id'], 14);
 			$output = 'Регистрация прошла успешно';
 			$registered = TRUE;
 			$location = '/auth?action=log';
@@ -109,6 +104,9 @@ if ($action == 'reg' && isset($_POST['nick']) && !isset($cid)) {
 
 			if ($r) {
 				$output = 'Поздравляем, вы активировали свой аккаунт!';
+				$achievement->earn($r[0]['id'], 22);
+				if ($r[0]['referrer'] != 1) $achievement->earn($r[0]['id'], 8);
+				if ($r[0]['referrer'] == 1) $achievement->earn($r[0]['id'], 14);
 				$location = '/auth?action=log';
 				$q = "INSERT INTO `tokens` (`user`, `action`) VALUES ({$confirm[0]}, 'changename'),({$confirm[0]}, 'changename');";
 				$r = $db->query($q);
