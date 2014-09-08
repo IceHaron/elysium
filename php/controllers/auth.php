@@ -81,6 +81,7 @@ if ($action == 'reg' && isset($_POST['nick']) && !isset($cid)) {
 			$output = 'Регистрация прошла успешно';
 			$registered = TRUE;
 			$location = '/auth?action=log';
+
 		}
 	}
 
@@ -214,7 +215,6 @@ if ($action == 'reg' && isset($_POST['nick']) && !isset($cid)) {
 				curl_setopt($ch, CURLOPT_POSTFIELDS, "mode=pw&user=$forumnick&email=$forumemail&pw=$forumpw&key=$key&salt=$salt");
 				$res = curl_exec($ch);
 				curl_close($ch);
-				var_dump($res);
 
 			} else $message = "something broken";
 

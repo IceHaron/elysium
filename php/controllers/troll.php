@@ -172,6 +172,7 @@ if ($mod == 'news') {
 	$q = "SELECT * FROM `achievements`;";
 	$r = $db->query($q);
 	$htmlach = '';
+
 	foreach ($r as $ach) {
 		$title = $ach['id'] . ' - ' . $ach['name'] . ' (' . $ach['xpcost'] . ')';
 		// $aarr[ $ach['id'] ] = $title;
@@ -181,15 +182,40 @@ if ($mod == 'news') {
 	$q = "SELECT * FROM `ololousers`;";
 	$r = $db->query($q);
 	$htmluser = '';
+
 	foreach ($r as $u) {
 		$title = $u['id'] . ' - ' . $u['nick'] . ' (' . $u['mcname'] . ')';
 		// $uarr[ $u['id'] ] = $title;
 		$htmluser .= '<option value="' . $u['id'] . '">' . $title . '</option>';
 	}
+
 	if (isset($_POST['user']) && isset($_POST['ach']) && isset($_POST['exp'])) {
 		$exp = intval($_POST['exp']);
 		$result = $achievement->earn($_POST['user'], $_POST['ach'], $exp);
 		$message = ($result === FALSE) ? 'Ачивка уже есть у пользователя' : 'Ачивка выдана.';
 	}
+
+} else if ($mod == 'syncSiteForumServer') {
+	$q = "SELECT `email`, `nick`, `mcname`, `group` FROM `ololousers`";
+	$r = $db->query($q);
+
+	foreach ($r as $player) {
+		$forumnick = $player['nick'];
+		$forumemail = $player['email'];
+		$salt = '9034u3ui';
+		$key = str_replace(array('1','2','5','8','b','d','e','f'), '', md5($forumnick . substr($forumnick, 2)));
+		$forumpw = md5($key);
+		$group = $player['group'];
+		$mcname = $player['mcname'];
+
+		$ch = curl_init('http://srv.elysiumgame.ru/');
+		curl_setopt($ch, CURLOPT_HEADER, 0);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, "mode=sync&user=$forumnick&email=$forumemail&pw=$forumpw&group=$group&mcnick=$mcname&key=$key&salt=$salt");
+		$res = curl_exec($ch);
+		curl_close($ch);
+		echo "&lt;$forumemail&gt; $res<br/><br/>";
+	}
+
 
 }
