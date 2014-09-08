@@ -42,7 +42,7 @@ class mail {
 		$toName = $to['name'];
 
 		$header="Date: ".date("D, j M Y G:i:s")." +0300\r\n";
-		$header.="From: =?utf-8?Q?".str_replace("+","_",str_replace("%","=",urlencode('Elysium Game')))."?= <alphatest@inextinctae.ru>\r\n";
+		$header.="From: =?utf-8?Q?".str_replace("+","_",str_replace("%","=",urlencode('Elysium Game')))."?= <" . $this->login . ">\r\n";
 		$header.="X-Mailer: The Bat! (v3.99.3) Professional\r\n";
 		$header.="X-Priority: 3 (Normal)\r\n";
 		$header.="Message-ID: <172562218.".date("YmjHis")."@mail.ru>\r\n";
@@ -169,7 +169,7 @@ class mail {
 				$mails = $db->query("SELECT * FROM `mail` WHERE `to` = '$email' AND `text` = '$answer'");
 
 				if ($mails === NULL && isset($answer)) {
-					$from = array('id' => isset($player[0]['id']) ? $player[0]['id'] : 0, 'email' => 'alphatest@inextinctae.ru', 'name' => 'Elysium Game');
+					$from = array('id' => isset($player[0]['id']) ? $player[0]['id'] : 0, 'email' => $this->login, 'name' => 'Elysium Game');
 					$to = array('email' => $email, 'name' => isset($nickname) ? $nickname : 'unknown');
 					$this->send('activation request', $from, $to, 'Результат активации аккаунта', $answer);
 				}

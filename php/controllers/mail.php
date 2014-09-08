@@ -34,7 +34,7 @@ switch ($_GET['action']) {
 }
 
 $s = $mailer->send('refer', $from, $to, $subject, $messageText);
-$r = $mailer->send('', array('id' => '0', 'email' => 'ice_haron@mail.ru', 'name' => 'Elysium Game'), $from, $confirmSubject, $confirmText);
+$r = $mailer->send('', array('id' => '0', 'email' => 'robot@elysiumgame.ru', 'name' => 'Elysium Game'), $from, $confirmSubject, $confirmText);
 
 // var_dump($s, $r);
 

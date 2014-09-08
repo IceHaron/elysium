@@ -33,7 +33,7 @@ class user {
 				unset($_SESSION['email']);
 				header("Location: /");
 
-			} else if ($this->info['group'] == '0') header("Location: /auth?action=off");
+			}
 
 		}
 

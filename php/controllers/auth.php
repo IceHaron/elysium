@@ -68,7 +68,7 @@ if ($action == 'reg' && isset($_POST['nick']) && !isset($cid)) {
 			$q = "SELECT `id` FROM `ololousers` WHERE `nick` = '$nick' AND `email` = '$email'";
 			$r = $db->query($q);
 
-			$from = array('id' => $r[0]['id'], 'email' => 'alphatest@inextinctae.ru', 'name' => 'Elysium Game');
+			$from = array('id' => $r[0]['id'], 'email' => $maillogin, 'name' => 'Elysium Game');
 			$to = array('email' => $email, 'name' => $nick);
 			$mailMessage = "Здравствуйте, это письмо пришло вам потому что на этот почтовый адрес был зарегистрирован аккаунт на портале Elysium Game\r\n";
 			$mailMessage .= "Для подтверждения регистрации перейдите по следующей ссылке:\r\n";
@@ -94,6 +94,7 @@ if ($action == 'reg' && isset($_POST['nick']) && !isset($cid)) {
 	$confirm = explode('|', base64_decode($_GET['code']));
 	$q = "SELECT * FROM `ololousers` WHERE `id` = {$confirm[0]} AND `email` = '{$confirm[1]}' AND `nick` = '{$confirm[2]}';";
 	$r = $db->query($q);
+	$referrer = $r[0]['referrer'];
 
 	if (gettype($r) == 'array') {
 
@@ -105,9 +106,9 @@ if ($action == 'reg' && isset($_POST['nick']) && !isset($cid)) {
 
 			if ($r) {
 				$output = 'Поздравляем, вы активировали свой аккаунт!';
-				$achievement->earn($r[0]['id'], 22);
-				if ($r[0]['referrer'] != 1) $achievement->earn($r[0]['id'], 8);
-				if ($r[0]['referrer'] == 1) $achievement->earn($r[0]['id'], 14);
+				$achievement->earn($confirm[0], 22);
+				if ($referrer != 1) $achievement->earn($confirm[0], 8);
+				if ($referrer == 1) $achievement->earn($confirm[0], 14);
 				$location = '/auth?action=log';
 				$q = "INSERT INTO `tokens` (`user`, `action`) VALUES ({$confirm[0]}, 'changename'),({$confirm[0]}, 'changename');";
 				$r = $db->query($q);
@@ -149,7 +150,7 @@ if ($action == 'reg' && isset($_POST['nick']) && !isset($cid)) {
 
 	else if ($answer[0]['group'] == '0') {
 
-		$output = 'Ваш аккаунт не активирован, сперва активируйте его.<br/>Письмо со ссылкой на активацию отправлено на вашу электронную почту.<br/>Если же письма нет, напишите нам с указанного вами адреса. <a href="mailto:alphatest@inextinctae.ru?subject=Не%20могу%20активировать%20аккаунт&body=Мой%20ник%20' . $answer[0]['nick'] . '">Вот на этот адрес</a> (Менять что-либо в заголовке и тексте сообщения не рекомендуем.)<br/>Если ссылка никуда не ведет, напишите на адрес "alphatest@inextinctae.ru" письмо с темой "Не могу активировать аккаунт" и сообщением "Мой ник MyNick", где MyNick - ваш ник на сайте.';
+		$output = 'Ваш аккаунт не активирован, сперва активируйте его.<br/>Письмо со ссылкой на активацию отправлено на вашу электронную почту.<br/>Если же письма нет, напишите нам с указанного вами адреса. <a href="mailto:' . $maillogin . '?subject=Не%20могу%20активировать%20аккаунт&body=Мой%20ник%20' . $answer[0]['nick'] . '">Вот на этот адрес</a> (Менять что-либо в заголовке и тексте сообщения не рекомендуем.)<br/>Если ссылка никуда не ведет, напишите на адрес "' . $maillogin . '" письмо с темой "Не могу активировать аккаунт" и сообщением "Мой ник MyNick", где MyNick - ваш ник на сайте.';
 
 	} else {
 		// Запихиваем данные в сессию и прыгаем в ЛК
@@ -338,7 +339,7 @@ if ($action == 'reg' && isset($_POST['nick']) && !isset($cid)) {
 
 		if ($r) {
 			writeHistory($player['id'], 'pwReset', time());
-			$from = array('id' => $player['id'], 'email' => 'alphatest@inextinctae.ru', 'name' => 'Elysium Game');
+			$from = array('id' => $player['id'], 'email' => $maillogin, 'name' => 'Elysium Game');
 			$to = array('email' => $player['email'], 'name' => $player['nick']);
 			$sent = $mailer->send('pwreset', $from, $to, 'Ваш новый пароль', "Вы успешно сбросили пароль, теперь он у вас такой:\r\n" . $newpw . "\r\nРекомендуем сразу же после входа на сайт, сменить пароль на другой.");
 			if ($sent !== FALSE) {
@@ -371,7 +372,7 @@ if ($action == 'reg' && isset($_POST['nick']) && !isset($cid)) {
 		if (gettype($r) == 'array' && count($r) == 1) {
 			$id = $r[0]['id'];
 			$token = tokenEncode($id, $email, $nick);
-			$from = array('id' => $id, 'email' => 'alphatest@inextinctae.ru', 'name' => 'Elysium Game');
+			$from = array('id' => $id, 'email' => $maillogin, 'name' => 'Elysium Game');
 			$to = array('email' => $email, 'name' => $nick);
 			$mailMessage = "Вам пришло это письмо так как вы запрашивали сброс пароля своего аккаунта, если это так, то пройдите, пожалуйста по ссылке:\r\nhttp://" . $_SERVER['HTTP_HOST'] . '/auth?action=reset&token=' . $token . "\r\n" . 'Если же вы не запрашивали сброс пароля, просто проигнорируйте это письмо, но знайте: вас заметили и пытаются затроллить!';
 			$sent = $mailer->send('resetpw', $from, $to, 'Сброс пароля', $mailMessage);
@@ -402,7 +403,7 @@ if ($action == 'reg' && isset($_POST['nick']) && !isset($cid)) {
 	$res = '';
 	foreach ($r as $recipient) {
 		$mail = "Здравствуйте, вы получили это письмо потому, что на этот адрес был зарегистрирован аккаунт на портале Elysium Game с ником {$recipient['nick']}.\r\nИзвещаем вас, что ваш аккаунт на данный момент является неактивированным и будет удален в день запуска нашего сервера, также, вы не можете авторизоваться на сайте. \r\n Для активации вашего аккаунта, вам нужно пройти по следующей ссылке:\r\n http://" . $_SERVER['HTTP_HOST'] . "/auth?action=confirm&code=" . base64_encode($recipient['id'] . '|' . $recipient['email'] . '|' . $recipient['nick']) . "\r\nСпасибо, что вы с нами!\r\nElysium Game.";
-		$from = array('id' => 0, 'email' => 'alphatest@inextinctae.ru', 'name' => 'Elysium Game');
+		$from = array('id' => 0, 'email' => $maillogin, 'name' => 'Elysium Game');
 		$to = array('email' => $recipient['email'], 'name' => $recipient['nick']);
 		$subject = 'Требуется активация аккаунта Elysium Game';
 		$res .= "Sending to: {$recipient['email']}\r\n";
@@ -445,7 +446,7 @@ if ($action == 'reg' && isset($_POST['nick']) && !isset($cid)) {
 					$location = '/lk';
 
 				} else {
-					$output = 'Произошла какая-то ошибка, если вы не знаете, как такое могло произойти, <a href="mailto:alphatest@inextinctae.ru?subject=Не%20меняется%20ник&body=Ваше%20сообщение">Напишите нам</a>';
+					$output = 'Произошла какая-то ошибка, если вы не знаете, как такое могло произойти, <a href="mailto:' . $maillogin . '?subject=Не%20меняется%20ник&body=Ваше%20сообщение">Напишите нам</a>';
 				}
 
 			}
