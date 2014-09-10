@@ -104,15 +104,16 @@ if ($mod == 'news') {
 				curl_setopt($ch, CURLOPT_POSTFIELDS, "mode=del&user=$forumnick&email=$forumemail&pw=$forumpw&key=$key&salt=$salt");
 				$res = curl_exec($ch);
 				curl_close($ch);
+				var_dump($res);
 			}
 
 			$delIDs = implode(',', $delArr);
 			$q = "DELETE FROM `ololousers` WHERE `id` IN ($delIDs);";
-			$r = $db->query($q);
+			// $r = $db->query($q);
 			$q = "DELETE FROM `tokens` WHERE `user` IN ($delIDs);";
-			$r = $db->query($q);
+			// $r = $db->query($q);
 			$q = "DELETE FROM `user_achievs` WHERE `user` IN ($delIDs);";
-			$r = $db->query($q);
+			// $r = $db->query($q);
 
 		}
 
