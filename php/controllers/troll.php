@@ -91,11 +91,29 @@ if ($mod == 'news') {
 
 			foreach ($_POST['item'] as $itemID => $on) {
 				$delArr[] = $itemID;
+				$confirm = $db->query("SELECT `email`, `nick`, `pw` FROM `ololousers` WHERE `id` = $itemID");
+				$forumnick = $confirm['nick'];
+				$forumemail = $confirm['email'];
+				$forumpw = $confirm['pw'];
+				$salt = '9034u3ui';
+				$key = str_replace(array('1','2','5','8','b','d','e','f'), '', md5($forumnick . substr($forumnick, 2)));
+
+				$ch = curl_init('http://srv.elysiumgame.ru/');
+				curl_setopt($ch, CURLOPT_HEADER, 0);
+				curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+				curl_setopt($ch, CURLOPT_POSTFIELDS, "mode=del&user=$forumnick&email=$forumemail&pw=$forumpw&key=$key&salt=$salt");
+				$res = curl_exec($ch);
+				curl_close($ch);
 			}
 
 			$delIDs = implode(',', $delArr);
-			$q = "DELETE FROM `ololousers` WHERE `id` IN ($delIDs)";
+			$q = "DELETE FROM `ololousers` WHERE `id` IN ($delIDs);";
 			$r = $db->query($q);
+			$q = "DELETE FROM `tokens` WHERE `user` IN ($delIDs);";
+			$r = $db->query($q);
+			$q = "DELETE FROM `user_achievs` WHERE `user` IN ($delIDs);";
+			$r = $db->query($q);
+
 		}
 
 	}
@@ -116,7 +134,7 @@ if ($mod == 'news') {
 		if (time() - $hist['created'] && $unit['group'] == 0) {
 			$q = "DELETE FROM `ololousers` WHERE `id` = {$unit['id']}";
 			$r = $db->query($q);
-			$from = array('id' => $unit['id'], 'email' => 'alphatext@inextinctae.ru', 'name' => 'Elysium Game');
+			$from = array('id' => $unit['id'], 'email' => 'robot@elysiumgame.ru', 'name' => 'Elysium Game');
 			$to = array('email' => $unit['email'], 'name' => $unit['nick']);
 			$subject = 'Ваш аккаунт на сайте Elysium Game удален';
 			$message = 'В связи с тем, что вы создали аккаунт и за двое суток не активировали его, аккаунт был безвозвратно удален.';
