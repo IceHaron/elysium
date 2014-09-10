@@ -104,7 +104,7 @@ if ($mod == 'news') {
 				curl_setopt($ch, CURLOPT_POSTFIELDS, "mode=del&user=$forumnick&email=$forumemail&pw=$forumpw&key=$key&salt=$salt");
 				$res = curl_exec($ch);
 				curl_close($ch);
-				var_dump($res);
+				var_dump($res, "SELECT `email`, `nick`, `pw` FROM `ololousers` WHERE `id` = $itemID", $confirm, $forumnick);
 			}
 
 			$delIDs = implode(',', $delArr);
