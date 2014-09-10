@@ -92,8 +92,8 @@ if ($mod == 'news') {
 			foreach ($_POST['item'] as $itemID => $on) {
 				$delArr[] = $itemID;
 				$confirm = $db->query("SELECT `email`, `nick`, `pw` FROM `ololousers` WHERE `id` = $itemID");
-				$forumnick = $confirm['nick'];
-				$forumemail = $confirm['email'];
+				$forumnick = $confirm[0]['nick'];
+				$forumemail = $confirm[0]['email'];
 				$forumpw = $confirm['pw'];
 				$salt = '9034u3ui';
 				$key = str_replace(array('1','2','5','8','b','d','e','f'), '', md5($forumnick . substr($forumnick, 2)));
@@ -104,16 +104,15 @@ if ($mod == 'news') {
 				curl_setopt($ch, CURLOPT_POSTFIELDS, "mode=del&user=$forumnick&email=$forumemail&pw=$forumpw&key=$key&salt=$salt");
 				$res = curl_exec($ch);
 				curl_close($ch);
-				var_dump($_POST, $confirm, $forumnick, $forumemail, $forumpw, $res);
 			}
 
 			$delIDs = implode(',', $delArr);
 			$q = "DELETE FROM `ololousers` WHERE `id` IN ($delIDs);";
-			// $r = $db->query($q);
+			$r = $db->query($q);
 			$q = "DELETE FROM `tokens` WHERE `user` IN ($delIDs);";
-			// $r = $db->query($q);
+			$r = $db->query($q);
 			$q = "DELETE FROM `user_achievs` WHERE `user` IN ($delIDs);";
-			// $r = $db->query($q);
+			$r = $db->query($q);
 
 		}
 
