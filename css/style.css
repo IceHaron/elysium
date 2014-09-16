@@ -231,9 +231,9 @@ a .page:hover {
 .modal {
 	display: none;
 	top: 0;
-	left: calc(100% / 2 - 230px);
+	left: calc(100% / 2 - 330px);
 	position: fixed;
-	width: 500px;
+	width: 700px;
 	margin: 100px auto;
 	padding: 20px;
 	background-color: white;

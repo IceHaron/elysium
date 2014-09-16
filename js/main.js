@@ -62,7 +62,7 @@ $(document).ready(function(){
 			, data: {'mode': 'checkBL'}
 			, dataType: 'json'
 			, success: function(data) {
-				$('#banlist table').html('<tr><th>Игрок</th><th>Причина</th><th>Забанивший</th><th>Забанен от</th><th>Забанен до</th></tr>');
+				$('#banlist table').html('<tr><th>Игрок</th><th>Причина</th><th>Забанивший</th><th width="125">Забанен от</th><th width="125">Забанен до</th></tr>');
 				for (i in data) {
 					var ban = data[i];
 					$('#banlist table').append('<tr><td>' + ban.player + '</td><td>' + ban.reason + '</td><td>' + ban.admin + '</td><td>' + ban.ban + '</td><td>' + ban.unban + '</td></tr>');
