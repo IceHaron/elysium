@@ -48,6 +48,7 @@ switch ($_GET['mode']) {
 
 	case 'checkBL':
 		$l = mysqli_connect('144.76.111.114', 'site', 'u94fmE4KrxeLP5Pe', 'server', '3306');
+		mysqli_set_charset($l, "utf8");
 		$q = "SELECT * FROM `banlist` LIMIT 0,10";
 		$b = mysqli_query($l, $q);
 		while ($ban = mysqli_fetch_assoc($b)) {

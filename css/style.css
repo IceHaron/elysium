@@ -196,6 +196,7 @@ h4 {font-size:31px;color:#000;letter-spacing:-2px;margin-bottom:16px}
 	float:right;
 	margin:0px 6px;
 }
+#banlist th { text-align: left; }
 
 /* Новости */
 .newsTitle {
