@@ -9,7 +9,7 @@ $action = isset($_GET['action']) ? $_GET['action'] : NULL;
 
 $mod = isset($_GET['mod']) ? $_GET['mod'] : 'index';
 
-$result = '';
+$output = '';
 
 if ($mod == 'news') {
 
@@ -27,7 +27,7 @@ if ($mod == 'news') {
 			$q = "INSERT INTO `news` (`title`, `intro`, `text`) VALUES ('$title', '$intro', '$text')";
 			$r = $db->query($q);
 
-			if ($r === TRUE) $result .= '<h3>Новость добавлена</h3>';
+			if ($r === TRUE) $output .= '<h3>Новость добавлена</h3>';
 
 		} else if ($_POST['action'] == 'edit') {
 			$title = str_replace("'", '&prime;', $_POST['title']);
@@ -37,7 +37,7 @@ if ($mod == 'news') {
 			$q = "UPDATE `news` SET `title` = '$title', `intro` = '$intro', `text` = '$text' WHERE `id` = $id";
 			$r = $db->query($q);
 
-			if ($r === TRUE) $result .= '<h3>Новость сохранена</h3>';
+			if ($r === TRUE) $output .= '<h3>Новость сохранена</h3>';
 
 		} else if ($_POST['action'] == 'Delete' && isset($_POST['item'])) {
 
@@ -87,7 +87,7 @@ if ($mod == 'news') {
 				WHERE `id` = $id";
 			$r = $db->query($q);
 
-			if ($r === TRUE) $result .= '<h3>Сохранено</h3>';
+			if ($r === TRUE) $output .= '<h3>Сохранено</h3>';
 
 		} else if ($_POST['action'] == 'Delete' && isset($_POST['item'])) {
 
@@ -141,7 +141,7 @@ if ($mod == 'news') {
 			$subject = 'Ваш аккаунт на сайте Elysium Game удален';
 			$message = 'В связи с тем, что вы создали аккаунт и за двое суток не активировали его, аккаунт был безвозвратно удален.';
 			$s = $mailer->send('userdeleted', $from, $to, $subject, $message);
-			$result .= 'Удален аккаунт ' . $unit['id'] . ' с ником "' . $unit['nick'] . '"<br/>';
+			$output .= 'Удален аккаунт ' . $unit['id'] . ' с ником "' . $unit['nick'] . '"<br/>';
 
 		}
 
@@ -216,5 +216,5 @@ if ($mod == 'news') {
 	}
 
 } else if ($mod == 'syncSiteForumServer') {
-	syncAccs();
+	$output .= syncAccs();
 }

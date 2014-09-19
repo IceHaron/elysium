@@ -58,6 +58,7 @@ function writeHistory($id, $key, $value) {
 
 function syncAccs() {
 	GLOBAL $db;
+	$output = '';
 	$q = "
 		SELECT `ololousers`.`email`, `ololousers`.`nick`, `ololousers`.`mcname`, `ololousers`.`group`, `usergroups`.`server_alias`
 		FROM `ololousers`
@@ -80,7 +81,7 @@ function syncAccs() {
 		curl_setopt($ch, CURLOPT_POSTFIELDS, "mode=sync&user=$forumnick&email=$forumemail&pw=$forumpw&group=$group&mcnick=$mcname&key=$key&salt=$salt");
 		$res = curl_exec($ch);
 		curl_close($ch);
-		return "&lt;$forumemail&gt; $res<br/><br/>";
+		$output .= "&lt;$forumemail&gt; $res<br/><br/>";
 	}
 
 }
