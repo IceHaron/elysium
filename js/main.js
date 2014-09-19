@@ -78,6 +78,17 @@ $(document).ready(function(){
 		$('#referralForm').show();
 	});
 
+	$('.vkHead').click(function() {
+		var mainClass = $('#vkSlider').attr('class');
+		if (mainClass == 'closed') {
+			$('#vkSlider').attr('class', 'opened').animate({left: '-=290px'}, 300);
+			$('#vkArrow').css('transform', 'rotate(0deg)');
+		} else if (mainClass == 'opened') {
+			$('#vkSlider').attr('class', 'closed').animate({left: '+=290px'}, 300);
+			$('#vkArrow').css('transform', 'rotate(180deg)');
+		}
+	});
+
 	// При клике на тень, скрываем все всплывающие какашки
 	$('#shadow').click(function() {
 		$('#shadow').hide();

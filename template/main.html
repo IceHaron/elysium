@@ -67,6 +67,16 @@
 
 <!-- Основной блок -->
 <body>
+<div id="vkSlider" class="closed">
+	<div class="vkHead">
+		<img src="/images/vk_logo.png">
+		<div id="vkTitle">Наша группа <img src="/images/white_arrow.png" id="vkArrow"></div>
+	</div>
+	<script type="text/javascript" src="http://userapi.com/js/api/openapi.js?49"></script>
+	<!-- VK Widget -->
+	<div id="vk_groups"></div>
+	<script type="text/javascript">VK.Widgets.Group("vk_groups", {mode: 0, width: "290", height: "330"}, 34954874);</script>
+</div>
 <div id="shadow"></div>
 <div id="popupAch"></div>
 <div id="banlist" class="modal">
@@ -125,7 +135,7 @@
 					<div class="tail-right">
 						<div class="wrapper">
 							<?
-							if($_SERVER['REQUEST_URI'] == '/') { // На страницах ЛК и оплаты вырубаем колонку с соцсетями
+							if($_SERVER['REQUEST_URI'] == '/false') { // На страницах ЛК и оплаты вырубаем колонку с соцсетями
 							?>
 							<!-- Левый столбец, основной контент -->
 							<div class="col-1">
@@ -140,11 +150,6 @@
 							<!-- Правый столбец, ссылки -->
 							<div class="col-2">
 								<img src="/images/vk.png">
-								<script type="text/javascript" src="http://userapi.com/js/api/openapi.js?49"></script>
-
-								<!-- VK Widget -->
-								<div id="vk_groups"></div>
-								<script type="text/javascript">VK.Widgets.Group("vk_groups", {mode: 0, width: "290", height: "330"}, 34954874);</script>
 							</div>
 							<?
 							} else { // Ну, соответственно, стиль без второй колонки для ЛК и страницы оплаты.

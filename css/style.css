@@ -10,6 +10,44 @@ img {border:0;vertical-align:top;text-align:left}
 ul, ol {list-style:none}
 
 /* Глобальные теги */
+#vkSlider {
+	position: fixed;
+	left: calc(100% - 34px);
+	top: 50px;
+	width: 324px;
+	height: 330px;
+	z-index: 99;
+}
+.vkHead {
+	width: 22px;
+	height: 318px;
+	padding: 6px;
+	float: left;
+	background-color: #5B7FA6;
+	cursor: pointer;
+}
+#vkTitle {
+	width: 150px;
+	margin-top: 150px;
+	padding-top:2px;
+	transform-origin: left top;
+	-moz-transform: rotate(-90deg);
+	-ms-transform: rotate(-90deg);
+	-webkit-transform: rotate(-90deg);
+	-o-transform: rotate(-90deg);
+	transform: rotate(-90deg);
+	color: white;
+}
+#vkArrow {
+	-moz-transform: rotate(180deg);
+	-ms-transform: rotate(180deg);
+	-webkit-transform: rotate(180deg);
+	-o-transform: rotate(180deg);
+	transform: rotate(180deg);
+}
+#vk_groups {
+	float: left;
+}
 #shadow {
 	display: none;
 	width: 100%;
