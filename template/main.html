@@ -59,6 +59,19 @@
 			<b>Gentoo[FullPVP]</b>
 			<br><text class="gentoo-status">Pinging...</text>
 		</li>
+		<li class="authLI">
+			<!-- Логин-панель -->
+			<div id="authPanel">
+				<? if ($clogin != '') { ?>
+					<a href="/lk">ЛK&nbsp;</a>
+					<span class="logged"><?=$clogin?>&nbsp;</span>
+					<a href="/auth?action=off&hash=<?=session_id();?>">Выйти</a>
+				<? } else { ?>
+					<a href="/auth?action=reg">Регистрация</a><br/>
+					<a href="/auth?action=log">Авторизация</a>
+				<? } ?>
+			</div>
+		</li>
 		<? if (false) { ?><li class="banner"><a href="http://mctop.su/rating/vote/airbreaker" style="border: 0;"><img src="http://mctop.su/counter/p4587" /></a></li>
 		<li class="banner"><a href="http://www.want2vote.com/info.php?id=1104" style="border: 0;"><img src="http://w2v.biz/_status/pictures/status_votebanner/1104.jpg"></a></li><? } ?>
 	</ul>
@@ -96,18 +109,6 @@
 				<div id="header">
 					<div class="extra"><img src="/images/header-img.png" alt="" /></div>
 					<div class="row-1">
-
-						<!-- Логин-панель -->
-						<div id="authPanel">
-							<? if ($clogin != '') { ?>
-								<span class="logged">Вы вошли как <?=$clogin?></span><br/>
-								<a href="lk">Личный кабинет</a><br/>
-								<a href="auth?action=off&hash=<?=session_id();?>">Выйти</a>
-							<? } else { ?>
-								<a href="auth?action=reg">Регистрация</a><br/>
-								<a href="auth?action=log">Авторизация</a>
-							<? } ?>
-						</div>
 
 					</div>
 
