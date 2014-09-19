@@ -55,3 +55,32 @@ function writeHistory($id, $key, $value) {
 	$r = $db->query($q);
 	return $r;
 }
+
+function syncAccs() {
+	GLOBAL $db;
+	$q = "
+		SELECT `ololousers`.`email`, `ololousers`.`nick`, `ololousers`.`mcname`, `ololousers`.`group`, `usergroups`.`server_alias`
+		FROM `ololousers`
+		JOIN `usergroups` ON (`usergroups`.`id` = `ololousers`.`group`)
+		WHERE `ololousers`.`group` != 0;";
+	$r = $db->query($q);
+
+	foreach ($r as $player) {
+		$forumnick = $player['nick'];
+		$forumemail = $player['email'];
+		$salt = '9034u3ui';
+		$key = str_replace(array('1','2','5','8','b','d','e','f'), '', md5($forumnick . substr($forumnick, 2)));
+		$forumpw = md5($key);
+		$group = $player['group'] . '__' . $player['server_alias'];
+		$mcname = $player['mcname'];
+
+		$ch = curl_init('http://srv.elysiumgame.ru/');
+		curl_setopt($ch, CURLOPT_HEADER, 0);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, "mode=sync&user=$forumnick&email=$forumemail&pw=$forumpw&group=$group&mcnick=$mcname&key=$key&salt=$salt");
+		$res = curl_exec($ch);
+		curl_close($ch);
+		return "&lt;$forumemail&gt; $res<br/><br/>";
+	}
+
+}

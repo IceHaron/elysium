@@ -9,6 +9,8 @@ $action = isset($_GET['action']) ? $_GET['action'] : NULL;
 
 $mod = isset($_GET['mod']) ? $_GET['mod'] : 'index';
 
+$result = '';
+
 if ($mod == 'news') {
 
 	if ($action == 'edit') {
@@ -25,7 +27,7 @@ if ($mod == 'news') {
 			$q = "INSERT INTO `news` (`title`, `intro`, `text`) VALUES ('$title', '$intro', '$text')";
 			$r = $db->query($q);
 
-			if ($r === TRUE) echo '<h3>Новость добавлена</h3>';
+			if ($r === TRUE) $result .= '<h3>Новость добавлена</h3>';
 
 		} else if ($_POST['action'] == 'edit') {
 			$title = str_replace("'", '&prime;', $_POST['title']);
@@ -35,7 +37,7 @@ if ($mod == 'news') {
 			$q = "UPDATE `news` SET `title` = '$title', `intro` = '$intro', `text` = '$text' WHERE `id` = $id";
 			$r = $db->query($q);
 
-			if ($r === TRUE) echo '<h3>Новость сохранена</h3>';
+			if ($r === TRUE) $result .= '<h3>Новость сохранена</h3>';
 
 		} else if ($_POST['action'] == 'Delete' && isset($_POST['item'])) {
 
@@ -85,7 +87,7 @@ if ($mod == 'news') {
 				WHERE `id` = $id";
 			$r = $db->query($q);
 
-			if ($r === TRUE) echo '<h3>Сохранено</h3>';
+			if ($r === TRUE) $result .= '<h3>Сохранено</h3>';
 
 		} else if ($_POST['action'] == 'Delete' && isset($_POST['item'])) {
 
@@ -139,7 +141,7 @@ if ($mod == 'news') {
 			$subject = 'Ваш аккаунт на сайте Elysium Game удален';
 			$message = 'В связи с тем, что вы создали аккаунт и за двое суток не активировали его, аккаунт был безвозвратно удален.';
 			$s = $mailer->send('userdeleted', $from, $to, $subject, $message);
-			echo 'Удален аккаунт ' . $unit['id'] . ' с ником "' . $unit['nick'] . '"<br/>';
+			$result .= 'Удален аккаунт ' . $unit['id'] . ' с ником "' . $unit['nick'] . '"<br/>';
 
 		}
 
@@ -214,30 +216,5 @@ if ($mod == 'news') {
 	}
 
 } else if ($mod == 'syncSiteForumServer') {
-	$q = "
-		SELECT `ololousers`.`email`, `ololousers`.`nick`, `ololousers`.`mcname`, `ololousers`.`group`, `usergroups`.`server_alias`
-		FROM `ololousers`
-		JOIN `usergroups` ON (`usergroups`.`id` = `ololousers`.`group`)
-		WHERE `ololousers`.`group` != 0;";
-	$r = $db->query($q);
-
-	foreach ($r as $player) {
-		$forumnick = $player['nick'];
-		$forumemail = $player['email'];
-		$salt = '9034u3ui';
-		$key = str_replace(array('1','2','5','8','b','d','e','f'), '', md5($forumnick . substr($forumnick, 2)));
-		$forumpw = md5($key);
-		$group = $player['group'] . '__' . $player['server_alias'];
-		$mcname = $player['mcname'];
-
-		$ch = curl_init('http://srv.elysiumgame.ru/');
-		curl_setopt($ch, CURLOPT_HEADER, 0);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_POSTFIELDS, "mode=sync&user=$forumnick&email=$forumemail&pw=$forumpw&group=$group&mcnick=$mcname&key=$key&salt=$salt");
-		$res = curl_exec($ch);
-		curl_close($ch);
-		echo "&lt;$forumemail&gt; $res<br/><br/>";
-	}
-
-
+	syncAccs();
 }
