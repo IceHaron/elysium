@@ -84,4 +84,5 @@ function syncAccs() {
 		$output .= "&lt;$forumemail&gt; $res<br/><br/>";
 	}
 
+	return $output;
 }
