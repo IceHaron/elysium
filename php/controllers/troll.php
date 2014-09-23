@@ -127,25 +127,7 @@ if ($mod == 'news') {
 	$mailer->receive();
 
 } else if ($mod == 'deleteusers') {
-	$q = "SELECT `id`, `email`, `nick`, `history`, `group` FROM `ololousers`";
-	$r = $db->query($q);
-
-	foreach ($r as $unit) {
-		$hist = json_decode($unit['history'], TRUE);
-
-		if (time() - $hist['created'] && $unit['group'] == 0) {
-			$q = "DELETE FROM `ololousers` WHERE `id` = {$unit['id']}";
-			$r = $db->query($q);
-			$from = array('id' => $unit['id'], 'email' => 'robot@elysiumgame.ru', 'name' => 'Elysium Game');
-			$to = array('email' => $unit['email'], 'name' => $unit['nick']);
-			$subject = 'Ваш аккаунт на сайте Elysium Game удален';
-			$message = 'В связи с тем, что вы создали аккаунт и за двое суток не активировали его, аккаунт был безвозвратно удален.';
-			$s = $mailer->send('userdeleted', $from, $to, $subject, $message);
-			$output .= 'Удален аккаунт ' . $unit['id'] . ' с ником "' . $unit['nick'] . '"<br/>';
-
-		}
-
-	}
+	$output .= deleteUsers();
 
 } else if ($mod == 'changenametokens') {
 	$q = "SELECT * FROM `ololousers`";
