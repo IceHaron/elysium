@@ -88,7 +88,7 @@ function syncAccs() {
 }
 
 function deleteUsers() {
-	GLOBAL $db;
+	GLOBAL $db, $mailer;
 	$q = "SELECT `id`, `email`, `nick`, `history`, `group` FROM `ololousers`";
 	$r = $db->query($q);
 	$output = '';
