@@ -25,7 +25,7 @@ if (isset($_POST['izum']) && isset($_POST['want']) && $cid) {
 		$html = $achievement->earn($user->info['id'], 11, $want);
 		$message = 'Покупка прошла успешно <a href="/lk">Уйти в ЛК</a>' . $html;
 	}
-} else if (isset($_POST['goods']) && $cid) {
+} else if (isset($_POST['goods']) && isset($_POST['donut']) && $clogin) {
 
 	foreach ($_POST['donut'] as $id => $donut) {
 		$items[] = intval($id);
@@ -80,4 +80,4 @@ if (isset($_POST['izum']) && isset($_POST['want']) && $cid) {
 		} else $message = 'Что-то пошло не так.';
 	}
 
-}
+} else $message = "Ничего не собираешься покупать? =(";
