@@ -64,7 +64,7 @@ ul, ol {list-style:none}
 	z-index: 99;
 }
 #header, #content, #footer {font-size:1em;width:920px;margin:0 auto}
-.col-1, .col-2 {float:left}
+/*.col-1, .col-2 {float:left}*/
 
 /* Выравнивание */
 .fleft {float:left}
@@ -136,10 +136,12 @@ h4 {font-size:31px;color:#000;letter-spacing:-2px;margin-bottom:16px}
 	margin-left: 81px;
 	margin-top: -92px;
 }
+/*
 .col-1 #pageCaption {
 	margin-left: 46px;
 	margin-top: -106px;
 }
+*/
 #content {background:url(/images/cont-tail.png) repeat-y left top;position:relative}
 #content .col-1 {width:630px}
 #content .col-2 {width:290px;padding:50px 0 170px 0}
@@ -150,7 +152,7 @@ h4 {font-size:31px;color:#000;letter-spacing:-2px;margin-bottom:16px}
 #content .col-2 ul li a:hover {color:#000}
 #content .nocol {
 	min-height: 100px;
-	padding-top: 20px;
+	padding-top: 35px;
 	padding-left: 3px;
 }
 .inner_copy, .inner_copy a {border:0;float:right;background:#f00;color:#f00;width:35%;line-height:10px;font-size:10px;margin:-220% 0 0 0;overflow:hidden;padding:0}
@@ -477,3 +479,20 @@ a .page:hover {
 .legend p {
 	margin-bottom: 5px;
 }
+
+/* Донат */
+#donutTable {
+	width: 100%;
+	border-collapse: collapse;
+}
+#donutTable th, #donutTable td {
+	padding: 5px;
+	text-align: left;
+}
+#donutTable .item:nth-child(odd) {
+	background-color: #eee;
+}
+#donutTable .item:nth-child(even) {
+	background-color: white;
+}
+#donutTable .group { background-color: #ddf; }

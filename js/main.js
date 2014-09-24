@@ -112,7 +112,8 @@ $(document).ready(function(){
 
 	// Проверяем входные данные при печати количества изюма
 	$('#izumform input[name="want"]').keyup(function() {
-		var clear = $(this).val().substr(0,5).replace(/\D+/g, '');
+		var clear = $(this).val().substr(0,7).replace(/\D+/g, '');
+		if (parseInt(clear) < 100) clear = 100;
 		$(this).val(clear);
 	});
 

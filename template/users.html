@@ -51,7 +51,8 @@ if ($pagetype == 'unit') {
 	<? if ($user->info['group'] > 1 || $info['privacy'][$standing]['ach']) { ?><h2><a href="/achievements?compare=<?=$info['id']?>">Сравнить достижения</a></h2><? }
 
 } else if ($pagetype == 'list') {
-	?>
+?>
+	<h1 id="pageCaption">Список пользователей</h1>
 	<table id="playerList">
 		<tr>
 			<th>Ник на сайте</th>

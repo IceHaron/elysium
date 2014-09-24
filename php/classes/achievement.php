@@ -70,20 +70,22 @@ class achievement {
 			$r = $this->db->query($q);
 			$exp = (int)$r[0]['exp'];
 			$powah = 0;
+			$q = "SELECT `grade`, `xpcost` FROM `achievements` WHERE `id` = $ach";
+			$r = $this->db->query($q);
+			$grade = $r[0]['grade'];
 
 			if ($achExp === FALSE) {
 				// Если не дано количество экспы параметром, вытягиваем его из базы
-				$q = "SELECT `xpcost` FROM `achievements` WHERE `id` = $ach";
-				$r = $this->db->query($q);
 				$gift = (int)$r[0]['xpcost'];
 
-			} else {
-				// Если экспу нам сообщили, тогда проводим проверку, а правильный ли тип ачивки, если нет, то опять же экспу вытягиваем из базы
-				$q = "SELECT `grade`, `xpcost` FROM `achievements` WHERE `id` = $ach";
-				$r = $this->db->query($q);
-				$grade = $r[0]['grade'];
+				if ($grade == '1') $powah = $gift;
 
-				if ($grade == '1') $gift = $powah = $achExp + $r[0]['xpcost'];
+			} else {
+				// Если экспу нам сообщили и грейд ачивки правильный, плюсуем экспу к той, что мы вытянули из базы
+
+				if ($grade == '1' && $ach != 11) $gift = $powah = $achExp + $r[0]['xpcost'];
+				
+				else if ($grade == '1' && $ach == 11) { $gift = 0; $powah = $achExp; } // Индивидуальный подход к ачивке "К бабкам на рынок"
 
 				else $gift = $r[0]['xpcost'];
 			}
@@ -249,7 +251,9 @@ class achievement {
 
 /**
 * 
-* Проверить, какие ачивки получил пользователь с момента последней такой проверки
+* Получить HTML-код ачивок
+* @param achInfo - массив с информацией об ачивке
+* @param userID - айдишник пользователя для получения полной инфы: готовность, прогресс, факт получения
 * @return array - полученные ачивки
 * 
 **/

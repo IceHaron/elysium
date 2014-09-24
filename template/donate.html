@@ -1,4 +1,4 @@
-<h1 id="pageCaption">Пожертвования</h1>
+<!-- <h1 id="pageCaption">Пожертвования</h1>
 <h3>VIP - 200р | Месяц</h3>
 &nbsp;
 <p class="p0">&middot; Резервный слот на сервере. Вы всегда сможете зайти.</p>
@@ -77,3 +77,57 @@
 <p></p>
 <h3>Способы оплаты</h3>
 <p style="color:red">&middot; Используйте <a href="/lk">личный кабинет</a> для оплаты необходимой Вам услуги.</p>
+ -->
+<h1 id="pageCaption">Донат</h1>
+<p style="color: red; margin: 5px;">Актуальный курс: 1 руб. = <?=$rubCost;?> izum</p>
+<? if ($clogin && $user->info['group'] >= 100) { ?>
+	<p>Ваш баланс: <?=$izum;?> izum</p>
+	<form id="izumform" method="POST" action="/payment">
+		<input type="hidden" name="izum" value="1">
+		<input type="text" name="want" placeholder="Сколько вам насыпать?" autocomplete="off">
+		<button>Купить Izum</button>
+	</form>
+	<span style="color:red"><b>Внимание!</b> Данная фича находится в разработке! До тех пор, пока она не будет полностью допилена, мы не ручаемся за то, что вам обязательно будет начислен купленный Изюм. Если при покупке произошла ошибка, свяжитесь с нами <a href="mailto:support@elysiumgame.ru?subject=Проблемы%20с%20покупкой%20изюма&body=Мой%20ник%20<?=$clogin;?>. Моя%20проблема:%20">по электронной почте</a></span>
+<? } ?>
+<p style="color: red; margin: 5px;"><b>Внимание!</b> Следующие товары можно купить <b>только</b> за izum, эквивалент в рублях приведен для удобства оценки актуальной цены товара</p>
+<form method="POST" action="/payment">
+	<input type="hidden" name="goods" value="1">
+	<table id="donutTable">
+		<tr class="caption">
+			<th rowspan="2">Купить</th>
+			<th rowspan="2">Название товара</th>
+			<th colspan="2">Стоимость</th>
+			<th rowspan="2">Описание</th>
+		</tr>
+		<tr class="caption">
+			<th>izum</th>
+			<th>руб</th>
+		</tr>
+	<?
+	foreach ($donuts as $groupName => $group) {
+		echo '<tr class="group"><th colspan="5">' . $groupName . '</th></tr>';
+
+		foreach ($group as $donut) {
+		if ($donut['id'] == 10000 || TRUE) $dis = '';
+		else $dis = 'disabled';
+	?>
+		<tr class="item" <? if ($dis) echo 'style="opacity: 0.3;"'; ?>>
+			<td>
+			<? if ($clogin) { ?>
+				<input type="checkbox" name="donut[<?=$donut['id'];?>]" <?=$dis;?>>
+			<? } else echo '<span style="color: lightgrey">Недоступно</span>' ?>
+			</td>
+			<td><?=$donut['name'];?></td>
+			<td style="color: red;"><?=number_format($donut['cost'], 0, ',', ' ');?></td>
+			<td><?=number_format($donut['cost'] / $rubCost, 2, ',', ' ');?></td>
+			<td><?=$donut['desc'];?></td>
+		</tr>
+	<?
+		}
+	}
+	?>
+	</table>
+	<? if ($clogin) { ?>
+		<input type="submit" value="Купить">
+	<? } ?>
+</form>
