@@ -44,7 +44,7 @@ if (isset($_POST['izum']) && isset($_POST['want']) && $cid) {
 	$izum = $user->info['izumko'];
 
 	if ($izum < $sum) {
-		$message = 'Нехватает изюма. <a href="/donate">Вернуться</a>';
+		$message = 'Не хватает изюма. <a href="/donate">Вернуться</a>';
 
 	} else {
 		$remain = $izum - $sum;
