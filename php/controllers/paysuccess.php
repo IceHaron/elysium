@@ -1,0 +1,2 @@
+<?
+$robopost = $_POST;

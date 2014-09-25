@@ -4,6 +4,7 @@
 * Оплата
 * 
 **/
+$robopost = $_POST;
 
 $izum = $user->info['izumko'];
 
@@ -56,7 +57,7 @@ if (isset($_POST['izum']) && isset($_POST['want']) && $cid) {
 			if ($duration == 0) $insert .= ",($cid, $item, now(), 0)";
 			else {
 				$end = time() + $duration;
-				$insert .= ",($cid, $item, now(), $end)";
+				$insert .= ",($cid, $item, now(), from_unixtime($end))";
 			}
 
 		}
@@ -71,6 +72,8 @@ if (isset($_POST['izum']) && isset($_POST['want']) && $cid) {
 		}
 		
 		if ($purchase === TRUE && $paid === TRUE) {
+
+			$message = 'Спасибо за покупку! Оплаченные товары будут активированы в ближайшее время';
 
 			if (isset($durations[10000])) {
 				$html = $achievement->earn($cid, 25);
