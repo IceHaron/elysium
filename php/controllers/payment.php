@@ -4,11 +4,11 @@
 * Оплата
 * 
 **/
-$robopost = $_POST;
 
 $izum = $user->info['izumko'];
+$rubCost = 1000;
 
-if (isset($_POST['izum']) && isset($_POST['want']) && $cid) {
+if (isset($_POST['izum']) && isset($_POST['want']) && $clogin) {
 	$achievement->earn($user->info['id'], 18, 0);
 	// exit('В данный момент раздача и продажа изюма не работает, хитрец');
 	// Если с постом, дак еще и с пополнением, то ты знаешь, что делать.
@@ -16,16 +16,41 @@ if (isset($_POST['izum']) && isset($_POST['want']) && $cid) {
 	else if ((int)$_POST['want'] < 100) $want = 100;
 	else $want = (int)$_POST['want'];
 
-	$amount = (int)$izum + $want;
-	$q = "UPDATE `ololousers` SET `izumko` = $amount WHERE `id` = {$user->info['id']}";
+	$toPay = number_format(ceil($want / $rubCost * 100) / 100, 2, '.', '');
+
+	$q = "INSERT INTO `acquiring` (`user`, `topay`, `togrant`) VALUES ($cid, $toPay, $want);";
 	$r = $db->query($q);
 
-	if (!$r) exit('Произошла какая-то хрень <a href="/lk">Уйти в ЛК</a>');
+	// $q = "UPDATE `ololousers` SET `izumko` = $amount WHERE `id` = {$user->info['id']}";
+	// $r = $db->query($q);
+
+	if ($r === FALSE) exit('Произошла какая-то хрень <a href="/lk">Уйти в ЛК</a>');
 	
 	else {
-		$html = $achievement->earn($user->info['id'], 11, $want);
-		$message = 'Покупка прошла успешно <a href="/lk">Уйти в ЛК</a>' . $html;
+		$q = "SELECT `id` FROM `acquiring` WHERE `user` = $cid AND `paid` = 0 ORDER BY `id` DESC LIMIT 1;";
+		$r = $db->query($q);
+		$transactionID = $r[0]['id'];
+		$signature = roboSignature(array("Elysium", $toPay, $transactionID), 'pay');
+
+		$acquiring = array(
+			  'MrchLogin' => 'Elysium'
+			, 'OutSum' => $toPay
+			, 'InvId' => $transactionID
+			, 'Desc' => "Покупка $want izum"
+			, 'SignatureValue' => $signature
+			, 'Culture' => 'ru'
+		);
+		// print_r($acquiring);
+		$target = "http://test.robokassa.ru/Index.aspx?MerchantLogin=Elysium&OutSum=$toPay&InvId=$transactionID&Desc=Покупка%20$want%20izum&SignatureValue=$signature&Culture=ru";
+		header("Location: $target");
+		// $ch = curl_init('http://test.robokassa.ru/Index.aspx');
+		// curl_setopt($ch, CURLOPT_HEADER, 0);
+		// curl_setopt($ch, CURLOPT_POSTFIELDS, "MerchantLogin=Elysium&OutSum=$toPay&InvId=$transactionID&Desc=Покупка%20$want%20izum&SignatureValue=$signature&Culture=ru");
+		// curl_exec($ch);
+		// curl_close($ch);
+		$message = 'Что-то пошло не так';
 	}
+
 } else if (isset($_POST['goods']) && isset($_POST['donut']) && $clogin) {
 
 	foreach ($_POST['donut'] as $id => $donut) {
@@ -41,8 +66,6 @@ if (isset($_POST['izum']) && isset($_POST['want']) && $cid) {
 		$sum += $item['cost'];
 		$durations[ $item['id'] ] = $item['duration'];
 	}
-
-	$izum = $user->info['izumko'];
 
 	if ($izum < $sum) {
 		$message = 'Не хватает изюма. <a href="/donate">Вернуться</a>';

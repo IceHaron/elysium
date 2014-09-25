@@ -68,13 +68,15 @@ $q = "
 	WHERE `ban` < NOW() AND (`unban` > NOW() OR `unban` IS NULL);";
 $banlist = $db->query($q);
 
+$noTemplate = FALSE;
+
 if ($module == '') $module = 'news';
 // Подгружаем контроллер, если таковой существует
 if (glob("php/controllers/$module.php")) INCLUDE_ONCE("php/controllers/$module.php");
 else if (!glob("template/$module.html")) $module = '404';
 
 // Подключаем основной макет
-if (strpos($_SERVER['REQUEST_URI'], '/ajax') === FALSE) REQUIRE_ONCE('template/main.html');
+if (!$noTemplate) REQUIRE_ONCE('template/main.html');
 
 // Выводим постфикс - код, который нужно выполнить после всего, он, естественно, заполняется в контроллерах.
 echo $postfix;
