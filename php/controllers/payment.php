@@ -20,6 +20,7 @@ if (isset($_POST['izum']) && isset($_POST['want']) && $clogin) {
 
 	$q = "INSERT INTO `acquiring` (`user`, `topay`, `togrant`) VALUES ($cid, $toPay, $want);";
 	$r = $db->query($q);
+	// $r = TRUE;
 
 	// $q = "UPDATE `ololousers` SET `izumko` = $amount WHERE `id` = {$user->info['id']}";
 	// $r = $db->query($q);
@@ -41,14 +42,36 @@ if (isset($_POST['izum']) && isset($_POST['want']) && $clogin) {
 			, 'Culture' => 'ru'
 		);
 		// print_r($acquiring);
-		$target = "http://test.robokassa.ru/Index.aspx?MerchantLogin=Elysium&OutSum=$toPay&InvId=$transactionID&Desc=Покупка%20$want%20izum&SignatureValue=$signature&Culture=ru";
-		header("Location: $target");
+		$target = "https://merchant.roboxchange.com/Index.aspx?MerchantLogin=Elysium&OutSum=$toPay&InvId=$transactionID&Desc=Покупка%20$want%20izum&SignatureValue=$signature&Culture=ru";
+		$message = 'Ваш заказ.';
+		$izumform = '
+			<p>Внимательно проверьте все данные и нажмите "согласен, оплатить" если все верно.</p>
+			<table id="cheque">
+				<tr>
+					<th>Вы покупаете izum в количестве</th>
+					<td>' . $want . '</td>
+				</tr>
+				<tr>
+					<th>Стоимость без учета комиссий, собираемых платежной системой</th>
+					<td>' . $toPay . ' руб</td>
+				</tr>
+			</table>
+			<form action="https://merchant.roboxchange.com/Index.aspx" method="POST">
+				<input type="hidden" name="MerchantLogin" value="Elysium">
+				<input type="hidden" name="OutSum" value="' . $toPay . '">
+				<input type="hidden" name="InvId" value="' . $transactionID . '">
+				<input type="hidden" name="Desc" value="Покупка ' . $want . ' izum">
+				<input type="hidden" name="SignatureValue" value="' . $signature . '">
+				<input type="hidden" name="Culture" value="ru">
+				<input type="submit" value="Согласен, оплатить">
+			</form>';
+		// header("Location: $target");
 		// $ch = curl_init('http://test.robokassa.ru/Index.aspx');
 		// curl_setopt($ch, CURLOPT_HEADER, 0);
 		// curl_setopt($ch, CURLOPT_POSTFIELDS, "MerchantLogin=Elysium&OutSum=$toPay&InvId=$transactionID&Desc=Покупка%20$want%20izum&SignatureValue=$signature&Culture=ru");
 		// curl_exec($ch);
 		// curl_close($ch);
-		$message = 'Что-то пошло не так';
+		// $message = 'Что-то пошло не так';
 	}
 
 } else if (isset($_POST['goods']) && isset($_POST['donut']) && $clogin) {

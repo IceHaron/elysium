@@ -496,3 +496,18 @@ a .page:hover {
 	background-color: white;
 }
 #donutTable .group { background-color: #ddf; }
+#cheque {
+	padding: 5px;
+	border: 1px solid black;
+	background-color: white;
+}
+#cheque th, #cheque td {
+	padding: 10px 5px;
+	text-align: left;
+	font-family: Tahoma;
+	font-size: 18px;
+	font-weight: normal;
+}
+#cheque th {
+	border-right: 1px dashed #bbb;
+}
