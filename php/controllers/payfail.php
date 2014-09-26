@@ -10,9 +10,9 @@ if ($r !== NULL) {
 	$message = 'Транзакция найдена';
 
 	if ($checkSum) {
-		$q = "DELETE FROM `acquiring` WHERE `id` = $InvId";
+		$q = "UPDATE `acquiring` SET `paid` = -1 WHERE `id` = $InvId";
 		$r = $db->query($q);
-		$message .= '<br/>Вы отказались от покупки на сайте эквайера. <a href="/lk">Уйти в ЛК</a>';
+		$message .= '<br/>Вы отказались от покупки, транзакция уничтожена. <a href="/lk">Уйти в ЛК</a>';
 
 	} else {
 		// var_dump($OutSum, $r[0]['topay']);

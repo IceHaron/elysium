@@ -1,6 +1,6 @@
 <h1 id="pageCaption">Пожертвования</h1>
 <p style="color: red; margin: 5px;">Актуальный курс: 1 руб. = <?=$rubCost;?> izum</p>
-<? if ($clogin && $user->info['group'] >= 100) { ?>
+<? if ($clogin &&/* $user->info['group'] >= 100 &&*/ !$debt) { ?>
 	<p>Ваш баланс: <?=$izum;?> izum</p>
 	<form id="izumform" method="POST" action="/payment">
 		<input type="hidden" name="izum" value="1">
@@ -9,6 +9,8 @@
 		<button>Купить Izum</button>
 	</form>
 	<span style="color:red"><b>Внимание!</b> Данная фича находится в разработке! До тех пор, пока она не будет полностью допилена, мы не ручаемся за то, что вам обязательно будет начислен купленный Изюм. Если при покупке произошла ошибка, свяжитесь с нами <a href="mailto:support@elysiumgame.ru?subject=Проблемы%20с%20покупкой%20изюма&body=Мой%20ник%20<?=$clogin;?>. Моя%20проблема:%20">по электронной почте</a></span>
+<? } else if ($clogin && $debt) { ?>
+	<p>У вас есть неподтвержденные или неоплаченные заказы! Вы не сможете купить izum, пока все ваши заказы не получат статус "оплачен"</p>
 <? } ?>
 <p style="color: red; margin: 5px 0;"><b>Внимание!</b> Следующие товары можно купить <b>только</b> за izum, эквивалент в рублях приведен для удобства оценки актуальной цены товара</p>
 <form method="POST" action="/payment">

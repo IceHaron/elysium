@@ -27,6 +27,7 @@ if ($r !== NULL) {
 		$r = $db->query($q);
 		writeHistory($player, 'purchase', array('izum' => time()));
 		echo 'OK' . $InvId;
+		$html = $achievement->earn($cid, 11);
 		$message .= '<br/>Платеж проведен успешно';
 
 	} else {

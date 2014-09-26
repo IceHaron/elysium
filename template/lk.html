@@ -151,6 +151,50 @@ if (!$_POST) {
 </table>
 
 <h3>Ваши достижения (5 последних плюс только что полученные):</h3>
+<table class="orderList">
+	<tr>
+		<th class="orderID">Номер заказа</th>
+		<th class="orderDate">Дата заказа</th>
+		<th class="orderIzum">Количество изюма</th>
+		<th class="orderCost">Сумма к оплате (руб)</th>
+		<th class="orderStatus">Статус</th>
+		<th class="orderAction">Действие</th>
+	</tr>
+	<? foreach ($orders as $order) {
+		echo '
+			<tr>
+				<td class="orderID">' . $order['id'] . '</td>
+				<td>' . $order['date'] . '</td>
+				<td>' . $order['togrant'] . '</td>
+				<td>' . $order['topay'] . '</td>
+				<td>' . $statusList[ $order['paid'] ] . '</td>
+				<td>';
+		if ($order['paid'] == 0) {
+			$signature = roboSignature(array("Elysium", $order['topay'], $order['id']), 'pay');
+			echo '
+					<form action="/payfail" method="POST">
+						<input type="hidden" name="InvId" value="' . $order['id'] . '">
+						<input type="hidden" name="OutSum" value="' . $order['topay'] . '">
+						<input type="hidden" name="Culture" value="ru">
+						<input type="submit" value="Отказаться">
+					</form>
+					<form action="https://merchant.roboxchange.com/Index.aspx" method="POST">
+						<input type="hidden" name="MerchantLogin" value="Elysium">
+						<input type="hidden" name="OutSum" value="' . $order['topay'] . '">
+						<input type="hidden" name="InvId" value="' . $order['id'] . '">
+						<input type="hidden" name="Desc" value="Покупка ' . $order['togrant'] . ' izum">
+						<input type="hidden" name="SignatureValue" value="' . $signature . '">
+						<input type="hidden" name="Culture" value="ru">
+						<input type="submit" value="Подтвердить">
+					</form>';
+		}
+		echo '
+				</td>
+			</tr>';
+	} ?>
+</table>
+
+<h3>Ваши достижения (5 последних плюс только что полученные):</h3>
 <div id="achList">
 
 	<?=$info['achievements']?>

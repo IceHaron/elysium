@@ -349,6 +349,25 @@ a .page:hover {
 	margin-bottom: 5px;
 	font-style: italic;
 }
+.orderList {
+	padding: 2px;
+	font-family: Tahoma;
+	font-size: 12px;
+	border: 1px solid grey;
+}
+.orderList th, .orderList td {
+	padding: 5px;
+}
+.orderList .orderID {
+	width: 50px;
+	text-align: center;
+}
+.orderList .orderDate { width: 130px; }
+.orderList .orderIzum { width: 100px; }
+.orderList .orderCost { width: 90px; }
+.orderList .orderStatus { width: 130px; }
+.orderList .orderAction { width: 170px; }
+.orderList form { display: inline-block; }
 
 /* Достижения */
 .achCompHeaderHis {
