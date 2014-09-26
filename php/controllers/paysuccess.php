@@ -13,7 +13,7 @@ if ($r !== NULL) {
 	$izum = $p[0]['izumko'];
 	$want = $r[0]['togrant'];
 	$signPost = roboSignature(array($OutSum, $InvId), 'receive');
-	$signBase = roboSignature(array($r[0]['topay'].'0000', $InvId), 'receive');
+	$signBase = roboSignature(array(number_format($r[0]['topay'], 6, '.', ''), $InvId), 'receive');
 	$checkSum = ((float)$OutSum === (float)$r[0]['topay']);
 	$checkPaid = ($r[0]['paid'] == 0 || $r[0]['paid'] == 1);
 	$checkSignature = ($signPost == $signBase && $signPost == $SignatureValue && $signBase == $SignatureValue);
