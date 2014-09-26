@@ -31,7 +31,7 @@
 		echo '<tr class="group"><th colspan="5">' . $groupName . '</th></tr>';
 
 		foreach ($group as $donut) {
-		if ($donut['id'] == 10000 || TRUE) $dis = '';
+		if ($donut['id'] == 10000) $dis = '';
 		else $dis = 'disabled';
 	?>
 		<tr class="item" <? if ($dis) echo 'style="opacity: 0.3;"'; ?>>
