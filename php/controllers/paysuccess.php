@@ -26,6 +26,7 @@ if ($r !== NULL) {
 		$q = "UPDATE `ololousers` SET `izumko` = $totalIzum WHERE `id` = $player";
 		$r = $db->query($q);
 		writeHistory($player, 'purchase', array('izum' => time()));
+		echo 'OK' . $InvId;
 		$message .= '<br/>Платеж проведен успешно';
 
 	} else {
@@ -41,4 +42,5 @@ if ($r !== NULL) {
 	$message = 'Такой транзакции не найдено';
 }
 
-echo '<h1>' . $message . '</h1>';
+
+// echo '<h1>' . $message . '</h1>';
