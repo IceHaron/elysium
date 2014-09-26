@@ -166,7 +166,7 @@ if (!$_POST) {
 				<td class="orderID">' . $order['id'] . '</td>
 				<td>' . $order['date'] . '</td>
 				<td>' . $order['togrant'] . '</td>
-				<td>' . $order['topay'] . '</td>
+				<td>' . number_format($order['topay'], 2, '.', '') . '</td>
 				<td>' . $statusList[ $order['paid'] ] . '</td>
 				<td>';
 		if ($order['paid'] == 0) {

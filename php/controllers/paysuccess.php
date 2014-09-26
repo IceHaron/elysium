@@ -1,7 +1,7 @@
 <?
 $noTemplate = TRUE; // Вырубаем шаблон
 $InvId = $db->escape($_POST['InvId']);
-$OutSum = $db->escape($_POST['OutSum']);
+$OutSum = $_POST['OutSum'];
 $SignatureValue = strtolower($_POST['SignatureValue']);
 $q = "SELECT `user`, `topay`, `paid`, `togrant` FROM `acquiring` WHERE `id` = $InvId";
 $r = $db->query($q);
