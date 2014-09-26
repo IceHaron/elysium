@@ -15,7 +15,7 @@ if ($r !== NULL) {
 	$message = 'Транзакция найдена';
 
 	if ($checkSum && $checkPaid && $checkSignature) {
-		$q = "UPDATE `acquiring` SET `paid` = 2 WHERE `id` = $InvId";
+		$q = "UPDATE `acquiring` SET `paid` = 1 WHERE `id` = $InvId";
 		$r = $db->query($q);
 		$message .= '<br/>Спасибо за покупку изюма! Он будет выдан вам как только платеж будет завершен. <a href="/lk">Уйти в ЛК</a>';
 
