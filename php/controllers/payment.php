@@ -34,7 +34,7 @@ if (isset($_POST['izum']) && isset($_POST['want']) && $clogin) {
 		$signature = roboSignature(array("Elysium", $toPay, $transactionID), 'pay');
 
 		$acquiring = array(
-			  'MrchLogin' => 'Elysium'
+			  'MerchantLogin' => 'Elysium'
 			, 'OutSum' => $toPay
 			, 'InvId' => $transactionID
 			, 'Desc' => "Покупка $want izum"
