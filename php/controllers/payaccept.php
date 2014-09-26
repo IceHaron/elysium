@@ -7,7 +7,7 @@ $q = "SELECT `topay`, `paid` FROM `acquiring` WHERE `id` = $InvId";
 $r = $db->query($q);
 
 if ($r !== NULL) {
-	$signPost = roboSignature(array(trim($OutSum,'0'), $InvId), 'pay');
+	$signPost = roboSignature(array($OutSum, $InvId), 'pay');
 	$signBase = roboSignature(array($r[0]['topay'], $InvId), 'pay');
 	$checkSum = ((float)$OutSum === (float)$r[0]['topay']);
 	$checkPaid = ($r[0]['paid'] == 0);
