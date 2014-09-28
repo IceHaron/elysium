@@ -11,7 +11,7 @@ if ($r !== NULL) {
 	$signBase = roboSignature(array(number_format($r[0]['topay'], 6, '.', ''), $InvId), 'pay');
 	$checkSum = ((float)$OutSum === (float)$r[0]['topay']);
 	$checkPaid = ($r[0]['paid'] == 0);
-	$checkSignature = ($signPost == $signBase && $signPost == $SignatureValue && $signBase == $SignatureValue);
+	$checkSignature = (/*$signPost == $signBase && */$signPost == $SignatureValue/* && $signBase == $SignatureValue*/);
 	$message = 'Транзакция найдена';
 
 	if ($checkSum && $checkPaid && $checkSignature) {
