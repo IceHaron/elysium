@@ -96,7 +96,7 @@ function deleteUsers() {
 	foreach ($r as $unit) {
 		$hist = json_decode($unit['history'], TRUE);
 
-		if (time() - $hist['created'] && $unit['group'] == 0) {
+		if (time() - $hist['created'] >= 172800 && $unit['group'] == 0) {
 			$q = "DELETE FROM `ololousers` WHERE `id` = {$unit['id']}";
 			$r = $db->query($q);
 			$from = array('id' => $unit['id'], 'email' => 'robot@elysiumgame.ru', 'name' => 'Elysium Game');
