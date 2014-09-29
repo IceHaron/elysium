@@ -31,14 +31,19 @@
 		echo '<tr class="group"><th colspan="5">' . $groupName . '</th></tr>';
 
 		foreach ($group as $donut) {
-		if ($donut['id'] == 10000) $dis = '';
+		if ($donut['id'] == 10000 || ($donut['id'] >= 20000 && $donut['id'] <= 29999)) $dis = '';
 		else $dis = 'disabled';
 	?>
 		<tr class="item" <? if ($dis) echo 'style="opacity: 0.3;"'; ?>>
 			<td>
-			<? if ($clogin) { ?>
-				<input type="checkbox" name="donut[<?=$donut['id'];?>]" <?=$dis;?>>
-			<? } else echo '<span style="color: lightgrey">Недоступно</span>' ?>
+			<?
+			if ($clogin) { 
+				if ($donut['id'] >= 20000 && $donut['id'] <= 29999) {
+					echo '<input type="radio" name="status" value="' . $donut['id'] . '" ' . $dis . '>';
+				} else {
+					echo '<input type="checkbox" name="donut[' . $donut['id'] . ']" ' . $dis . '>';
+				}
+			} else echo '<span style="color: lightgrey">Недоступно</span>'; ?>
 			</td>
 			<td><?=$donut['name'];?></td>
 			<td style="color: red;"><?=number_format($donut['cost'], 0, ',', ' ');?></td>

@@ -59,29 +59,50 @@ function writeHistory($id, $key, $value) {
 function syncAccs() {
 	GLOBAL $db;
 	$output = '';
+	$equiv = array(20000 => 2, 20010 => 3, 20020 => 4);
+	
 	$q = "
-		SELECT `ololousers`.`email`, `ololousers`.`nick`, `ololousers`.`mcname`, `ololousers`.`group`, `usergroups`.`server_alias`
+		SELECT `ololousers`.`id`, `ololousers`.`group`, `purchases`.`item`
+		FROM `ololousers`
+		LEFT JOIN `purchases` ON (`purchases`.`user` = `ololousers`.`id` AND `purchases`.`item` >= 20000 AND `purchases`.`item` <= 29999 AND `purchases`.`start` <= now() AND `purchases`.`end` >= now())
+		WHERE `ololousers`.`group` IN (1,2,3,4,5);";
+	$r = $db->query($q);
+	
+	foreach ($r as $player) {
+		if ($player['item'] !== NULL AND $player['group'] != $equiv[ $player['item'] ]) {
+			$q = "UPDATE `ololousers` SET `group` = {$equiv[ $player['item'] ]} WHERE `id` = {$player['id']}";
+			$db->query($q);
+		} else if ($player['item'] == NULL AND $player['group'] != 1) {
+			$q = "UPDATE `ololousers` SET `group` = 1 WHERE `id` = {$player['id']}";
+			$db->query($q);
+		} else {
+		}
+	}
+	
+	
+	$q = "
+		SELECT `ololousers`.`id`, `ololousers`.`email`, `ololousers`.`nick`, `ololousers`.`mcname`, `ololousers`.`group`, `usergroups`.`server_alias`
 		FROM `ololousers`
 		JOIN `usergroups` ON (`usergroups`.`id` = `ololousers`.`group`)
 		WHERE `ololousers`.`group` != 0;";
 	$r = $db->query($q);
-
+	
 	foreach ($r as $player) {
-		$forumnick = $player['nick'];
-		$forumemail = $player['email'];
-		$salt = '9034u3ui';
-		$key = str_replace(array('1','2','5','8','b','d','e','f'), '', md5($forumnick . substr($forumnick, 2)));
-		$forumpw = md5($key);
-		$group = $player['group'] . '__' . $player['server_alias'];
-		$mcname = $player['mcname'];
+		// $forumnick = $player['nick'];
+		// $forumemail = $player['email'];
+		// $salt = '9034u3ui';
+		// $key = str_replace(array('1','2','5','8','b','d','e','f'), '', md5($forumnick . substr($forumnick, 2)));
+		// $forumpw = md5($key);
+		// $group = $player['group'] . '__' . $player['server_alias'];
+		// $mcname = $player['mcname'];
 
-		$ch = curl_init('http://srv.elysiumgame.ru/');
-		curl_setopt($ch, CURLOPT_HEADER, 0);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_POSTFIELDS, "mode=sync&user=$forumnick&email=$forumemail&pw=$forumpw&group=$group&mcnick=$mcname&key=$key&salt=$salt");
-		$res = curl_exec($ch);
-		curl_close($ch);
-		$output .= "&lt;$forumemail&gt; $res<br/><br/>";
+		// $ch = curl_init('http://srv.elysiumgame.ru/');
+		// curl_setopt($ch, CURLOPT_HEADER, 0);
+		// curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		// curl_setopt($ch, CURLOPT_POSTFIELDS, "mode=sync&user=$forumnick&email=$forumemail&pw=$forumpw&group=$group&mcnick=$mcname&key=$key&salt=$salt");
+		// $res = curl_exec($ch);
+		// curl_close($ch);
+		// $output .= "&lt;$forumemail&gt; $res<br/><br/>";
 	}
 
 	return $output;

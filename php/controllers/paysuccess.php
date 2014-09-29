@@ -25,7 +25,7 @@ if ($r !== NULL) {
 		$totalIzum = $izum + $want;
 		$q = "UPDATE `ololousers` SET `izumko` = $totalIzum WHERE `id` = $player";
 		$r = $db->query($q);
-		writeHistory($player, 'purchase', array('izum' => time()));
+		// writeHistory($player, 'purchase', array('izum' => time()));
 		echo 'OK' . $InvId;
 		$html = $achievement->earn($player, 11);
 		$message .= '<br/>Платеж проведен успешно';

@@ -74,57 +74,101 @@ if (isset($_POST['izum']) && isset($_POST['want']) && $clogin) {
 		// $message = 'Что-то пошло не так';
 	}
 
-} else if (isset($_POST['goods']) && isset($_POST['donut']) && $clogin) {
+} else if (isset($_POST['goods']) && (isset($_POST['donut']) || isset($_POST['status'])) && $clogin) {
 
-	foreach ($_POST['donut'] as $id => $donut) {
-		$items[] = intval($id);
+	if (isset($_post['donut'])) {
+		foreach ($_POST['donut'] as $id => $donut) {
+			$items[] = intval($id);
+		}
 	}
+	
+	if (isset($_POST['status'])) $items[] = intval($_POST['status']);
 
 	$idStr = implode(',', $items);
-	$q = "SELECT `id`, `cost`, `duration` FROM `donuts` WHERE `id` IN ($idStr);";
+	$hasStatus = FALSE;
+	$q = "SELECT `item`, `end` FROM `purchases` WHERE `user` = $cid ORDER BY `end` ASC";
+	$r = $db->query($q);
+	
+	foreach ($r as $purchase) {
+		$purchases[ $purchase['item'] ] = $purchase;
+		
+		if (
+		   $purchase['item'] >= 20000
+		&& $purchase['item'] <= 29999
+		&& strtotime($purchase['end']) > time()
+		) {
+			$hasStatus = TRUE;
+			$statusEnd = $purchase['end'];
+		}
+		
+	}
+	
+	$q = "SELECT `id`, `name`, `cost`, `duration` FROM `donuts` WHERE `id` IN ($idStr);";
 	$r = $db->query($q);
 	$sum = 0;
 
 	foreach ($r as $item) {
-		$sum += $item['cost'];
-		$durations[ $item['id'] ] = $item['duration'];
+		$donuts[ $item['id'] ] = $item;
 	}
 
 	if ($izum < $sum) {
 		$message = 'Не хватает изюма. <a href="/donate">Вернуться</a>';
 
 	} else {
-		$remain = $izum - $sum;
 		$insert = '';
+		$notgiven = '';
 
 		foreach ($items as $item) {
-			$duration = $durations[$item];
+			$duration = $donuts[$item]['duration'];
+			$cost = $donuts[$item]['cost'];
 			
-			if ($duration == 0) $insert .= ",($cid, $item, now(), 0)";
-			else {
-				$end = time() + $duration;
-				$insert .= ",($cid, $item, now(), from_unixtime($end))";
+			if ($duration == 0) {
+			
+				if (($item == 10003 || $item == 10004) && isset($purchases[$item])) {
+					$notgiven .= $donuts[$item]['name'] . ' &mdash; Уже куплено<br/>';
+				} else {
+					$insert .= ",($cid, $item, now(), 0)";
+					$sum += $cost;
+				}
+				
+			} else {
+				if (isset($purchases[$item]) && strtotime($purchases[$item]['end']) > time()) {
+					$start = $purchases[$item]['end'];
+
+				} else if ($item >= 20000 && $item <= 29999 && $hasStatus) {
+					$start = $statusEnd;
+					
+				} else {
+					$start = date('Y-m-d H:i:s', time());
+				}
+				
+				$end = strtotime($start);
+				$end += $duration;
+				$insert .= ",($cid, $item, '$start', from_unixtime($end))";
+				$sum += $cost;
 			}
 
 		}
 
+		$remain = $izum - $sum;
 		$q = "UPDATE `ololousers` SET `izumko` = $remain WHERE `id` = $cid;";
 		$paid = $db->query($q);
 
 		if ($paid === TRUE) {
-			writeHistory($cid, 'purchase', array($idStr => time()));
+			// writeHistory($cid, 'purchase', array($idStr => time()));
 			$q = "INSERT INTO `purchases` (`user`, `item`, `start`, `end`) VALUES " . substr($insert, 1);
 			$purchase = $db->query($q);
 		}
 		
 		if ($purchase === TRUE && $paid === TRUE) {
-
 			$message = 'Спасибо за покупку! Оплаченные товары будут активированы в ближайшее время';
+			if ($notgiven) $message .= 'Следующие товары исключены из покупки:<br/>' . $notgiven;
 
-			if (isset($durations[10000])) {
+			if (isset($donuts[10000])) {
 				$html = $achievement->earn($cid, 25);
 				$message .= '<br/>Большое вам спасибо за подарок! В качестве благодарности мы начислили вам символические 10 единиц опыта и выдали достижение' . $html;
 			}
+			
 
 		} else $message = 'Что-то пошло не так.';
 	}
