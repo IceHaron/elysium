@@ -109,6 +109,7 @@ if (isset($_POST['izum']) && isset($_POST['want']) && $clogin) {
 
 	foreach ($r as $item) {
 		$donuts[ $item['id'] ] = $item;
+		$sum += $item['cost'];
 	}
 
 	if ($izum < $sum) {
@@ -117,6 +118,7 @@ if (isset($_POST['izum']) && isset($_POST['want']) && $clogin) {
 	} else {
 		$insert = '';
 		$notgiven = '';
+		$sum = 0;
 
 		foreach ($items as $item) {
 			$duration = $donuts[$item]['duration'];
