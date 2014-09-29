@@ -88,21 +88,21 @@ function syncAccs() {
 	$r = $db->query($q);
 	
 	foreach ($r as $player) {
-		// $forumnick = $player['nick'];
-		// $forumemail = $player['email'];
-		// $salt = '9034u3ui';
-		// $key = str_replace(array('1','2','5','8','b','d','e','f'), '', md5($forumnick . substr($forumnick, 2)));
-		// $forumpw = md5($key);
-		// $group = $player['group'] . '__' . $player['server_alias'];
-		// $mcname = $player['mcname'];
+		$forumnick = $player['nick'];
+		$forumemail = $player['email'];
+		$salt = '9034u3ui';
+		$key = str_replace(array('1','2','5','8','b','d','e','f'), '', md5($forumnick . substr($forumnick, 2)));
+		$forumpw = md5($key);
+		$group = $player['group'] . '__' . $player['server_alias'];
+		$mcname = $player['mcname'];
 
-		// $ch = curl_init('http://srv.elysiumgame.ru/');
-		// curl_setopt($ch, CURLOPT_HEADER, 0);
-		// curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		// curl_setopt($ch, CURLOPT_POSTFIELDS, "mode=sync&user=$forumnick&email=$forumemail&pw=$forumpw&group=$group&mcnick=$mcname&key=$key&salt=$salt");
-		// $res = curl_exec($ch);
-		// curl_close($ch);
-		// $output .= "&lt;$forumemail&gt; $res<br/><br/>";
+		$ch = curl_init('http://srv.elysiumgame.ru/');
+		curl_setopt($ch, CURLOPT_HEADER, 0);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, "mode=sync&user=$forumnick&email=$forumemail&pw=$forumpw&group=$group&mcnick=$mcname&key=$key&salt=$salt");
+		$res = curl_exec($ch);
+		curl_close($ch);
+		$output .= "&lt;$forumemail&gt; $res<br/><br/>";
 	}
 
 	return $output;
