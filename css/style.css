@@ -530,3 +530,11 @@ a .page:hover {
 #cheque th {
 	border-right: 1px dashed #bbb;
 }
+.descTable { width: 100%; }
+.descTable td {
+	padding: 3px;
+	border: 1px solid grey;
+}
+.descTable .yes, .descTable .no, .descTable .neutral { text-align: center; }
+.descTable .yes { color: green; }
+.descTable .no { color: red; }
