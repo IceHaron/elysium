@@ -420,10 +420,9 @@ if ($action == 'reg' && isset($_POST['nick']) && !isset($cid)) {
 * Смена ника
 * 
 **/
-} else if (($action == 'sitenick' || $action == 'mcnick') && isset($cid)) {
+} else if ($action == 'sitenick' && isset($cid)) {
 
-	if ($action == 'sitenick') $what = 'nick';
-	else $what = 'mcname';
+	$what = 'nick';
 
 	if (isset($_POST['newnick'])) {
 

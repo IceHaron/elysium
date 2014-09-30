@@ -23,13 +23,12 @@ $translate = array(
 
 if ((int)$info['tokens']['changename'] > 0) {
 	$nick = $info['nick'] . '&nbsp;<a href="/auth?action=sitenick">Сменить</a>';
-	$mcnick = $info['mcName'] . '&nbsp;<a href="/auth?action=mcnick">Сменить</a>';
 
 } else {
 	$nick = $info['nick'];
-	$mcnick = $info['mcName'];
 }
 
+$mcnick = $info['mcName'];
 $q = "SELECT * FROM `acquiring` WHERE `user` = $cid AND `paid` != -1 ORDER BY `date` DESC";
 $orders = $db->query($q);
 $statusList = array(
