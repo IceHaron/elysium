@@ -110,7 +110,7 @@ if ($action == 'reg' && isset($_POST['nick']) && !isset($cid)) {
 				if ($referrer != 1) $achievement->earn($confirm[0], 8);
 				if ($referrer == 1) $achievement->earn($confirm[0], 14);
 				$location = '/auth?action=log';
-				$q = "INSERT INTO `tokens` (`user`, `action`) VALUES ({$confirm[0]}, 'changename'),({$confirm[0]}, 'changename');";
+				$q = "INSERT INTO `tokens` (`user`, `action`) VALUES ({$confirm[0]}, 'changename');";
 				$r = $db->query($q);
 				writeHistory($confirm[0], 'activated', time());
 
