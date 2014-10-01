@@ -235,6 +235,9 @@ h4 {font-size:31px;color:#000;letter-spacing:-2px;margin-bottom:16px}
 	float:right;
 	margin:0px 6px;
 }
+#nav ul li.ratings {
+	float: right;
+}
 #nav ul li.authLI {
 	float: right;
 	padding-top:5px;
