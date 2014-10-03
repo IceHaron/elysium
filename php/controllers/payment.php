@@ -76,7 +76,7 @@ if (isset($_POST['izum']) && isset($_POST['want']) && $clogin) {
 
 } else if (isset($_POST['goods']) && (isset($_POST['donut']) || isset($_POST['status'])) && $clogin) {
 
-	if (isset($_post['donut'])) {
+	if (isset($_POST['donut'])) {
 		foreach ($_POST['donut'] as $id => $donut) {
 			$items[] = intval($id);
 		}
@@ -127,7 +127,7 @@ if (isset($_POST['izum']) && isset($_POST['want']) && $clogin) {
 			if ($duration == 0) {
 			
 				if (($item == 10003 || $item == 10004) && isset($purchases[$item])) {
-					$notgiven .= $donuts[$item]['name'] . ' &mdash; Уже куплено<br/>';
+					$notgiven .= $donuts[$item]['name'] . ' &mdash; <span style="color: red">Уже куплено</span><br/>';
 				} else {
 					$insert .= ",($cid, $item, now(), 0)";
 					$sum += $cost;
@@ -152,27 +152,31 @@ if (isset($_POST['izum']) && isset($_POST['want']) && $clogin) {
 
 		}
 
-		$remain = $izum - $sum;
-		$q = "UPDATE `ololousers` SET `izumko` = $remain WHERE `id` = $cid;";
-		$paid = $db->query($q);
+		if ($notgiven && !$insert) {
+			$message = 'Все выбранные товары уже приобретены, покупка не совершена.';
+		} else {
+			$remain = $izum - $sum;
+			$q = "UPDATE `ololousers` SET `izumko` = $remain WHERE `id` = $cid;";
+			$paid = $db->query($q);
 
-		if ($paid === TRUE) {
-			// writeHistory($cid, 'purchase', array($idStr => time()));
-			$q = "INSERT INTO `purchases` (`user`, `item`, `start`, `end`) VALUES " . substr($insert, 1);
-			$purchase = $db->query($q);
-		}
-		
-		if ($purchase === TRUE && $paid === TRUE) {
-			$message = 'Спасибо за покупку! Оплаченные товары будут активированы в ближайшее время';
-			if ($notgiven) $message .= 'Следующие товары исключены из покупки:<br/>' . $notgiven;
-
-			if (isset($donuts[10000])) {
-				$html = $achievement->earn($cid, 25);
-				$message .= '<br/>Большое вам спасибо за подарок! В качестве благодарности мы начислили вам символические 10 единиц опыта и выдали достижение' . $html;
+			if ($paid === TRUE) {
+				// writeHistory($cid, 'purchase', array($idStr => time()));
+				$q = "INSERT INTO `purchases` (`user`, `item`, `start`, `end`) VALUES " . substr($insert, 1);
+				$purchase = $db->query($q);
 			}
 			
+			if ($purchase === TRUE && $paid === TRUE) {
+				$message = 'Спасибо за покупку! Оплаченные товары будут активированы в ближайшее время';
+				if ($notgiven) $message .= '<br/>Следующие товары исключены из покупки:<br/>' . $notgiven;
 
-		} else $message = 'Что-то пошло не так.';
+				if (isset($donuts[10000])) {
+					$html = $achievement->earn($cid, 25);
+					$message .= '<br/>Большое вам спасибо за подарок! В качестве благодарности мы начислили вам символические 10 единиц опыта и выдали достижение' . $html;
+				}
+				
+
+			} else $message = 'Что-то пошло не так.';
+		}
 	}
 
 } else $message = "Ничего не собираешься покупать? =(";
