@@ -78,7 +78,17 @@ function syncAccs() {
 		} else {
 		}
 	}
-	
+
+	$q = "
+		SELECT `ololousers`.`id`, `purchases`.`item`
+		FROM `ololousers`
+		JOIN `purchases` ON (`purchases`.`user` = `ololousers`.`id` AND `purchases`.`item` IN (10001, 10002) AND `purchases`.`start` <= now() AND `purchases`.`end` >= now())
+		WHERE `ololousers`.`group` > 0;";
+	$r = $db->query($q);
+
+	foreach ($r as $player) {
+		$allowPrefix[ $player['id'] ] = $player['id'];
+	}
 	
 	$q = "
 		SELECT `ololousers`.`id`, `ololousers`.`email`, `ololousers`.`nick`, `ololousers`.`prefix`, `ololousers`.`mcname`, `ololousers`.`group`, `usergroups`.`server_alias`, `usergroups`.`server_prefix`
@@ -96,7 +106,7 @@ function syncAccs() {
 		$group = $player['group'] . '__' . $player['server_alias'];
 		$mcname = $player['mcname'];
 		$prefix = str_replace('[&r] ', $player['server_prefix'], $player['prefix']);
-		if ($prefix == '') $prefix = 'null';
+		if ($prefix == '' || !isset($allowPrefix[ $player['id'] ])) $prefix = 'null';
 		$prefix = urlencode($prefix);
 
 		$ch = curl_init('http://srv.elysiumgame.ru/');
