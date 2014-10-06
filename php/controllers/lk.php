@@ -9,6 +9,12 @@ if (!isset($cemail)) {
 	header('Location: /'); // Как бы сложно посмотреть свой ЛК, не залогинившись, выбрасываем на главную.
 	exit;
 }
+if (isset($_POST['prefix'])) {
+	$prefix = preg_replace('/\&amp\;/', '&', $db->escape($_POST['prefix']));
+	$nameColor = preg_replace('/\&amp\;/', '&', $db->escape($_POST['nameColor']));
+	$q = "UPDATE `ololousers` SET `prefix` = '[{$prefix}&r] &{$nameColor}' WHERE `id` = $cid;";
+	$r = $db->query($q);
+}
 
 $info = $user->getFullInfo($cid);
 

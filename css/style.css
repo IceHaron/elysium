@@ -288,6 +288,23 @@ a .page:hover {
 }
 
 /* Личный кабинет */
+ul.tabs { border-bottom: 1px solid grey; }
+ul.tabs li {
+	margin-bottom: -1px;
+	cursor: pointer;
+	border-bottom: 1px solid grey;
+}
+ul.tabs li:hover { background-color: #eee; }
+ul.tabs li.active {
+	border-top: 1px solid grey;
+	border-right: 1px solid grey;
+	border-bottom: 1px solid white;
+	border-left: 1px solid grey;
+}
+ul.tabs li {
+	display: inline-block;
+	padding: 10px;
+}
 .lk {
 	margin-top: 20px;
 }
@@ -322,6 +339,42 @@ a .page:hover {
 	margin-top: -10px;
 	background-color: lime;
 	border-radius: 3px;
+}
+#prefixConstructor { display: none; }
+.palitre { margin: 10px 0 0 0; }
+.palitre div {
+	display: inline-block;
+	height: 20px;
+	width: 20px;
+	border: 1px solid grey;
+	cursor: pointer;
+}
+.palitre .color[data-name="black"] { background-color: #000; }
+.palitre .color[data-name="darkblue"] { background-color: #00a; }
+.palitre .color[data-name="darkgreen"] { background-color: #0a0; }
+.palitre .color[data-name="teal"] { background-color: #0aa; }
+.palitre .color[data-name="darkred"] { background-color: #a00; }
+.palitre .color[data-name="purple"] { background-color: #a0a; }
+.palitre .color[data-name="gold"] { background-color: #fa0; }
+.palitre .color[data-name="gray"] { background-color: #aaa; }
+.palitre .color[data-name="darkgray"] { background-color: #555; }
+.palitre .color[data-name="blue"] { background-color: #55f; }
+.palitre .color[data-name="brightgreen"] { background-color: #5f5; }
+.palitre .color[data-name="aqua"] { background-color: #5ff; }
+.palitre .color[data-name="red"] { background-color: #f55; }
+.palitre .color[data-name="pink"] { background-color: #FE54FE; }
+.palitre .color[data-name="yellow"] { background-color: #ff5; }
+.palitre .color[data-name="white"] { background-color: #fff; }
+.palitre .color.active { border: 3px solid #5B7FA6; }
+#parsedPrefix {
+	background: url(/images/prefix_bg.png) no-repeat;
+	font-family: Tahoma;
+	text-shadow: 1px 1px 0 black;
+	padding: 5px;
+}
+#parsedPrefix div {
+	padding: 3px 0 5px 3px;
+	background: rgba(0, 0, 0, 0.5)
 }
 .balance {
 	width: 200px;

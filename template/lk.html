@@ -1,10 +1,14 @@
-<?
-if (!$_POST) {
-// Без поста грузим ЛК
-?>
 <h1 id="pageCaption">Личный кабинет</h1>
 
-<table class="lk">
+<ul class="tabs">
+	<li class="summary">Общая информация</li>
+	<li class="orders">Заказы</li>
+	<li class="achieves">Достижения</li>
+	<li class="pw">Сбросить пароль</li>
+	<li class="visibility">Настроить видимость</li>
+</ul>
+
+<table class="lk summary">
 	<tr>
 		<th class="head">Ваша электропочта</th>
 		<td class="input"><?=$info['email']?></td>
@@ -17,9 +21,80 @@ if (!$_POST) {
 	</tr>
 	<tr>
 		<th class="head">Ваше имя в MineCraft`е</th>
-		<td class="input"><?=$mcnick?></td>
+		<td class="input mcnick"><?=$mcnick?></td>
 		<td class="balance"><a href="/donate">Купить или потратить</a></td>
 	</tr>
+	<form method="POST">
+	<tr>
+		<th class="head">Цвет ника</th>
+		<td class="input">
+			<?
+			if ($info['allowNameColor']) echo '
+				<input type="hidden" value="' . $info['nameColor'] . '" name="nameColor">
+				<div class="palitre">
+					<div class="name color" data-color="0" data-name="black" title="&0"></div>
+					<div class="name color" data-color="1" data-name="darkblue" title="&1"></div>
+					<div class="name color" data-color="2" data-name="darkgreen" title="&2"></div>
+					<div class="name color" data-color="3" data-name="teal" title="&3"></div>
+					<div class="name color" data-color="4" data-name="darkred" title="&4"></div>
+					<div class="name color" data-color="5" data-name="purple" title="&5"></div>
+					<div class="name color" data-color="6" data-name="gold" title="&6"></div>
+					<div class="name color" data-color="7" data-name="gray" title="&7"></div>
+					<div class="name color" data-color="8" data-name="darkgray" title="&8"></div>
+					<div class="name color" data-color="9" data-name="blue" title="&9"></div>
+					<div class="name color" data-color="a" data-name="brightgreen" title="&a"></div>
+					<div class="name color" data-color="b" data-name="aqua" title="&b"></div>
+					<div class="name color" data-color="c" data-name="red" title="&c"></div>
+					<div class="name color" data-color="d" data-name="pink" title="&d"></div>
+					<div class="name color" data-color="e" data-name="yellow" title="&e"></div>
+					<div class="name color" data-color="f" data-name="white" title="&f"></div>
+				</div>
+			';
+			else echo '<span style="color: red">Недоступен</span> <a href="/donate">Купить</a>';
+			?>
+		</td>
+		<td class="balance"></td>
+	</tr>
+	<tr>
+		<th class="head">Персональный префикс</th>
+		<td class="input">
+			<div class="groupPrefix" style="display: none"><?=$info['groupPrefix'];?></div>
+			<?
+			if ($info['allowPrefix']) echo $info['prefix'] . ' 
+				<input type="button" id="changePrefix" value="Изменить">
+				<div id="prefixConstructor">
+						<input type="text" name="prefix" value="' . $info['prefix'] . '" autocomplete="off" size="40" maxlength="42">
+					<div class="palitre">
+						<div class="prefix color" data-color="0" data-name="black" title="&0"></div>
+						<div class="prefix color" data-color="1" data-name="darkblue" title="&1"></div>
+						<div class="prefix color" data-color="2" data-name="darkgreen" title="&2"></div>
+						<div class="prefix color" data-color="3" data-name="teal" title="&3"></div>
+						<div class="prefix color" data-color="4" data-name="darkred" title="&4"></div>
+						<div class="prefix color" data-color="5" data-name="purple" title="&5"></div>
+						<div class="prefix color" data-color="6" data-name="gold" title="&6"></div>
+						<div class="prefix color" data-color="7" data-name="gray" title="&7"></div>
+						<div class="prefix color" data-color="8" data-name="darkgray" title="&8"></div>
+						<div class="prefix color" data-color="9" data-name="blue" title="&9"></div>
+						<div class="prefix color" data-color="a" data-name="brightgreen" title="&a"></div>
+						<div class="prefix color" data-color="b" data-name="aqua" title="&b"></div>
+						<div class="prefix color" data-color="c" data-name="red" title="&c"></div>
+						<div class="prefix color" data-color="d" data-name="pink" title="&d"></div>
+						<div class="prefix color" data-color="e" data-name="yellow" title="&e"></div>
+						<div class="prefix color" data-color="f" data-name="white" title="&f"></div>
+					</div>
+				</div>
+				';
+			else echo '<span style="color: red">Недоступен</span> <a href="/donate">Купить</a>';
+			?>
+		</td>
+		<td class="balance"></td>
+	</tr>
+	<tr>
+		<th class="head">Как это будет выглядеть</th>
+		<td class="input"><div id="parsedPrefix"><div></div></div></td>
+		<td class="balance"><input type="submit" value="Сохранить" style="display: none"></td>
+	</tr>
+	</form>
 	<tr>
 		<th class="head"></th>
 		<td class="input">Количество токенов на смену ников: <?=$info['tokens']['changename']?></td>
@@ -85,22 +160,6 @@ if (!$_POST) {
 			</div>
 		</td>
 	</tr>
-</table>
-
-<hr>
-
-<table class="lk">
-	<tr>
-		<th class="head">А вот пароль мы вам не покажем хЪ</th>
-		<td class="input">
-			<form action="/auth?action=changepw" method="POST" id="changePw">
-				<input type="password" name="oldpw" placeholder="Введите старый пароль"><br/>
-				<input type="password" name="newpw" placeholder="Введите новый пароль">
-				<input type="password" name="repw" placeholder="Повторите новый пароль">
-			</form>
-		</td>
-		<td class="action"><button id="changePass">Сменить</button></td>
-	</tr>
 	<tr>
 		<th class="head">Привязанный пользователь Steam</th>
 
@@ -128,9 +187,23 @@ if (!$_POST) {
 		<td class="input"><?=$info['referrer']['nick']?></td>
 		<td class="action"></td>
 	</tr>
+</table>
+
+<table class="lk">
+	<tr class="pw">
+		<th class="head">А вот пароль мы вам не покажем хЪ</th>
+		<td class="input">
+			<form action="/auth?action=changepw" method="POST" id="changePw">
+				<input type="password" name="oldpw" placeholder="Введите старый пароль"><br/>
+				<input type="password" name="newpw" placeholder="Введите новый пароль">
+				<input type="password" name="repw" placeholder="Повторите новый пароль">
+			</form>
+		</td>
+		<td class="action"><button id="changePass">Сменить</button></td>
+	</tr>
 
 	<form action="/auth?action=privacy" method="POST">
-		<tr>
+		<tr class="visibility">
 			<th class="head">Видимость</th>
 			<td class="input">
 				<div id="allPrivacy">
@@ -150,64 +223,57 @@ if (!$_POST) {
 	</form>
 </table>
 
-<h3>Покупки изюма:</h3>
-<table class="orderList">
-	<tr>
-		<th class="orderID">Номер заказа</th>
-		<th class="orderDate">Дата заказа</th>
-		<th class="orderIzum">Количество изюма</th>
-		<th class="orderCost">Сумма к оплате (руб)</th>
-		<th class="orderStatus">Статус</th>
-		<th class="orderAction">Действие</th>
-	</tr>
-	<? foreach ($orders as $order) {
-		echo '
-			<tr>
-				<td class="orderID">' . $order['id'] . '</td>
-				<td>' . $order['date'] . '</td>
-				<td>' . $order['togrant'] . '</td>
-				<td>' . number_format($order['topay'], 2, '.', '') . '</td>
-				<td>' . $statusList[ $order['paid'] ] . '</td>
-				<td>';
-		if ($order['paid'] == 0) {
-			$signature = roboSignature(array("Elysium", $order['topay'], $order['id']), 'pay');
+<div class="orders">
+	<h3>Покупки изюма:</h3>
+	<table class="orderList">
+		<tr>
+			<th class="orderID">Номер заказа</th>
+			<th class="orderDate">Дата заказа</th>
+			<th class="orderIzum">Количество изюма</th>
+			<th class="orderCost">Сумма к оплате (руб)</th>
+			<th class="orderStatus">Статус</th>
+			<th class="orderAction">Действие</th>
+		</tr>
+		<? foreach ($orders as $order) {
 			echo '
-					<form action="/payfail" method="POST">
-						<input type="hidden" name="InvId" value="' . $order['id'] . '">
-						<input type="hidden" name="OutSum" value="' . $order['topay'] . '">
-						<input type="hidden" name="Culture" value="ru">
-						<input type="submit" value="Отказаться">
-					</form>
-					<form action="https://merchant.roboxchange.com/Index.aspx" method="POST">
-						<input type="hidden" name="MerchantLogin" value="Elysium">
-						<input type="hidden" name="OutSum" value="' . $order['topay'] . '">
-						<input type="hidden" name="InvId" value="' . $order['id'] . '">
-						<input type="hidden" name="Desc" value="Покупка ' . $order['togrant'] . ' izum">
-						<input type="hidden" name="SignatureValue" value="' . $signature . '">
-						<input type="hidden" name="Culture" value="ru">
-						<input type="submit" value="Подтвердить">
-					</form>';
-		}
-		echo '
-				</td>
-			</tr>';
-	} ?>
-</table>
-
-<h3>Ваши достижения (5 последних плюс только что полученные):</h3>
-<div id="achList">
-
-	<?=$info['achievements']?>
-	<div><a href="/achievements">Посмотреть все достижения</a></div>
+				<tr>
+					<td class="orderID">' . $order['id'] . '</td>
+					<td>' . $order['date'] . '</td>
+					<td>' . $order['togrant'] . '</td>
+					<td>' . number_format($order['topay'], 2, '.', '') . '</td>
+					<td>' . $statusList[ $order['paid'] ] . '</td>
+					<td>';
+			if ($order['paid'] == 0) {
+				$signature = roboSignature(array("Elysium", $order['topay'], $order['id']), 'pay');
+				echo '
+						<form action="/payfail" method="POST">
+							<input type="hidden" name="InvId" value="' . $order['id'] . '">
+							<input type="hidden" name="OutSum" value="' . $order['topay'] . '">
+							<input type="hidden" name="Culture" value="ru">
+							<input type="submit" value="Отказаться">
+						</form>
+						<form action="https://merchant.roboxchange.com/Index.aspx" method="POST">
+							<input type="hidden" name="MerchantLogin" value="Elysium">
+							<input type="hidden" name="OutSum" value="' . $order['topay'] . '">
+							<input type="hidden" name="InvId" value="' . $order['id'] . '">
+							<input type="hidden" name="Desc" value="Покупка ' . $order['togrant'] . ' izum">
+							<input type="hidden" name="SignatureValue" value="' . $signature . '">
+							<input type="hidden" name="Culture" value="ru">
+							<input type="submit" value="Подтвердить">
+						</form>';
+			}
+			echo '
+					</td>
+				</tr>';
+		} ?>
+	</table>
 </div>
-<?
 
-} else {
-// С постом выводим сообщение и ставим редирект
-?>
-<h4><?=$message?></h4>
-<span>Страница будет перезагружена, если этого не произошло, ткните <a href="/lk">сюда</a></span>
-<meta http-equiv="refresh" content="3; url=/">
-<?
-}
-?>
+<div class="achieves">
+	<h3>Ваши достижения (5 последних плюс только что полученные):</h3>
+	<div id="achList">
+
+		<?=$info['achievements']?>
+		<div><a href="/achievements">Посмотреть все достижения</a></div>
+	</div>
+</div>

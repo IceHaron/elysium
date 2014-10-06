@@ -71,21 +71,11 @@ class user {
 	public function getInfo($user) {
 
 		GLOBAL $db;
-		$q = "SELECT `action`, count(*) AS `count` FROM `tokens` WHERE `user` = {$user} GROUP BY `action`";
-		$r = $db->query($q);
-
-		if (count($r) != 0)
-			foreach ($r as $token) {
-				$tokens[ $token['action'] ] = $token['count'];
-			}
-		else $tokens = array('changename' => 0);
-
 		$q = "SELECT * FROM `ololousers` WHERE `id` = '$user'";
 		$r = $db->query($q);
 		// Убираем пароль из массива, защита дохера
 		if (isset($r[0]['pw'])) {
 			unset ($r[0]['pw']);
-			$r[0]['tokens'] = $tokens;
 			return $r[0];
 		} else return array();
 	}
@@ -107,6 +97,29 @@ class user {
 		$q = "SELECT * FROM `usergroups` WHERE `id` = {$u['group']}";
 		$r = $db->query($q);
 		$groupName = $r[0]['name'];
+		$groupPrefix = $r[0]['server_prefix'];
+
+		$q = "SELECT `action`, count(*) AS `count` FROM `tokens` WHERE `user` = {$user} GROUP BY `action`";
+		$r = $db->query($q);
+
+		if (count($r) != 0)
+			foreach ($r as $token) {
+				$tokens[ $token['action'] ] = $token['count'];
+			}
+		else $tokens = array('changename' => 0);
+
+		$q = "SELECT * FROM `purchases` WHERE `user` = $user AND `item` IN (10001) AND `start` < now() AND `end` > now();";
+		$r = $db->query($q);
+		$allowPrefix = count($r);
+
+		$q = "SELECT * FROM `purchases` WHERE `user` = $user AND `item` IN (10002) AND `start` < now() AND `end` > now();";
+		$r = $db->query($q);
+		$allowNameColor = count($r);
+
+		preg_match('/\&([0-9a-f])$/', $u['prefix'], $nameColor);
+		if (!count($nameColor)) $nameColor = 'f';
+		else $nameColor = $nameColor[1];
+		$clearPrefix = trim(preg_replace('/\&r\]\s?(&[0-9a-f])?$/', '', preg_replace('/^\[/', '', $u['prefix'])));
 
 		$a = new achievement();
 		// $a->check($r[0]['id']);
@@ -128,6 +141,11 @@ class user {
 			  'id' => $u['id'] // Айдишник
 			, 'email' => $u['email'] // Мыло
 			, 'nick' => $u['nick'] // Ник
+			, 'allowPrefix' => $allowPrefix // Разрешен ли префикс
+			, 'prefix' => $clearPrefix // Префикс
+			, 'allowNameColor' => $allowNameColor // Разрешен ли цветной ник
+			, 'nameColor' => $nameColor // Цвет ника
+			, 'groupPrefix' => $groupPrefix // Групповой префикс
 			, 'mcName' => $u['mcname'] // Имя в майнкрафте
 			, 'levelInfo' => $this->getLevelHTML($this->getLevel($u['exp'])) // Уровень учетки
 			, 'izum' => $u['izumko'] // Баланс изюма
@@ -137,7 +155,7 @@ class user {
 			, 'achievements' => $achHTML // Последние 5 достижений
 			, 'privacy' => $privacy // Настройки приватности в виде ассоциативного массива
 			, 'groupName' => $groupName // Название группы, в которой состоит пользователь
-			, 'tokens' => $u['tokens'] // Токены
+			, 'tokens' => $tokens // Токены
 		);
 
 		if ($profile) {

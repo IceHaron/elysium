@@ -60,7 +60,7 @@ function syncAccs() {
 	GLOBAL $db;
 	$output = '';
 	$equiv = array(20000 => 2, 20010 => 3, 20020 => 4);
-	
+
 	$q = "
 		SELECT `ololousers`.`id`, `ololousers`.`group`, `purchases`.`item`
 		FROM `ololousers`
@@ -81,7 +81,7 @@ function syncAccs() {
 	
 	
 	$q = "
-		SELECT `ololousers`.`id`, `ololousers`.`email`, `ololousers`.`nick`, `ololousers`.`mcname`, `ololousers`.`group`, `usergroups`.`server_alias`
+		SELECT `ololousers`.`id`, `ololousers`.`email`, `ololousers`.`nick`, `ololousers`.`prefix`, `ololousers`.`mcname`, `ololousers`.`group`, `usergroups`.`server_alias`, `usergroups`.`server_prefix`
 		FROM `ololousers`
 		JOIN `usergroups` ON (`usergroups`.`id` = `ololousers`.`group`)
 		WHERE `ololousers`.`group` != 0;";
@@ -95,11 +95,14 @@ function syncAccs() {
 		$forumpw = md5($key);
 		$group = $player['group'] . '__' . $player['server_alias'];
 		$mcname = $player['mcname'];
+		$prefix = str_replace('[&r] ', $player['server_prefix'], $player['prefix']);
+		if ($prefix == '') $prefix = 'null';
+		$prefix = urlencode($prefix);
 
 		$ch = curl_init('http://srv.elysiumgame.ru/');
 		curl_setopt($ch, CURLOPT_HEADER, 0);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_POSTFIELDS, "mode=sync&user=$forumnick&email=$forumemail&pw=$forumpw&group=$group&mcnick=$mcname&key=$key&salt=$salt");
+		curl_setopt($ch, CURLOPT_POSTFIELDS, "mode=sync&user=$forumnick&prefix=$prefix&email=$forumemail&pw=$forumpw&group=$group&mcnick=$mcname&key=$key&salt=$salt");
 		$res = curl_exec($ch);
 		curl_close($ch);
 		$output .= "&lt;$forumemail&gt; $res<br/><br/>";

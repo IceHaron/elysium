@@ -23,6 +23,7 @@
 			<li><a href="/troll?mod=deleteusers">Удаление устаревших акков</a></li>
 			<li><a href="/troll?mod=changenametokens">Раздать всем по одному токену на смену ника</a></li>
 			<li><a href="/troll?mod=grantachievement">Подарить ачивку</a></li>
+			<li><a href="/troll?mod=grantizum">Подарить изюм</a></li>
 			<li><a href="/troll?mod=syncSiteForumServer">Синхронизировать аккаунты на сайте, на форуме и на сервере</a></li>
 		</ul>
 		<div class="modmenu">
@@ -161,6 +162,20 @@
 				</select>
 				<label>, насыпать экспы (только для Improved ачивок)</label>
 				<input type="text" name="exp" value="0">
+				<input type="submit">
+			</form>
+
+		<? } else if ($mod == 'grantizum') { ?>
+			<?=$message?>
+			<form method="POST">
+				<label>Пользователю</label>
+				<select name="user">
+					<?=$htmluser?>
+				</select>
+				<label>Выдать изюма</label>
+				<input type="text" name="izum">
+				<label>, по причине</label>
+				<textarea name="reason"></textarea>
 				<input type="submit">
 			</form>
 

@@ -31,7 +31,7 @@
 		echo '<tr class="group"><th colspan="5">' . $groupName . '</th></tr>';
 
 		foreach ($group as $donut) {
-		if ($donut['id'] == 10000 || $donut['id'] == 10003 || $donut['id'] == 10004 || ($donut['id'] >= 20000 && $donut['id'] <= 29999)) $dis = '';
+		if ($donut['id'] <= 29999) $dis = '';
 		else $dis = 'disabled';
 	?>
 		<tr class="item" <? if ($dis) echo 'style="opacity: 0.3;"'; ?>>
@@ -63,7 +63,7 @@
 <table class="descTable">
 		<tr>
 			<th><h1>Возможности</h1></th>
-			<th class="neutral"><font size="5"><font color="cc9900"><b>Игрок</b></font></font></th>
+			<th class="neutral"><font size="5"><b>Игрок</b></font></th>
 			<th class="neutral"><font size="5"><font color="cc9900"><b>Vip</b></font></font></th>
 			<th class="neutral"><font size="5"><font color="green"><b>GoldVip</b></font></font></th>
 			<th class="neutral"><font size="5"><font color="6633cc"><b>Platinum</b></font></font></th>
@@ -255,7 +255,7 @@
 		</tr>
 		<tr>
 			<td>Количество доступных приватов</td>
-			<td class="neutral">1</td>
+			<td class="neutral">2</td>
 			<td class="neutral">4</td>
 			<td class="neutral">6</td>
 			<td class="neutral">8</td>

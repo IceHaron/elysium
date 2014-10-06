@@ -3,6 +3,9 @@
 	float: left;
 	/*padding: 10px;*/
 }
+.trollmenu li {
+	margin: 10px 0;
+}
 .trollcontent {
 	width: calc(100% - 250px);
 	float: left;

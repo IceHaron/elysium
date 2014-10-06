@@ -22,6 +22,15 @@ $(document).ready(function(){
 		}, 300000);
 	}
 
+	// Если у нас есть цветной ник, то выделяем цвет
+	if ($('input[name="nameColor"]').length != 0) {
+		var color = $('input[name="nameColor"]').val();
+		$('.name.color[data-color="' + color + '"]').addClass('active');
+	}
+
+	// Парсим сразу префикс
+	parsePrefix();
+
 	//В ЛК и списке достижений нужно установить высоту стопок ачивок чтобы они не пересекались, не знаю, как сделать это средствами html
 	$('.achievementStack').each(function() {
 		var inner = $(this).children().eq(0);
@@ -134,6 +143,41 @@ $(document).ready(function(){
 		});
 	});
 
+	$('ul.tabs li').click(function() {
+		$('ul.tabs li.active').removeClass('active');
+		var showing = $(this).attr('class');
+		$(this).toggleClass('active');
+		$('.summary:not(li), .visibility:not(li), .orders:not(li), .achieves:not(li), .pw:not(li), ').hide();
+		$('.' + showing + ':not(li)').show();
+	});
+
+	$('ul.tabs li.summary').trigger('click');
+
+	$('#changePrefix').click(function() {
+		$('#prefixConstructor').toggle();
+	});
+
+	// При клике по цвету, добавляем его код в конец инпута префикса
+	$('.prefix.color').click(function() {
+		var prefix = $('input[name="prefix"]').val();
+		var color = $(this).attr('data-color');
+		if (prefix.length < 42) $('input[name="prefix"]').val(prefix + '&' + color).trigger('keyup').focus();
+	});
+
+	$('.name.color').click(function() {
+		$('.name.color.active').removeClass('active');
+		$(this).addClass('active');
+		var color = $(this).attr('data-color');
+		$('input[name="nameColor"]').val(color);
+		parsePrefix();
+	});
+
+	// При изменени префикса, парсим его
+	$('input[name="prefix"]').keyup(function() {
+		parsePrefix();
+	});
+
+
 });
 
 /**
@@ -195,4 +239,48 @@ function showAchievement(id) {
 				setTimeout(function() {$('#ach-' + id).remove()}, 15000)
 		}
 	});
+}
+
+/**
+* 
+* Парсинг префикса
+* 
+**/
+function parsePrefix(id) {
+	var prefix = $('input[name="prefix"]').val();
+	var nameColor = $('input[name="nameColor"]').length ? $('input[name="nameColor"]').val() : 'f';
+	if (prefix) {
+		var flags = prefix.match(/\&[0-9a-f]/g);
+		if (flags != null) count = flags.length;
+		else count = 0;
+		count = count * 2 + 14;
+		var parsing = prefix.substr(0,count);
+		$('input[name="prefix"]').val(parsing);
+		parsing = '<span style="color: white">[' + parsing + '</span><span style="color: white">]';
+	} else {
+		var parsing = $('.groupPrefix').text();
+	}
+
+	parsing += '&' + nameColor;
+
+	var nick = $('.mcnick').text();
+	parsing = parsing.replace(/\&0/g, '</span><span style="color: #000">');
+	parsing = parsing.replace(/\&1/g, '</span><span style="color: #00a">');
+	parsing = parsing.replace(/\&2/g, '</span><span style="color: #0a0">');
+	parsing = parsing.replace(/\&3/g, '</span><span style="color: #0aa">');
+	parsing = parsing.replace(/\&4/g, '</span><span style="color: #a00">');
+	parsing = parsing.replace(/\&5/g, '</span><span style="color: #a0a">');
+	parsing = parsing.replace(/\&6/g, '</span><span style="color: #fa0">');
+	parsing = parsing.replace(/\&7/g, '</span><span style="color: #aaa">');
+	parsing = parsing.replace(/\&8/g, '</span><span style="color: #555">');
+	parsing = parsing.replace(/\&9/g, '</span><span style="color: #55f">');
+	parsing = parsing.replace(/\&a/g, '</span><span style="color: #5f5">');
+	parsing = parsing.replace(/\&b/g, '</span><span style="color: #5ff">');
+	parsing = parsing.replace(/\&c/g, '</span><span style="color: #f55">');
+	parsing = parsing.replace(/\&d/g, '</span><span style="color: #FE54FE">');
+	parsing = parsing.replace(/\&e/g, '</span><span style="color: #ff5">');
+	parsing = parsing.replace(/\&f/g, '</span><span style="color: #fff">');
+	parsing = parsing.replace(/\&r/g, '</span><span style="color: #fff">');
+	var parsed = parsing + ' ' + nick + '</span>&nbsp;&nbsp;&nbsp;';
+	$('#parsedPrefix').children('div').html(parsed + parsed);
 }

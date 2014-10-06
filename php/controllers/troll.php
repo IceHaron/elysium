@@ -197,6 +197,32 @@ if ($mod == 'news') {
 		$message = ($result === FALSE) ? 'Ачивка уже есть у пользователя' : 'Ачивка выдана.';
 	}
 
+} else if ($mod == 'grantizum') {
+
+	$q = "SELECT * FROM `ololousers`;";
+	$r = $db->query($q);
+	$htmluser = '';
+
+	foreach ($r as $u) {
+		$title = $u['id'] . ' - ' . $u['nick'] . ' (' . $u['mcname'] . ')';
+		// $uarr[ $u['id'] ] = $title;
+		$htmluser .= '<option value="' . $u['id'] . '">' . $title . '</option>';
+	}
+
+	if (isset($_POST['user']) && isset($_POST['izum']) && isset($_POST['reason'])) {
+		$izum = intval($_POST['izum']);
+		$player = intval($_POST['user']);
+		$reason = $db->escape($_POST['reason']);
+		$q = "UPDATE `ololousers` SET `izumko` = `izumko` + $izum WHERE `id` = $player";
+		$r = $db->query($q);
+		if ($r) {
+			$q = "INSERT INTO `gifts` (`admin`, `user`, `izum`, `reason`) VALUES ($cid, $player, $izum, '$reason')";
+			$r = $db->query($q);
+			if ($r) $message = 'Успех!';
+			else $message = 'WTF?!';
+		} else $message = 'WTF?!';
+	} else $message = '';
+
 } else if ($mod == 'syncSiteForumServer') {
 	$output .= syncAccs();
 }
