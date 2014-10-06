@@ -376,6 +376,9 @@ ul.tabs li {
 	padding: 3px 0 5px 3px;
 	background: rgba(0, 0, 0, 0.5)
 }
+#savePrefix {
+	display: none;
+}
 .balance {
 	width: 200px;
 	text-align: center;
