@@ -13,7 +13,7 @@ if (isset($_POST['prefix'])) {
 	$prefix = preg_replace('/\&amp\;/', '&', $db->escape($_POST['prefix']));
 	$nameColor = preg_replace('/\&amp\;/', '&', $db->escape($_POST['nameColor']));
 	if (!$nameColor) $nameColor = 'f';
-	$q = "UPDATE `ololousers` SET `prefix` = '[{$prefix}&r] &{$nameColor}' WHERE `id` = $cid;";
+	$q = "UPDATE `ololousers` SET `prefix` = '&r[{$prefix}&r] &{$nameColor}' WHERE `id` = $cid;";
 	$r = $db->query($q);
 }
 

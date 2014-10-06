@@ -119,7 +119,7 @@ class user {
 		preg_match('/\&([0-9a-f])$/', $u['prefix'], $nameColor);
 		if (!count($nameColor)) $nameColor = 'f';
 		else $nameColor = $nameColor[1];
-		$clearPrefix = trim(preg_replace('/\&r\]\s?(&[0-9a-f])?$/', '', preg_replace('/^\[/', '', $u['prefix'])));
+		$clearPrefix = trim(preg_replace('/\&r\]\s?(&[0-9a-f])?$/', '', preg_replace('/^\&r\[/', '', $u['prefix'])));
 
 		$a = new achievement();
 		// $a->check($r[0]['id']);
