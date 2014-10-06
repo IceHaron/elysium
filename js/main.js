@@ -170,11 +170,13 @@ $(document).ready(function(){
 		var color = $(this).attr('data-color');
 		$('input[name="nameColor"]').val(color);
 		parsePrefix();
+		$('#savePrefix').show();
 	});
 
 	// При изменени префикса, парсим его
 	$('input[name="prefix"]').keyup(function() {
 		parsePrefix();
+		$('#savePrefix').show();
 	});
 
 
@@ -283,5 +285,4 @@ function parsePrefix(id) {
 	parsing = parsing.replace(/\&r/g, '</span><span style="color: #fff">');
 	var parsed = parsing + ' ' + nick + '</span>&nbsp;&nbsp;&nbsp;';
 	$('#parsedPrefix').children('div').html(parsed + parsed);
-	$('#savePrefix').show();
 }
