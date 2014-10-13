@@ -59,7 +59,7 @@ switch ($_GET['mode']) {
 		echo json_encode($bans);
 	break;
 
-	case 'vote':
+	case 'voteTopCraft':
 		$gift = 1000; // Количество денег, которое получит игрок за голосование.
 
 		$secretkey = '59c40a85aae924c47f7208ea4ea1f038'; // Ваш секретный ключ на TopCraft.Ru (Настраивается в Настройках проектов --> Поощрения)
