@@ -78,7 +78,7 @@ switch ($_GET['mode']) {
 
 		$q = "UPDATE `ololousers` SET `izumko` = `izumko` + $gift WHERE `mcname` = '$username'";
 		$ololousers = $db->query($q);
-		$q = "INSERT INTO `gifts` (`admin`, `user`, `izum`, `reason`) VALUES (0, $userid, $gift, 'Голос на TopCraft.ru');";
+		$q = "INSERT INTO `gifts` (`admin`, `user`, `izum`, `reason`) VALUES (0, $userid, $gift, 'Голос на topcraft.ru');";
 		$gifts = $db->query($q);
 		if ($ololousers && $gifts) echo 'OK<br />';
 		else die("Shit happened");
@@ -108,7 +108,7 @@ switch ($_GET['mode']) {
 
 		$q = "UPDATE `ololousers` SET `izumko` = `izumko` + $gift WHERE `mcname` = '$username'";
 		$ololousers = $db->query($q);
-		$q = "INSERT INTO `gifts` (`admin`, `user`, `izum`, `reason`) VALUES (0, $userid, $gift, 'Голос на TopCraft.ru');";
+		$q = "INSERT INTO `gifts` (`admin`, `user`, `izum`, `reason`) VALUES (0, $userid, $gift, 'Голос на fairtop.ru');";
 		$gifts = $db->query($q);
 		if ($ololousers && $gifts) echo 'Success';
 		else die("Shit happened");
