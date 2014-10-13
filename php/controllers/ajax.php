@@ -6,7 +6,8 @@
 **/
 
 $noTemplate = TRUE; // Вырубаем шаблон
-require_once('/php/classes/query.php');
+$rootfolder = isset($_SERVER['HOME']) ? $_SERVER['HOME'].'/elysiumgame' : $_SERVER['DOCUMENT_ROOT'];
+require_once($rootfolder . '/php/classes/query.php');
 $Query = new Query();
 
 // Смотрим, с чем к нам пришли
