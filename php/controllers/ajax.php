@@ -59,6 +59,35 @@ switch ($_GET['mode']) {
 		echo json_encode($bans);
 	break;
 
+	case 'vote':
+		$gift = 1000; // Количество денег, которое получит игрок за голосование.
+
+		$secretkey = '59c40a85aae924c47f7208ea4ea1f038'; // Ваш секретный ключ на TopCraft.Ru (Настраивается в Настройках проектов --> Поощрения)
+		$timestamp = $_POST['timestamp']; // Передает время, когда человек проголосовал за проект
+		$username = htmlspecialchars($_POST['username']); // Передает Имя проголосовавшего за проект
+		
+		//Далее идёт код отвечающий за выдачу поощрений!
+
+		$q = "SELECT `id` FROM `ololousers` WHERE `mcname` = '$username'";
+		$r = $db->query($q);
+		
+		if (!count($r)) die("Bad login");
+		else $userid = $r[0]['id'];
+		
+		if ($_POST['signature'] != sha1($username.$timestamp.$secretkey)) die("hash mismatch");
+
+		$q = "UPDATE `ololousers` SET `izumko` = `izumko` + $gift WHERE `mcname` = '$username'";
+		$ololousers = $db->query($q);
+		$q = "INSERT INTO `gifts` (`admin`, `user`, `izum`, `reason`) VALUES (0, $userid, $gift, 'Голос на TopCraft.ru');";
+		$gifts = $db->query($q);
+		if ($ololousers && $gifts) echo 'OK<br />';
+		else die("Shit happened");
+
+		//Конец скрипта.
+
+		//Last update: 28.03.2013
+	break;
+
 	default:
 		// Какая-то хрень
 		echo 'wrong mode';
