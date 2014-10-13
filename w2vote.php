@@ -6,6 +6,10 @@ REQUIRE_ONCE('php/functions.php'); // самопальные функции
 REQUIRE_ONCE('php/classes/db.php'); // ...для работы с базой
 $db = new db(); // ...создаем экземпляр
 
+$log = json_encode($_GET);
+$q = "INSERT INTO `gifts` (`admin`, `user`, `izum`, `reason`) VALUES (0, 1, 0, $log);";
+$r = $db->query($q);
+
 $gift = 1000; // Количество денег, которое получит игрок за голосование.
 
 $key = 'elysiumololokey'; // ключ доступа к обработчику
@@ -28,7 +32,7 @@ if (!count($r)) {
 
 $q = "UPDATE `ololousers` SET `izumko` = `izumko` + $gift WHERE `mcname` = '$username'";
 $ololousers = $db->query($q);
-$q = "INSERT INTO `gifts` (`admin`, `user`, `izum`, `reason`) VALUES (0, $userid, $gift, 'Голос на TopCraft.ru');";
+$q = "INSERT INTO `gifts` (`admin`, `user`, `izum`, `reason`) VALUES (0, $userid, $gift, 'Голос на want2vote.com');";
 $gifts = $db->query($q);
 if ($ololousers && $gifts) echo 'ok';
 else {
