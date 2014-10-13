@@ -6,10 +6,6 @@ REQUIRE_ONCE('php/functions.php'); // самопальные функции
 REQUIRE_ONCE('php/classes/db.php'); // ...для работы с базой
 $db = new db(); // ...создаем экземпляр
 
-$log = json_encode($_GET);
-$q = "INSERT INTO `gifts` (`admin`, `user`, `izum`, `reason`) VALUES (0, 1, 0, '$log');";
-$r = $db->query($q);
-
 $gift = 1000; // Количество денег, которое получит игрок за голосование.
 
 $key = 'elysiumololokey'; // ключ доступа к обработчику
