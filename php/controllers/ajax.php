@@ -88,6 +88,36 @@ switch ($_GET['mode']) {
 		//Last update: 28.03.2013
 	break;
 
+	case 'voteFairTop':
+		if (empty($_POST['player']) or empty($_POST['hash'])) die("Empty query");
+		$gift = 1000; // Количество денег, которое получит игрок за голосование.
+
+		$secretkey = 'ee2b68a81106100e41332d7c6936d0dd'; // Ваш секретный ключ на TopCraft.Ru (Настраивается в Настройках проектов --> Поощрения)
+		$timestamp = $_POST['timestamp']; // Передает время, когда человек проголосовал за проект
+		$username = htmlspecialchars($_POST['player']); // Передает Имя проголосовавшего за проект
+		
+		//Далее идёт код отвечающий за выдачу поощрений!
+
+		$q = "SELECT `id` FROM `ololousers` WHERE `mcname` = '$username'";
+		$r = $db->query($q);
+		
+		if (!count($r)) die("Bad login");
+		else $userid = $r[0]['id'];
+		
+		if ($_POST['hash'] != md5(sha1($username.$secretkey))) die("Invalid hash");
+
+		$q = "UPDATE `ololousers` SET `izumko` = `izumko` + $gift WHERE `mcname` = '$username'";
+		$ololousers = $db->query($q);
+		$q = "INSERT INTO `gifts` (`admin`, `user`, `izum`, `reason`) VALUES (0, $userid, $gift, 'Голос на TopCraft.ru');";
+		$gifts = $db->query($q);
+		if ($ololousers && $gifts) echo 'Success';
+		else die("Shit happened");
+
+		//Конец скрипта.
+
+		//Last update: 28.03.2013
+	break;
+
 	default:
 		// Какая-то хрень
 		echo 'wrong mode';
