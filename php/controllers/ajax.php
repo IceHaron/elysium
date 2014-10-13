@@ -6,116 +6,52 @@
 **/
 
 $noTemplate = TRUE; // Вырубаем шаблон
+require_once('/php/classes/query.php');
+$Query = new Query();
 
 // Смотрим, с чем к нам пришли
 switch ($_GET['mode']) {
 
 	case 'achCheck':
 		// Просмотреть неполученные достижения
-		echo $achievement->check();
+		echo $Query->{$_GET['mode']}();
 	break;
 
 	case 'getAchHtml':
 		// Получить HTML-код для отображения всплывающей ачивки
-		$q = "SELECT * FROM `achievements` WHERE `id` = {$_GET['id']}";
-		$r = $db->query($q);
-		$achievement = $r[0];
-		$output = '
-		<div class="achievementWrapper" id="ach-' . $_GET['id'] . '">
-			<div class="achievement grade_' . $achievement['grade'] . '">
-				<span class="achTitle">' . $achievement['name'] . '</span>
-				<span class="achDate">' . date('Y-m-d H:i:s') . '</span>
-				<span class="achDesc">' . $achievement['desc'] . '</span>
-			</div>
-		</div>';
-		echo $output;
+		$achid = $_GET['id'];
+		echo $Query->{$_GET['mode']}($achid);
 	break;
 
 	case 'stealDiamond':
-		if (isset($cid)) $achievement->earn($cid, 17);
-		echo 'Diamond stolen! RUN!';
+		// Спереть алмаз
+		echo $Query->{$_GET['mode']}();
 	break;
 
 	case 'pingServer':
+		// Пингуем сервер
 		$server = $db->escape($_GET['server']);
-		// Получаем статусы всех серверов
-		$ip = '144.76.111.114';
-		$port = array('kernel' => 25565, 'backtrack' => 25566, 'gentoo' => 25567);
-		$status = pingMCServer($ip, $port[$server]);
-		// $backtrack = pingMCServer($ip,25566);
-		// $gentoo = pingMCServer($ip,25567);
-		$output = json_encode(array('players' => (int)str_replace(chr(0), '', $status[3]), 'limit' => (int)str_replace(chr(0), '', $status[4])));
-		echo $output;
+		echo $Query->{$_GET['mode']}($server);
 	break;
 
 	case 'checkBL':
-		$l = mysqli_connect('144.76.111.114', 'site', 'u94fmE4KrxeLP5Pe', 'server', '3306');
-		mysqli_set_charset($l, "utf8");
-		$q = "SELECT * FROM `banlist` LIMIT 0,10";
-		$b = mysqli_query($l, $q);
-		while ($ban = mysqli_fetch_assoc($b)) {
-			$bans[] = array('player' => $ban['name'], 'reason' => $ban['reason'], 'admin' => $ban['admin'], 'ban' => date("d-m-Y H:i", $ban['time']), 'unban' => ($ban['temptime'] ? date("d-m-Y H:i", $ban['temptime']) : 'Навечно'));
-		}
-		echo json_encode($bans);
+		// Получаем банлист
+		echo $Query->{$_GET['mode']}();
 	break;
 
 	case 'voteTopCraft':
-		$gift = 1000; // Количество денег, которое получит игрок за голосование.
-
-		$secretkey = '59c40a85aae924c47f7208ea4ea1f038'; // Ваш секретный ключ на TopCraft.Ru (Настраивается в Настройках проектов --> Поощрения)
+		// Получаем голос с topcraft.ru
 		$timestamp = $_POST['timestamp']; // Передает время, когда человек проголосовал за проект
 		$username = htmlspecialchars($_POST['username']); // Передает Имя проголосовавшего за проект
-		
-		//Далее идёт код отвечающий за выдачу поощрений!
-
-		$q = "SELECT `id` FROM `ololousers` WHERE `mcname` = '$username'";
-		$r = $db->query($q);
-		
-		if (!count($r)) die("Bad login");
-		else $userid = $r[0]['id'];
-		
-		if ($_POST['signature'] != sha1($username.$timestamp.$secretkey)) die("hash mismatch");
-
-		$q = "UPDATE `ololousers` SET `izumko` = `izumko` + $gift WHERE `mcname` = '$username'";
-		$ololousers = $db->query($q);
-		$q = "INSERT INTO `gifts` (`admin`, `user`, `izum`, `reason`) VALUES (0, $userid, $gift, 'Голос на topcraft.ru');";
-		$gifts = $db->query($q);
-		if ($ololousers && $gifts) echo 'OK<br />';
-		else die("Shit happened");
-
-		//Конец скрипта.
-
-		//Last update: 28.03.2013
+		echo $Query->{$_GET['mode']}($username, $timestamp);
 	break;
 
 	case 'voteFairTop':
-		if (empty($_POST['player']) or empty($_POST['hash'])) die("Empty query");
-		$gift = 1000; // Количество денег, которое получит игрок за голосование.
-
-		$secretkey = 'ee2b68a81106100e41332d7c6936d0dd'; // Ваш секретный ключ на TopCraft.Ru (Настраивается в Настройках проектов --> Поощрения)
+		// Получаем голос с fairtop.ru
 		$timestamp = $_POST['timestamp']; // Передает время, когда человек проголосовал за проект
 		$username = htmlspecialchars($_POST['player']); // Передает Имя проголосовавшего за проект
-		
-		//Далее идёт код отвечающий за выдачу поощрений!
-
-		$q = "SELECT `id` FROM `ololousers` WHERE `mcname` = '$username'";
-		$r = $db->query($q);
-		
-		if (!count($r)) die("Bad login");
-		else $userid = $r[0]['id'];
-		
-		if ($_POST['hash'] != md5(sha1($username.$secretkey))) die("Invalid hash");
-
-		$q = "UPDATE `ololousers` SET `izumko` = `izumko` + $gift WHERE `mcname` = '$username'";
-		$ololousers = $db->query($q);
-		$q = "INSERT INTO `gifts` (`admin`, `user`, `izum`, `reason`) VALUES (0, $userid, $gift, 'Голос на fairtop.ru');";
-		$gifts = $db->query($q);
-		if ($ololousers && $gifts) echo 'Success';
-		else die("Shit happened");
-
-		//Конец скрипта.
-
-		//Last update: 28.03.2013
+		$hash = $_POST['hash'];
+		echo $Query->{$_GET['mode']}($username, $timestamp, $hash);
 	break;
 
 	default:
