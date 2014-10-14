@@ -26,10 +26,10 @@ if (!count($r)) {
 	exit;
 } else $userid = $r[0]['id'];
 
-$check = giveBonus($userid, $gift, 'vote', 'Голос на want2vote.com');
+$bonus = giveBonus($userid, $gift, 'vote', 'Голос на want2vote.com');
 $coupon = giveCoupon($userid, 'votecoupon', 0.1);
 
-if ($check && $coupon) echo 'ok';
+if ($bonus && $coupon) echo 'ok';
 else {
 	header("HTTP/1.1 404 Not Found");
 	exit;

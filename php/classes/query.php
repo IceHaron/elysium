@@ -137,7 +137,7 @@ class Query {
 		
 		if ($_POST['signature'] != sha1($username.$timestamp.$secretkey)) return "hash mismatch";
 
-		$check = giveBonus($userid, $gift, 'vote', 'Голос на topcraft.ru');
+		$bonus = giveBonus($userid, $gift, 'vote', 'Голос на topcraft.ru');
 		$coupon = giveCoupon($userid, 'votecoupon', 0.1);
 
 		if ($check && $coupon) return 'OK<br />';
@@ -176,7 +176,7 @@ class Query {
 		$bonus = giveBonus($userid, $gift, 'vote', 'Голос на fairtop.ru');
 		$coupon = giveCoupon($userid, 'votecoupon', 0.1);
 
-		if ($check && $coupon) return 'Success';
+		if ($bonus && $coupon) return 'Success';
 		else return "Shit happened";
 
 	}
