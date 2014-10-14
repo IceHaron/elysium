@@ -137,12 +137,10 @@ class Query {
 		
 		if ($_POST['signature'] != sha1($username.$timestamp.$secretkey)) return "hash mismatch";
 
-		$q = "UPDATE `ololousers` SET `izumko` = `izumko` + $gift WHERE `mcname` = '$username'";
-		$ololousers = $this->db->query($q);
-		$q = "INSERT INTO `gifts` (`admin`, `user`, `izum`, `reason`) VALUES (0, $userid, $gift, 'Голос на topcraft.ru');";
-		$gifts = $this->db->query($q);
+		$check = giveBonus($userid, $gift, 'Голос на topcraft.ru');
+		$coupon = giveCoupon($userid, 'votecoupon', 0.1);
 
-		if ($ololousers && $gifts) return 'OK<br />';
+		if ($check && $coupon) return 'OK<br />';
 		else return "Shit happened";
 
 		//Конец скрипта.
@@ -175,12 +173,10 @@ class Query {
 		
 		if ($hash != md5(sha1($username.$secretkey))) return "Invalid hash";
 
-		$q = "UPDATE `ololousers` SET `izumko` = `izumko` + $gift WHERE `mcname` = '$username'";
-		$ololousers = $this->db->query($q);
-		$q = "INSERT INTO `gifts` (`admin`, `user`, `izum`, `reason`) VALUES (0, $userid, $gift, 'Голос на fairtop.ru');";
-		$gifts = $this->db->query($q);
+		$bonus = giveBonus($userid, $gift, 'Голос на fairtop.ru');
+		$coupon = giveCoupon($userid, 'votecoupon', 0.1);
 
-		if ($ololousers && $gifts) return 'Success';
+		if ($check && $coupon) return 'Success';
 		else return "Shit happened";
 
 	}

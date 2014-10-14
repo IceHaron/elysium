@@ -26,11 +26,10 @@ if (!count($r)) {
 	exit;
 } else $userid = $r[0]['id'];
 
-$q = "UPDATE `ololousers` SET `izumko` = `izumko` + $gift WHERE `mcname` = '$username'";
-$ololousers = $db->query($q);
-$q = "INSERT INTO `gifts` (`admin`, `user`, `izum`, `reason`) VALUES (0, $userid, $gift, 'Голос на want2vote.com');";
-$gifts = $db->query($q);
-if ($ololousers && $gifts) echo 'ok';
+$check = giveBonus($userid, $gift, 'Голос на want2vote.com');
+$coupon = giveCoupon($userid, 'votecoupon', 0.1);
+
+if ($check && $coupon) echo 'ok';
 else {
 	header("HTTP/1.1 404 Not Found");
 	exit;

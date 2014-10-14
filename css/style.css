@@ -305,6 +305,7 @@ ul.tabs li {
 	display: inline-block;
 	padding: 10px;
 }
+.tabContent { display: none; }
 .lk {
 	margin-top: 20px;
 }
@@ -559,6 +560,17 @@ ul.tabs li {
 }
 
 /* Донат */
+.bonus {
+	display: none;
+	padding: 5px;
+	color: green;
+	border: 1px solid green;
+}
+#izumDiscount {
+	margin: 5px 0;
+	padding: 5px;
+	border: 1px solid grey;
+}
 #donutTable {
 	width: 100%;
 	border-collapse: collapse;

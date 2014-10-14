@@ -128,6 +128,32 @@ $(document).ready(function(){
 		var clear = $(this).val().substr(0,7).replace(/\D+/g, '');
 		if (parseInt(clear) < 100) clear = 100;
 		$(this).val(clear);
+		var rate = $('.rate').text();
+		var discount = parseFloat($('input[name="izumDiscount"]:checked').attr('data-effect'));
+		var cost = Math.ceil(clear / rate * (100 - discount)) / 100;
+		$('.cost').text(cost);
+		var bonus = 0;
+		var percent = 0;
+		if (parseInt(clear) >= 100000) {
+			percent = Math.pow(2,(-500000 / clear)) * 3 / 10;
+			bonus = Math.round(percent * clear);
+			percent = Math.round(percent * 100);
+		}
+		if (bonus == 0) $('.bonus').hide();
+		else {
+			$('.bonus').show();
+			$('.bonusIzum').text(bonus);
+			$('.bonusPercent').text(percent);
+		}
+	});
+
+	$('.moreAboutBonuses').click(function() {
+		$('#shadow').show();
+		$('#aboutBonuses').show();
+	});
+
+	$('#calculateIzum').click(function() {
+		$('#izumform input[name="want"]').trigger('change');
 	});
 
 	$('.diamond').dblclick(function() {
@@ -147,11 +173,11 @@ $(document).ready(function(){
 		$('ul.tabs li.active').removeClass('active');
 		var showing = $(this).attr('class');
 		$(this).toggleClass('active');
-		$('.summary:not(li), .visibility:not(li), .orders:not(li), .achieves:not(li), .pw:not(li), ').hide();
+		$('.tabContent').hide();
 		$('.' + showing + ':not(li)').show();
 	});
 
-	$('ul.tabs li.summary').trigger('click');
+	$('ul.tabs li:first').trigger('click');
 
 	$('#changePrefix').click(function() {
 		$('#prefixConstructor').toggle();

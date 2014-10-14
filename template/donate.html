@@ -1,263 +1,285 @@
 <h1 id="pageCaption">Пожертвования</h1>
-<p style="color: red; margin: 5px;">Актуальный курс: 1 руб. = <?=$rubCost;?> izum</p>
-<? if ($clogin &&/* $user->info['group'] >= 100 &&*/ !$debt) { ?>
-	<p>Ваш баланс: <?=$izum;?> izum</p>
-	<form id="izumform" method="POST" action="/payment">
-		<input type="hidden" name="izum" value="1">
-		<label>Сколько вам насыпать?</label>
-		<input type="text" name="want" value="100" autocomplete="off">
-		<button>Купить Izum</button>
-	</form>
-	<span style="color:red"><b>Внимание!</b> Данная фича находится в разработке! До тех пор, пока она не будет полностью допилена, мы не ручаемся за то, что вам обязательно будет начислен купленный Изюм. Если при покупке произошла ошибка, свяжитесь с нами <a href="mailto:support@elysiumgame.ru?subject=Проблемы%20с%20покупкой%20изюма&body=Мой%20ник%20<?=$clogin;?>. Моя%20проблема:%20">по электронной почте</a></span>
-<? } else if ($clogin && $debt) { ?>
-	<p>У вас есть неподтвержденные или неоплаченные заказы! Вы не сможете купить izum, пока все ваши заказы не получат статус "оплачен"</p>
-<? } ?>
-<p style="color: red; margin: 5px 0;"><b>Внимание!</b> Следующие товары можно купить <b>только</b> за izum, эквивалент в рублях приведен для удобства оценки актуальной цены товара</p>
-<form method="POST" action="/payment">
-	<input type="hidden" name="goods" value="1">
-	<table id="donutTable">
-		<tr class="caption">
-			<th rowspan="2">Купить</th>
-			<th rowspan="2">Название товара</th>
-			<th colspan="2">Стоимость</th>
-			<th rowspan="2">Описание</th>
-		</tr>
-		<tr class="caption">
-			<th>izum</th>
-			<th>руб</th>
-		</tr>
-	<?
-	foreach ($donuts as $groupName => $group) {
-		echo '<tr class="group"><th colspan="5">' . $groupName . '</th></tr>';
+<ul class="tabs">
+	<li class="izum">Изюм</li>
+	<li class="goods">Ништяки</li>
+</ul>
 
-		foreach ($group as $donut) {
-		if ($donut['id'] <= 29999) $dis = '';
-		else $dis = 'disabled';
-	?>
-		<tr class="item" <? if ($dis) echo 'style="opacity: 0.3;"'; ?>>
-			<td>
-			<?
-			if ($clogin) { 
-				if ($donut['id'] >= 20000 && $donut['id'] <= 29999) {
-					echo '<input type="radio" name="status" value="' . $donut['id'] . '" ' . $dis . '>';
-				} else {
-					echo '<input type="checkbox" name="donut[' . $donut['id'] . ']" ' . $dis . '>';
-				}
-			} else echo '<span style="color: lightgrey">Недоступно</span>'; ?>
-			</td>
-			<td><?=$donut['name'];?></td>
-			<td style="color: red;"><?=number_format($donut['cost'], 0, ',', ' ');?></td>
-			<td><?=number_format($donut['cost'] / $rubCost, 2, ',', ' ');?></td>
-			<td><?=$donut['desc'];?></td>
-		</tr>
-	<?
-		}
-	}
-	?>
-	</table>
-	<? if ($clogin) { ?>
-		<input type="submit" value="Купить">
+<div class="tabContent izum">
+	<p style="color: red; margin: 5px;">Актуальный курс: 1 RUR = <span class="rate"><?=$rubCost;?></span> izum</p>
+	<? if ($clogin &&/* $user->info['group'] >= 100 &&*/ !$debt) { ?>
+		<p>Ваш баланс: <?=$izum;?> izum</p>
+		<form id="izumform" method="POST" action="/payment">
+			<input type="hidden" name="izum" value="1">
+			<label>Сколько вам насыпать?</label>
+			<input type="text" name="want" value="100" autocomplete="off">
+			<input type="button" id="calculateIzum" value="Посчитать">
+			<span>Стоимость без учета комиссий: <span class="cost">0.1</span> RUR</span>
+			<p class="bonus">
+				При покупке вы получите бонус: 
+				<span class="bonusIzum">0</span> Izum 
+				(приблизительно <span class="bonusPercent">0</span>%) 
+				<a href="#" class="moreAboutBonuses">Подробнее о бонусах</a>
+			</p>
+			<ul id="izumDiscount">
+				<li><label><input type="radio" name="izumDiscount" value="0" data-name="none" data-effect="0" checked> Не использовать купоны на скидку</label></li>
+				<?=$izumCoupons;?>
+			</ul>
+			<span style="color:red"><b>Внимание!</b> Данная фича находится в разработке! До тех пор, пока она не будет полностью допилена, мы не ручаемся за то, что вам обязательно будет начислен купленный Изюм. Если при покупке произошла ошибка, свяжитесь с нами <a href="mailto:support@elysiumgame.ru?subject=Проблемы%20с%20покупкой%20изюма&body=Мой%20ник%20<?=$clogin;?>. Моя%20проблема:%20">по электронной почте</a></span><br/>
+			<button style="font-size: 1.3em">Купить Izum</button>
+		</form>
+	<? } else if ($clogin && $debt) { ?>
+		<p>У вас есть неподтвержденные или неоплаченные заказы! Вы не сможете купить izum, пока все ваши заказы не получат статус "оплачен"</p>
 	<? } ?>
-</form>
+</div>
 
-<table class="descTable">
-		<tr>
-			<th><h1>Возможности</h1></th>
-			<th class="neutral"><font size="5"><b>Игрок</b></font></th>
-			<th class="neutral"><font size="5"><font color="cc9900"><b>Vip</b></font></font></th>
-			<th class="neutral"><font size="5"><font color="green"><b>GoldVip</b></font></font></th>
-			<th class="neutral"><font size="5"><font color="6633cc"><b>Platinum</b></font></font></th>
-		</tr>
-		<tr height="25">
-			<td>Отдельный префикс</td>
-			<td class="no"></td>
-			<td class="yes">[Vip]</td>
-			<td class="yes">[GoldVip]</td>
-			<td class="yes">[Platinum]</td>
-		</tr>
-		<tr>
-			<td>Одеть блок на голову</td>
-			<td class="no">Нет</td>
-			<td class="yes">Да</td>
-			<td class="yes">Да</td>
-			<td class="yes">Да</td>
-		</tr>
-		<tr>
-			<td>Оповестить всех о действии&nbsp;(/me)</td>
-			<td class="no">Нет</td>
-			<td class="yes">Да</td>
-			<td class="yes">Да</td>
-			<td class="yes">Да</td>
-		</tr>
-		<tr>
-			<td>Можно отправлять цветные сообщения в чат</td>
-			<td class="no">Нет</td>
-			<td class="yes">Да</td>
-			<td class="yes">Да</td>
-			<td class="yes">Да</td>
-		</tr>
-		<tr>
-			<td>Цветные сообщения в пм</td>
-			<td class="no">Нет</td>
-			<td class="yes">Да</td>
-			<td class="yes">Да</td>
-			<td class="yes">Да</td>
-		</tr>
-		<tr>
-			<td>Дополнительный слот на сервере</td>
-			<td class="no">Нет</td>
-			<td class="yes">Да</td>
-			<td class="yes">Да</td>
-			<td class="yes">Да</td>
-		</tr>
-		<tr>
-			<td>Флаги для региона: greeting и farewell</td>
-			<td class="no">Нет</td>
-			<td class="yes">Да</td>
-			<td class="yes">Да</td>
-			<td class="yes">Да</td>
-		</tr>
-		<tr style="height: 5px"></tr>
-		<tr>
-			<td>Включение бессмертия&nbsp;(/god)</td>
-			<td class="no">Нет</td>
-			<td class="no">Нет</td>
-			<td class="yes">Да</td>
-			<td class="yes">Да</td>
-		</tr>
-		<tr>
-			<td>Оповестить всех, что вы отошли (/afk)</td>
-			<td class="no">Нет</td>
-			<td class="no">Нет</td>
-			<td class="yes">Да</td>
-			<td class="yes">Да</td>
-		</tr>
-		<tr>
-			<td>Телепортирование к игроку (/tpa)</td>
-			<td class="no">Нет</td>
-			<td class="no">Нет</td>
-			<td class="yes">Да</td>
-			<td class="yes">Да</td>
-		</tr>
-		<tr>
-			<td>Телепортировать игрока к себе (tpahere)</td>
-			<td class="no">Нет</td>
-			<td class="no">Нет</td>
-			<td class="yes">Да</td>
-			<td class="yes">Да</td>
-		</tr>
-		<tr>
-			<td>Можно менять формат отправляемых сообщений в чат (например, курсив)</td>
-			<td class="no">Нет</td>
-			<td class="no">Нет</td>
-			<td class="yes">Да</td>
-			<td class="yes">Да</td>
-		</tr>
-		<tr>
-			<td>Можно писать цветным текстом на табличках</td>
-			<td class="no">Нет</td>
-			<td class="no">Нет</td>
-			<td class="yes">Да</td>
-			<td class="yes">Да</td>
-		</tr>
-		<tr>
-			<td>Публичный home</td>
-			<td class="no">Нет</td>
-			<td class="no">Нет</td>
-			<td class="yes">Да</td>
-			<td class="yes">Да</td>
-		</tr>
-		<tr>
-			<td>Флаги для региона: vehicle-place и vehicle-destroy</td>
-			<td class="no">Нет</td>
-			<td class="no">Нет</td>
-			<td class="yes">Да</td>
-			<td class="yes">Да</td>
-		</tr>
-		<tr style="height: 5px"></tr>
-		<tr>
-			<td>Доступ к верстаку по команде (/workbench)</td>
-			<td class="no">Нет</td>
-			<td class="no">Нет</td>
-			<td class="no">Нет</td>
-			<td class="yes">Да</td>
-		</tr>
-		<tr>
-			<td>Доступ к сундуку эндера по команде (/enderchest)</td>
-			<td class="no">Нет</td>
-			<td class="no">Нет</td>
-			<td class="no">Нет</td>
-			<td class="yes">Да</td>
-		</tr>
-		<tr>
-			<td>Посмотреть ближайших игроков (/near)</td>
-			<td class="no">Нет</td>
-			<td class="no">Нет</td>
-			<td class="no">Нет</td>
-			<td class="yes">Да</td>
-		</tr>
-		<tr>
-			<td>Возврат на предыдущую локацию и место смерти (/back)</td>
-			<td class="no">Нет</td>
-			<td class="no">Нет</td>
-			<td class="no">Нет</td>
-			<td class="yes">Да</td>
-		</tr>
-		<tr>
-			<td>Перемещение и прохождение сквозь стены компасом</td>
-			<td class="no">Нет</td>
-			<td class="no">Нет</td>
-			<td class="no">Нет</td>
-			<td class="yes">Да</td>
-		</tr>
-		<tr>
-			<td>Можно выделить любой регион</td>
-			<td class="no">Нет</td>
-			<td class="no">Нет</td>
-			<td class="no">Нет</td>
-			<td class="yes">Да</td>
-		</tr>
-		<tr>
-			<td>Посмотреть информацию о любом регионе</td>
-			<td class="no">Нет</td>
-			<td class="no">Нет</td>
-			<td class="no">Нет</td>
-			<td class="yes">Да</td>
-		</tr>
-		<tr>
-			<td>Создание магазинов плагином QuickShop</td>
-			<td class="no">Нет</td>
-			<td class="no">Нет</td>
-			<td class="no">Нет</td>
-			<td class="yes">Да</td>
-		</tr>
-		<tr>
-			<td>Флаги для региона: mob-spawning и pvp</td>
-			<td class="no">Нет</td>
-			<td class="no">Нет</td>
-			<td class="no">Нет</td>
-			<td class="yes">Да</td>
-		</tr>
-		<tr style="height: 5px"></tr>
-		<tr>
-			<td>Количество одновременно поставленных хоумов</td>
-			<td class="neutral">1</td>
-			<td class="neutral">3</td>
-			<td class="neutral">5</td>
-			<td class="neutral">8</td>
-		</tr>
-		<tr>
-			<td>Количество инвайтов в хоум</td>
-			<td class="neutral">1</td>
-			<td class="neutral">5</td>
-			<td class="neutral">10</td>
-			<td class="neutral">15</td>
-		</tr>
-		<tr>
-			<td>Количество доступных приватов</td>
-			<td class="neutral">2</td>
-			<td class="neutral">4</td>
-			<td class="neutral">6</td>
-			<td class="neutral">8</td>
-		</tr>
-</table>
+<div class="tabContent goods">
+	<p style="color: red; margin: 5px 0;"><b>Внимание!</b> Следующие товары можно купить <b>только</b> за izum, эквивалент в рублях приведен для удобства оценки актуальной цены товара</p>
+	<form method="POST" action="/payment">
+		<input type="hidden" name="goods" value="1">
+		<table id="donutTable">
+			<tr class="caption">
+				<th rowspan="2">Купить</th>
+				<th rowspan="2">Название товара</th>
+				<th colspan="2">Стоимость</th>
+				<th rowspan="2">Описание</th>
+			</tr>
+			<tr class="caption">
+				<th>izum</th>
+				<th>руб</th>
+			</tr>
+		<?
+		foreach ($donuts as $groupName => $group) {
+			echo '<tr class="group"><th colspan="5">' . $groupName . '</th></tr>';
+
+			foreach ($group as $donut) {
+			if ($donut['id'] <= 29999) $dis = '';
+			else $dis = 'disabled';
+		?>
+			<tr class="item" <? if ($dis) echo 'style="opacity: 0.3;"'; ?>>
+				<td>
+				<?
+				if ($clogin) { 
+					if ($donut['id'] >= 20000 && $donut['id'] <= 29999) {
+						echo '<input type="radio" name="status" value="' . $donut['id'] . '" ' . $dis . '>';
+					} else {
+						echo '<input type="checkbox" name="donut[' . $donut['id'] . ']" ' . $dis . '>';
+					}
+				} else echo '<span style="color: lightgrey">Недоступно</span>'; ?>
+				</td>
+				<td><?=$donut['name'];?></td>
+				<td style="color: red;"><?=number_format($donut['cost'], 0, ',', ' ');?></td>
+				<td><?=number_format($donut['cost'] / $rubCost, 2, ',', ' ');?></td>
+				<td><?=$donut['desc'];?></td>
+			</tr>
+		<?
+			}
+		}
+		?>
+		</table>
+		<? if ($clogin) { ?>
+			<input type="submit" value="Купить">
+		<? } ?>
+	</form>
+
+	<table class="descTable">
+			<tr>
+				<th><h1>Возможности</h1></th>
+				<th class="neutral"><font size="5"><b>Игрок</b></font></th>
+				<th class="neutral"><font size="5"><font color="cc9900"><b>Vip</b></font></font></th>
+				<th class="neutral"><font size="5"><font color="green"><b>GoldVip</b></font></font></th>
+				<th class="neutral"><font size="5"><font color="6633cc"><b>Platinum</b></font></font></th>
+			</tr>
+			<tr height="25">
+				<td>Отдельный префикс</td>
+				<td class="no"></td>
+				<td class="yes">[Vip]</td>
+				<td class="yes">[GoldVip]</td>
+				<td class="yes">[Platinum]</td>
+			</tr>
+			<tr>
+				<td>Одеть блок на голову</td>
+				<td class="no">Нет</td>
+				<td class="yes">Да</td>
+				<td class="yes">Да</td>
+				<td class="yes">Да</td>
+			</tr>
+			<tr>
+				<td>Оповестить всех о действии&nbsp;(/me)</td>
+				<td class="no">Нет</td>
+				<td class="yes">Да</td>
+				<td class="yes">Да</td>
+				<td class="yes">Да</td>
+			</tr>
+			<tr>
+				<td>Можно отправлять цветные сообщения в чат</td>
+				<td class="no">Нет</td>
+				<td class="yes">Да</td>
+				<td class="yes">Да</td>
+				<td class="yes">Да</td>
+			</tr>
+			<tr>
+				<td>Цветные сообщения в пм</td>
+				<td class="no">Нет</td>
+				<td class="yes">Да</td>
+				<td class="yes">Да</td>
+				<td class="yes">Да</td>
+			</tr>
+			<tr>
+				<td>Дополнительный слот на сервере</td>
+				<td class="no">Нет</td>
+				<td class="yes">Да</td>
+				<td class="yes">Да</td>
+				<td class="yes">Да</td>
+			</tr>
+			<tr>
+				<td>Флаги для региона: greeting и farewell</td>
+				<td class="no">Нет</td>
+				<td class="yes">Да</td>
+				<td class="yes">Да</td>
+				<td class="yes">Да</td>
+			</tr>
+			<tr style="height: 5px"></tr>
+			<tr>
+				<td>Включение бессмертия&nbsp;(/god)</td>
+				<td class="no">Нет</td>
+				<td class="no">Нет</td>
+				<td class="yes">Да</td>
+				<td class="yes">Да</td>
+			</tr>
+			<tr>
+				<td>Оповестить всех, что вы отошли (/afk)</td>
+				<td class="no">Нет</td>
+				<td class="no">Нет</td>
+				<td class="yes">Да</td>
+				<td class="yes">Да</td>
+			</tr>
+			<tr>
+				<td>Телепортирование к игроку (/tpa)</td>
+				<td class="no">Нет</td>
+				<td class="no">Нет</td>
+				<td class="yes">Да</td>
+				<td class="yes">Да</td>
+			</tr>
+			<tr>
+				<td>Телепортировать игрока к себе (tpahere)</td>
+				<td class="no">Нет</td>
+				<td class="no">Нет</td>
+				<td class="yes">Да</td>
+				<td class="yes">Да</td>
+			</tr>
+			<tr>
+				<td>Можно менять формат отправляемых сообщений в чат (например, курсив)</td>
+				<td class="no">Нет</td>
+				<td class="no">Нет</td>
+				<td class="yes">Да</td>
+				<td class="yes">Да</td>
+			</tr>
+			<tr>
+				<td>Можно писать цветным текстом на табличках</td>
+				<td class="no">Нет</td>
+				<td class="no">Нет</td>
+				<td class="yes">Да</td>
+				<td class="yes">Да</td>
+			</tr>
+			<tr>
+				<td>Публичный home</td>
+				<td class="no">Нет</td>
+				<td class="no">Нет</td>
+				<td class="yes">Да</td>
+				<td class="yes">Да</td>
+			</tr>
+			<tr>
+				<td>Флаги для региона: vehicle-place и vehicle-destroy</td>
+				<td class="no">Нет</td>
+				<td class="no">Нет</td>
+				<td class="yes">Да</td>
+				<td class="yes">Да</td>
+			</tr>
+			<tr style="height: 5px"></tr>
+			<tr>
+				<td>Доступ к верстаку по команде (/workbench)</td>
+				<td class="no">Нет</td>
+				<td class="no">Нет</td>
+				<td class="no">Нет</td>
+				<td class="yes">Да</td>
+			</tr>
+			<tr>
+				<td>Доступ к сундуку эндера по команде (/enderchest)</td>
+				<td class="no">Нет</td>
+				<td class="no">Нет</td>
+				<td class="no">Нет</td>
+				<td class="yes">Да</td>
+			</tr>
+			<tr>
+				<td>Посмотреть ближайших игроков (/near)</td>
+				<td class="no">Нет</td>
+				<td class="no">Нет</td>
+				<td class="no">Нет</td>
+				<td class="yes">Да</td>
+			</tr>
+			<tr>
+				<td>Возврат на предыдущую локацию и место смерти (/back)</td>
+				<td class="no">Нет</td>
+				<td class="no">Нет</td>
+				<td class="no">Нет</td>
+				<td class="yes">Да</td>
+			</tr>
+			<tr>
+				<td>Перемещение и прохождение сквозь стены компасом</td>
+				<td class="no">Нет</td>
+				<td class="no">Нет</td>
+				<td class="no">Нет</td>
+				<td class="yes">Да</td>
+			</tr>
+			<tr>
+				<td>Можно выделить любой регион</td>
+				<td class="no">Нет</td>
+				<td class="no">Нет</td>
+				<td class="no">Нет</td>
+				<td class="yes">Да</td>
+			</tr>
+			<tr>
+				<td>Посмотреть информацию о любом регионе</td>
+				<td class="no">Нет</td>
+				<td class="no">Нет</td>
+				<td class="no">Нет</td>
+				<td class="yes">Да</td>
+			</tr>
+			<tr>
+				<td>Создание магазинов плагином QuickShop</td>
+				<td class="no">Нет</td>
+				<td class="no">Нет</td>
+				<td class="no">Нет</td>
+				<td class="yes">Да</td>
+			</tr>
+			<tr>
+				<td>Флаги для региона: mob-spawning и pvp</td>
+				<td class="no">Нет</td>
+				<td class="no">Нет</td>
+				<td class="no">Нет</td>
+				<td class="yes">Да</td>
+			</tr>
+			<tr style="height: 5px"></tr>
+			<tr>
+				<td>Количество одновременно поставленных хоумов</td>
+				<td class="neutral">1</td>
+				<td class="neutral">3</td>
+				<td class="neutral">5</td>
+				<td class="neutral">8</td>
+			</tr>
+			<tr>
+				<td>Количество инвайтов в хоум</td>
+				<td class="neutral">1</td>
+				<td class="neutral">5</td>
+				<td class="neutral">10</td>
+				<td class="neutral">15</td>
+			</tr>
+			<tr>
+				<td>Количество доступных приватов</td>
+				<td class="neutral">2</td>
+				<td class="neutral">4</td>
+				<td class="neutral">6</td>
+				<td class="neutral">8</td>
+			</tr>
+	</table>
+</div>

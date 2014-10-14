@@ -137,6 +137,8 @@ class user {
 		if ($steamID) $profile = $this->getSteam($steamID);
 		else $profile = FALSE;
 
+		$coupons = $this->getCoupons($user);
+
 		$output = array(
 			  'id' => $u['id'] // Айдишник
 			, 'email' => $u['email'] // Мыло
@@ -156,6 +158,7 @@ class user {
 			, 'privacy' => $privacy // Настройки приватности в виде ассоциативного массива
 			, 'groupName' => $groupName // Название группы, в которой состоит пользователь
 			, 'tokens' => $tokens // Токены
+			, 'coupons' => $coupons // Купоны
 		);
 
 		if ($profile) {
@@ -247,6 +250,32 @@ class user {
 			</div>';
 
 		return $output;
+	}
+
+/**
+* 
+* Получение купонов пользователя
+* @param user - айдишник пользователя
+* @return array - массив с купонами
+* 
+**/
+	public function getCoupons($user) {
+		GLOBAL $db;
+		$q = "SELECT * FROM `coupons` WHERE `user` = $user AND `active` = 1;";
+		$r = $db->query($q);
+
+		foreach ($r as $coupon) {
+			$ruNames = array(
+				  'admindiscount' => 'Админская скидка'
+				, 'testdiscount' => 'Тестовая скидка'
+				, 'votediscount' => 'Купон на скидку за голосование в рейтингах'
+			);
+			if (!isset($coupons[ $coupon['name'] ][ $coupon['effect'] ]))
+				$coupons[ $coupon['name'] ][ $coupon['effect'] ] = array('ruName' => $ruNames[ $coupon['name'] ], 'count' => 1, 'firstID' => $coupon['id']);
+			else $coupons[ $coupon['name'] ][ $coupon['effect'] ]['count']++;
+		}
+
+		return $coupons;
 	}
 
 }

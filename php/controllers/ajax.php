@@ -13,31 +13,16 @@ $Query = new Query();
 // Смотрим, с чем к нам пришли
 switch ($_GET['mode']) {
 
-	case 'achCheck':
-		// Просмотреть неполученные достижения
-		echo $Query->{$_GET['mode']}();
-	break;
-
 	case 'getAchHtml':
 		// Получить HTML-код для отображения всплывающей ачивки
 		$achid = $_GET['id'];
 		echo $Query->{$_GET['mode']}($achid);
 	break;
 
-	case 'stealDiamond':
-		// Спереть алмаз
-		echo $Query->{$_GET['mode']}();
-	break;
-
 	case 'pingServer':
 		// Пингуем сервер
 		$server = $db->escape($_GET['server']);
 		echo $Query->{$_GET['mode']}($server);
-	break;
-
-	case 'checkBL':
-		// Получаем банлист
-		echo $Query->{$_GET['mode']}();
 	break;
 
 	case 'voteTopCraft':
@@ -56,7 +41,9 @@ switch ($_GET['mode']) {
 	break;
 
 	default:
-		// Какая-то хрень
-		echo 'wrong mode';
+		// stealDiamond - Спереть алмаз
+		// achCheck - Просмотреть неполученные достижения
+		// checkBL - Получаем банлист
+		echo $Query->{$_GET['mode']}();
 	break;
 }

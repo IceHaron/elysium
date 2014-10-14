@@ -10,15 +10,18 @@ $rubCost = 1000;
 
 if (isset($_POST['izum']) && isset($_POST['want']) && $clogin) {
 	$achievement->earn($user->info['id'], 18, 0);
-	// exit('В данный момент раздача и продажа изюма не работает, хитрец');
-	// Если с постом, дак еще и с пополнением, то ты знаешь, что делать.
 	if ((int)$_POST['want'] > 9999999) $want = 9999999;
 	else if ((int)$_POST['want'] < 100) $want = 100;
 	else $want = (int)$_POST['want'];
 
-	$toPay = number_format(ceil($want / $rubCost * 100) / 100, 2, '.', '');
+	$discountID = intval($_POST['izumDiscount']);
+	$q = "SELECT `effect` FROM `coupons` WHERE `id` = $discountID;";
+	$r = $db->query($q);
+	$discount = (float)$r[0]['effect'];
 
-	$q = "INSERT INTO `acquiring` (`user`, `topay`, `togrant`) VALUES ($cid, $toPay, $want);";
+	$toPay = number_format(ceil($want / $rubCost * (100 - $discount)) / 100, 2, '.', '');
+
+	$q = "INSERT INTO `acquiring` (`user`, `topay`, `togrant`, `discount`) VALUES ($cid, $toPay, $want, $discountID);";
 	$r = $db->query($q);
 	// $r = TRUE;
 
@@ -43,6 +46,8 @@ if (isset($_POST['izum']) && isset($_POST['want']) && $clogin) {
 		);
 		// print_r($acquiring);
 		$target = "https://merchant.roboxchange.com/Index.aspx?MerchantLogin=Elysium&OutSum=$toPay&InvId=$transactionID&Desc=Покупка%20$want%20izum&SignatureValue=$signature&Culture=ru";
+		if ((float)$toPay != 0) $action = 'https://merchant.roboxchange.com/Index.aspx';
+		else $action = "/payaccept";
 		$message = 'Ваш заказ.';
 		$izumform = '
 			<p>Внимательно проверьте все данные и нажмите "согласен, оплатить" если все верно.</p>
@@ -56,7 +61,7 @@ if (isset($_POST['izum']) && isset($_POST['want']) && $clogin) {
 					<td>' . $toPay . ' руб</td>
 				</tr>
 			</table>
-			<form action="https://merchant.roboxchange.com/Index.aspx" method="POST">
+			<form action="' . $action . '" method="POST">
 				<input type="hidden" name="MerchantLogin" value="Elysium">
 				<input type="hidden" name="OutSum" value="' . $toPay . '">
 				<input type="hidden" name="InvId" value="' . $transactionID . '">

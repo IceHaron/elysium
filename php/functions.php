@@ -170,3 +170,26 @@ function pingMCServer($server,$port=25565,$timeout=2){
 	array_shift($data); // remove separator char
 	return $data; // boom sucka
 }
+
+function giveBonus($player, $buy, $reason = 'Бонус за покупку Изюма') {
+	GLOBAL $db;
+	$bonus = round(pow(2, -500000 / $buy) * 3 * $buy / 10);
+	$q = "UPDATE `ololousers` SET `izumko` = `izumko` + $bonus WHERE `id` = $player;";
+	$ololousers = $db->query($q);
+	$q = "INSERT INTO `gifts` (`admin`, `user`, `izum`, `reason`) VALUES (0, $player, $bonus, '$reason');";
+	$gifts = $db->query($q);
+
+	if (!$ololousers || !$gifts) return FALSE;
+
+	return TRUE;
+}
+
+function giveCoupon($player, $name, $effect = 0) {
+	GLOBAL $db;
+	$q = "IMSERT INTO `coupons` (`user`, `name`, `effect`) VALUES ($player, '$name', $effect);";
+	$r = $db->query($q);
+
+	if (!$r) return FALSE;
+
+	return TRUE;
+}

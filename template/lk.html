@@ -3,12 +3,13 @@
 <ul class="tabs">
 	<li class="summary">Общая информация</li>
 	<li class="orders">Заказы</li>
+	<li class="coupons">Купоны</li>
 	<li class="achieves">Достижения</li>
 	<li class="pw">Сбросить пароль</li>
 	<li class="visibility">Настроить видимость</li>
 </ul>
 
-<table class="lk summary">
+<table class="lk tabContent summary">
 	<tr>
 		<th class="head">Ваша электропочта</th>
 		<td class="input"><?=$info['email']?></td>
@@ -192,7 +193,7 @@
 </table>
 
 <table class="lk">
-	<tr class="pw">
+	<tr class="tabContent pw">
 		<th class="head">А вот пароль мы вам не покажем хЪ</th>
 		<td class="input">
 			<form action="/auth?action=changepw" method="POST" id="changePw">
@@ -205,7 +206,7 @@
 	</tr>
 
 	<form action="/auth?action=privacy" method="POST">
-		<tr class="visibility">
+		<tr class="tabContent visibility">
 			<th class="head">Видимость</th>
 			<td class="input">
 				<div id="allPrivacy">
@@ -225,7 +226,7 @@
 	</form>
 </table>
 
-<div class="orders">
+<div class="tabContent orders">
 	<h3>Покупки изюма:</h3>
 	<table class="orderList">
 		<tr>
@@ -271,7 +272,29 @@
 	</table>
 </div>
 
-<div class="achieves">
+<div class="tabContent coupons">
+	<table class="orderList">
+		<tr>
+			<th>Купон</th>
+			<th>Скидка, %</th>
+			<th>Количество</th>
+		</tr>
+		<?
+		foreach ($info['coupons'] as $name => $coupon) {
+			foreach ($coupon as $effect => $params) {
+				echo '
+					<tr>
+						<td>' . $params['ruName'] . '</td>
+						<td>' . $effect . '</td>
+						<td>' . $params['count'] . '</td>
+					</tr>';
+			}
+		}
+		?>
+	</table>
+</div>
+
+<div class="tabContent achieves">
 	<h3>Ваши достижения (5 последних плюс только что полученные):</h3>
 	<div id="achList">
 
