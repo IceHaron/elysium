@@ -29,7 +29,7 @@ if ($r !== NULL) {
 		echo 'OK' . $InvId;
 		$html = $achievement->earn($player, 11);
 		$message .= '<br/>Платеж проведен успешно';
-		giveBonus($player, $want, "Бонус за покупку $want Изюма");
+		giveBonus($player, $want, 'buy', "Бонус за покупку $want Изюма");
 
 	} else {
 		// var_dump($OutSum, $r[0]['topay']);

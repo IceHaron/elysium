@@ -171,9 +171,10 @@ function pingMCServer($server,$port=25565,$timeout=2){
 	return $data; // boom sucka
 }
 
-function giveBonus($player, $buy, $reason = 'Бонус за покупку Изюма') {
+function giveBonus($player, $izum, $type, $reason = 'Бонус за покупку Изюма') {
 	GLOBAL $db;
-	$bonus = round(pow(2, -500000 / $buy) * 3 * $buy / 10);
+	if ($type == 'buy') $bonus = round(pow(2, -500000 / $izum) * 3 * $izum / 10);
+	else $bonus = $izum;
 	$q = "UPDATE `ololousers` SET `izumko` = `izumko` + $bonus WHERE `id` = $player;";
 	$ololousers = $db->query($q);
 	$q = "INSERT INTO `gifts` (`admin`, `user`, `izum`, `reason`) VALUES (0, $player, $bonus, '$reason');";

@@ -56,7 +56,7 @@ if ($r !== NULL && (float)$OutSum != 0) {
 		// writeHistory($player, 'purchase', array('izum' => time()));
 		$html = $achievement->earn($player, 11);
 		$message .= '<br/>Платеж проведен успешно';
-		giveBonus($player, $want, "Бонус за покупку $want Изюма");
+		giveBonus($player, $want, 'buy', "Бонус за покупку $want Изюма");
 
 	} else {
 		if (!$checkPaid) $message .= '<br/>Транзакция уже оплачена';
