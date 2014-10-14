@@ -187,7 +187,7 @@ function giveBonus($player, $izum, $type, $reason = 'Бонус за покуп�
 
 function giveCoupon($player, $name, $effect = 0) {
 	GLOBAL $db;
-	$q = "IMSERT INTO `coupons` (`user`, `name`, `effect`) VALUES ($player, '$name', $effect);";
+	$q = "INSERT INTO `coupons` (`user`, `name`, `effect`) VALUES ($player, '$name', $effect);";
 	$r = $db->query($q);
 
 	if (!$r) return FALSE;
