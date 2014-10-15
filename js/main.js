@@ -22,6 +22,12 @@ $(document).ready(function(){
 		}, 300000);
 	}
 
+	$('#header .row-2 ul li').each(function() {
+		var base = $('#header').offset().left;
+		var position = base - $(this).offset().left;
+		$(this).css('background-position', position);
+	});
+
 	// Если у нас есть цветной ник, то выделяем цвет
 	if ($('input[name="nameColor"]').length != 0) {
 		var color = $('input[name="nameColor"]').val();
