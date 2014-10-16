@@ -597,3 +597,11 @@ ul.tabs li {
 	padding: 5px;
 	border: 1px solid grey;
 }
+.skypeButton {
+	display: inline-block;
+	height: 20px;
+	padding: 7px 5px 3px 35px;
+	background: url(/images/skype_logo.png) no-repeat;
+	border: 1px solid #0089CF;
+	border-radius: 10px;
+}
