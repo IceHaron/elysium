@@ -9,7 +9,6 @@
 <link type='text/css' href='css/basic.css' rel='stylesheet' media='screen' />
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.3/jquery.min.js"></script>
 <script type="text/javascript" src="/js/main.js"></script>
-<link href='http://fonts.googleapis.com/css?family=Cuprum&subset=cyrillic,latin' rel='stylesheet' type='text/css'></link>
 <!--[if lt IE 7]>
 	<script type="text/javascript" src="js/ie_png.js"></script>
 	<script type="text/javascript">
@@ -60,7 +59,7 @@
 			<br><text class="gentoo-status">Pinging...</text>
 		</li>
 		<li class="ratings">
-			<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.js"></script><script type="text/javascript" src="http://want2vote.com/js/get_picture/vote_banner.js"></script><style>#w2v_vote_banner { display:inline-block; width:88px; height:31px; }</style><div id="w2v_vote_banner" rel="8452"></div>
+			<div id="w2v_vote_banner" rel="8452"></div>
 			<a href="http://fairtop.ru/project/323" target="_blank"><img src="http://fairtop.ru/counter/4/323"></a>
 			<a href="http://topcraft.ru/servers/3322" target="_blank"><img src="http://topcraft.ru/ban_img/3322" alt="TopCraft"></a>
 		</li>
@@ -128,14 +127,18 @@
 
 					<!-- Главная менюшка -->
 					<div class="row-2">
-						<ul>
+						<ul class="menu">
 							<li><a href="/">Главная</a></li>
-							<li><a href="/help">Помощь и FAQ</a></li>
-							<li><a href="/contact">Контакты</a></li>
-							<li><a href="/users">Пользователи</a></li>
+							<li>
+								<a>Информация</a>
+								<ul class="submenu">
+									<li><a href="/help">Помощь и FAQ</a></li>
+									<li><a href="/users">Пользователи</a></li>
+									<li><a href="/achievements">Ачивки</a></li>
+								</ul>
 							<li><a href="/donate">Донат</a></li>
-							<li><a href="/achievements">Ачивки</a></li>
 							<li><a href="http://forum.elysiumgame.ru" target="blank">Форум</a></li>
+							<li><a href="/contact">Контакты</a></li>
 							<li id="banlist-button"><a href="">Банлист</a></li>
 						</ul>
 					</div>

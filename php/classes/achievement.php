@@ -323,7 +323,17 @@ class achievement {
 								</div>
 							</div>';
 					}
-					$output .= '</div>';
+
+					$output .= '
+							<div class="achPlaceholder" style="margin: 0 0 ' . ($counter*10) . 'px 0;">
+								<div class="achievement grade_1">
+									<span class="achTitle">' . $achInfo['name'] . '</span>
+									<span class="achDate">null</span>
+									<span class="achDesc">' . $achInfo['desc'] . '</span>
+									<div><span class="achPowah">null</span><div class="clear"></div></div>
+								</div>
+							</div>
+						</div>';
 				} else {
 					$date = '';
 					$output .= '

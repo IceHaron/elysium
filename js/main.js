@@ -1,6 +1,11 @@
 var servers = new Array('kernel', 'backtrack', 'gentoo');
 
 $(document).ready(function(){
+	var pid = $("#w2v_vote_banner").attr("rel");
+	$("#w2v_vote_banner").html('<a href="http://www.want2vote.com/project/id'+pid+'/" target="_blank" title="www.want2vote.com!"><img src="http://www.want2vote.com/_status/pictures/status_votebanner/'+pid+'.jpg" alt="want2vote" width="88" height="31"></a>');
+});
+
+$(document).ready(function(){
 
 	$("#back-top").hide(); // Скрываем банлист
 
@@ -38,12 +43,12 @@ $(document).ready(function(){
 	parsePrefix();
 
 	//В ЛК и списке достижений нужно установить высоту стопок ачивок чтобы они не пересекались, не знаю, как сделать это средствами html
-	$('.achievementStack').each(function() {
-		var inner = $(this).children().eq(0);
-		var height = parseInt(inner.css('height').replace('px',''));
-		var margin = parseInt(inner.css('margin-top').replace('px',''));
-		$(this).css('height', height + margin + 4);
-	});
+	// $('.achievementStack').each(function() {
+	// 	var inner = $(this).children().eq(0);
+	// 	var height = parseInt(inner.css('height').replace('px',''));
+	// 	var margin = parseInt(inner.css('margin-top').replace('px',''));
+	// 	$(this).css('height', height + margin + 4);
+	// });
 
 	// Хер его проссыт, зачем это, наследие
 	$(function () {
