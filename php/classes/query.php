@@ -183,6 +183,16 @@ class Query {
 
 /**
 *
+* Проверка онлайна
+*
+**/
+	public function onlineCheck() {
+		$online = file_get_contents('http://srv.elysiumgame.ru/list.php');
+		return $online;
+	}
+
+/**
+*
 * 
 *
 **/

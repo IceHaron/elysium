@@ -339,6 +339,16 @@ h4 {
 	float: right;
 	padding-top:5px;
 }
+.online {
+	display: none;
+	position: absolute;
+	margin-left: -10px;
+	padding: 5px;
+	background-color: white;
+	border: 1px solid grey;
+}
+.servers li:hover .online { display: block; }
+.online .player { color: black; }
 #banlist th { text-align: left; }
 
 /* Новости */

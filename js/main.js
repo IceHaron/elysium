@@ -15,8 +15,8 @@ $(document).ready(function(){
 	// 	pingServer(server);
 	// }
 	pingServer('kernel');
-	$('.backtrack-status').css('color','darkred').text('Timeout (5s)');
-	$('.gentoo-status').css('color','darkred').text('Timeout (5s)');
+	$('.backtrack .status').css('color','darkred').text('Timeout (5s)');
+	$('.gentoo .status').css('color','darkred').text('Timeout (5s)');
 
 	// Если мы залогинены, проверяем неполученные ачивки сразу и запускаем проверку каждые 5 минут
 	if ($('.logged').length != 0) {
@@ -26,6 +26,14 @@ $(document).ready(function(){
 			achCheck();
 		}, 300000);
 	}
+
+	// Проверяем онлайн при загрузке страницы и раз в 5 минут
+	onlineCheck();
+	
+	setInterval(function() {
+		pingServer('kernel');
+		onlineCheck();
+	}, 300000);
 
 	$('#header .row-2 ul li').each(function() {
 		var base = $('#header').offset().left;
@@ -232,11 +240,11 @@ function pingServer(server) {
 		, data: {'mode': 'pingServer', 'server': server}
 		, dataType: 'json'
 		, success: function(data) {
-			if (data) $('.' + server + '-status').css('color','darkgreen').text(data.players + '/' + data.limit);
-			else $('.' + server + '-status').css('color','darkred').text('Timeout (5s)');
+			if (data) $('.' + server + ' .status').css('color','darkgreen').text(data.players + '/' + data.limit);
+			else $('.' + server + ' .status').css('color','darkred').text('Timeout (5s)');
 		}
 		, error: function() {
-			$('.' + server + '-status').css('color','darkred').text('Timeout (5s)');
+			$('.' + server + ' .status').css('color','darkred').text('Timeout (5s)');
 		}
 	});
 }
@@ -255,6 +263,33 @@ function achCheck() {
 		, success: function(data) {
 				for (i in data) {
 					showAchievement(data[i]);
+				}
+			}
+	});
+}
+
+/**
+* 
+* Список онлайн игроков
+* 
+**/
+function onlineCheck() {
+	$.ajax({
+		  type: 'GET'
+		, url: '/ajax'
+		, data: {'mode': 'onlineCheck'}
+		, dataType: 'json'
+		, success: function(data) {
+				$('.kernel .online').empty();
+				for (time in data) {
+					$('.kernel .online').append('<div class="time">' + time + '</div>');
+					for (group in data[time]) {
+						// $('.kernel .online').append('<div class="group">' + group + '</div>');
+						for (i in data[time][group]) {
+							var player = data[time][group][i];
+							$('.kernel .online').append('<div class="player">' + player + '</div>');
+						}
+					}
 				}
 			}
 	});
