@@ -82,140 +82,149 @@
 
 <!-- Основной блок -->
 <body>
-<div id="vkSlider" class="closed">
-	<div class="vkHead">
-		<img src="/images/vk_logo.png">
-		<div id="vkTitle">Наша группа <img src="/images/white_arrow.png" id="vkArrow"></div>
+	<div id="vkSlider" class="closed">
+		<div class="vkHead">
+			<img src="/images/vk_logo.png">
+			<div id="vkTitle">Наша группа <img src="/images/white_arrow.png" id="vkArrow"></div>
+		</div>
+		<script type="text/javascript" src="http://userapi.com/js/api/openapi.js?49"></script>
+		<!-- VK Widget -->
+		<div id="vk_groups"></div>
+		<script type="text/javascript">VK.Widgets.Group("vk_groups", {mode: 0, width: "290", height: "330"}, 34954874);</script>
 	</div>
-	<script type="text/javascript" src="http://userapi.com/js/api/openapi.js?49"></script>
-	<!-- VK Widget -->
-	<div id="vk_groups"></div>
-	<script type="text/javascript">VK.Widgets.Group("vk_groups", {mode: 0, width: "290", height: "330"}, 34954874);</script>
-</div>
-<div id="shadow"></div>
-<div id="popupAch"></div>
-<div id="banlist" class="modal">
-	<h3>Список Банов</h3>
-	<p style="color:gray">(разбаненные игроки здесь не отображаются)</p>
-	<table width="100%">
-	</table>
-</div>
-<div id="aboutBonuses" class="modal">
-	<h3>Получение бонусов за покупку Изюма</h3>
-	<p>
-		Бонусы начисляются за покупку Изюма в количестве, превышающем 100 000.
-		Процентная ставка бонусов рассчитывается по формуле:
-		<img src="/images/bonus.png"><br/>
-		Таким образом, предел бонуса составляет 3/10 = 33.33(3)%<br/>
-		С учетом ограничения на количество покупаемого Изюма, максимальный возможный бонус составляет 29%
-	</p>
-	</table>
-</div>
-<div style='display:none'>
-	<img src='/images/x.png' alt='' />
-</div>
-	<div class="tail-top">
-		<div class="tail-bottom">
-			<div class="body-bg">
+	<div id="shadow"></div>
+	<div id="popupAch"></div>
+	<div id="banlist" class="modal">
+		<h3>Список Банов</h3>
+		<p style="color:gray">(разбаненные игроки здесь не отображаются)</p>
+		<table width="100%">
+		</table>
+	</div>
+	<div id="aboutBonuses" class="modal">
+		<h3>Получение бонусов за покупку Изюма</h3>
+		<p>
+			Бонусы начисляются за покупку Изюма в количестве, превышающем 100 000.
+			Процентная ставка бонусов рассчитывается по формуле:
+			<img src="/images/bonus.png"><br/>
+			Таким образом, предел бонуса составляет 3/10 = 33.33(3)%<br/>
+			С учетом ограничения на количество покупаемого Изюма, максимальный возможный бонус составляет 29%
+		</p>
+		</table>
+	</div>
+	<div style='display:none'>
+		<img src='/images/x.png' alt='' />
+	</div>
 
-				<!-- Шапка -->
-				<div id="header">
-					<div class="extra"><img src="/images/header-img.png" alt="" /></div>
-					<div class="row-1">
+	<!-- Шапка -->
+	<div id="headBG">
+		<div id="header">
+			<div class="extra"><img src="/images/header-img.png" height="250" /></div>
+			<div class="row-1">
 
-					</div>
+			</div>
 
-					<!-- Главная менюшка -->
-					<div class="row-2">
-						<ul class="menu">
-							<li><a href="/">Главная</a></li>
-							<li>
-								<a>Информация</a>
-								<ul class="submenu">
-									<li><a href="/help">Помощь и FAQ</a></li>
-									<li><a href="/users">Пользователи</a></li>
-									<li><a href="/achievements">Ачивки</a></li>
-								</ul>
-							<li><a href="/donate">Донат</a></li>
-							<li><a href="http://forum.elysiumgame.ru" target="blank">Форум</a></li>
-							<li><a href="/contact">Контакты</a></li>
-							<li id="banlist-button"><a href="">Банлист</a></li>
+			<!-- Главная менюшка -->
+			<div class="row-2">
+				<ul class="menu">
+					<li><a href="/">Главная</a></li>
+					<li>
+						<span>&equiv; Информация</span>
+						<ul class="submenu">
+							<li><a href="/help">Помощь и FAQ</a></li>
+							<li><a href="/rules">Правила</a></li>
+							<li><a href="/users">Пользователи</a></li>
+							<li><a href="/achievements">Ачивки</a></li>
 						</ul>
-					</div>
+					<li><a href="/donate">Донат</a></li>
+					<li><a href="http://forum.elysiumgame.ru" target="blank">Форум</a></li>
+					<li><a href="/contact">Контакты</a></li>
+					<li id="banlist-button"><a href="">Банлист</a></li>
+				</ul>
+			</div>
 
-					<div class="row-3"><img src="/images/slogan.png" alt="" /></div>
-				</div>
-				<!-- / Шапка -->
+			<div class="row-3"><span id="slogan">Elysium Game. Лучший среди лучших</span></div>
+		</div>
+	</div>
+	<!-- / Шапка -->
 
-				<!-- Центральный блок -->
-				<div id="content">
-					<div class="inner_copy"></div>
-					<div class="tail-right">
-						<div class="wrapper">
+	<!-- Центральный блок -->
+	<div id="content">
+		<div class="inner_copy"></div>
+		<div class="tail-right">
+			<div class="wrapper">
+				<?
+				if($_SERVER['REQUEST_URI'] == '/false') { // На страницах ЛК и оплаты вырубаем колонку с соцсетями
+				?>
+				<!-- Левый столбец, основной контент -->
+				<div class="col-1">
+					<div class="indent">
+						<div class="indent1">
 							<?
-							if($_SERVER['REQUEST_URI'] == '/false') { // На страницах ЛК и оплаты вырубаем колонку с соцсетями
+							INCLUDE("template/$module.html"); // Подгружаем макет модуля, переменная определяется по URI в файле index.php
 							?>
-							<!-- Левый столбец, основной контент -->
-							<div class="col-1">
-								<div class="indent">
-									<div class="indent1">
-										<?
-										INCLUDE("template/$module.html"); // Подгружаем макет модуля, переменная определяется по URI в файле index.php
-										?>
-									</div>
-								</div>
-							</div>
-							<!-- Правый столбец, ссылки -->
-							<div class="col-2">
-								<img src="/images/vk.png">
-							</div>
-							<?
-							} else { // Ну, соответственно, стиль без второй колонки для ЛК и страницы оплаты.
-							?>
-							<div class="nocol">
-								<?INCLUDE("template/$module.html");?>
-							</div>
-							<? } ?>
 						</div>
 					</div>
 				</div>
-				<!-- / Центральный блок -->
-
-				<!-- Нижний блок -->
-			</div>
-			<!-- <script type='text/javascript' src='js/ban.js'></script>
-			<script type='text/javascript' src='js/banb.js'></script> Хер его знает, зачем это надо -->
-			<? if ($diamond && isset($cid)) { ?>
-				<div class="extra"><img src="/images/zomb.png" alt="" class="herobrine" /><div class="diamond"></div></div>
-			<? } else if (!isset($cid)) { ?>
-				<div class="extra"><img src="/images/zomb.png" alt="" class="herobrine" /></div>
-			<? } else { ?>
-				<div class="extra"><img src="/images/zomb_nodiamond.png" alt="" class="herobrine" /></div>
-			<? } ?>
-			<!-- / Нижний блок -->
-
-			<!-- Подвал -->
-			<div id="footer">
-				<div class="indent">
-					<div class="fleft"></a>&nbsp; Полное или частичное копирование запрещено.</div>
-					<div class="fright">Copyright© Elysium Game | 2011-2014
-						<!--LiveInternet counter--><script type="text/javascript"><!--
-						document.write("<a href='//www.liveinternet.ru/click' "+
-						"target=_blank><img src='//counter.yadro.ru/hit?t11.12;r"+
-						escape(document.referrer)+((typeof(screen)=="undefined")?"":
-						";s"+screen.width+"*"+screen.height+"*"+(screen.colorDepth?
-						screen.colorDepth:screen.pixelDepth))+";u"+escape(document.URL)+
-						";"+Math.random()+
-						"' alt='' title='LiveInternet: показано число просмотров за 24"+
-						" часа, посетителей за 24 часа и за сегодня' "+
-						"border='0' width='88' height='31'><\/a>")
-						//--></script><!--/LiveInternet-->
-					</div>
+				<!-- Правый столбец, ссылки -->
+				<div class="col-2">
+					<img src="/images/vk.png">
 				</div>
+				<?
+				} else { // Ну, соответственно, стиль без второй колонки для ЛК и страницы оплаты.
+				?>
+				<div class="nocol">
+					<?INCLUDE("template/$module.html");?>
+				</div>
+				<? } ?>
 			</div>
-			<!-- / Подвал -->
-
 		</div>
 	</div>
+	<!-- / Центральный блок -->
+
+	<!-- Нижний блок -->
+	<!-- <script type='text/javascript' src='js/ban.js'></script>
+	<script type='text/javascript' src='js/banb.js'></script> Хер его знает, зачем это надо -->
+	<? if ($diamond && isset($cid)) { ?>
+		<div class="extra"><img src="/images/zomb.png" alt="" class="herobrine" /><div class="diamond"></div></div>
+	<? } else if (!isset($cid)) { ?>
+		<div class="extra"><img src="/images/zomb.png" alt="" class="herobrine" /></div>
+	<? } else { ?>
+		<div class="extra"><img src="/images/zomb_nodiamond.png" alt="" class="herobrine" /></div>
+	<? } ?>
+	<!-- / Нижний блок -->
+
+	<!-- Подвал -->
+	<div id="footBG">
+		<div id="footer">
+			<ul class="menu">
+				<li><a href="/">Главная</a></li>
+				<li><a href="/help">Помощь и FAQ</a></li>
+				<li><a href="/rules">Правила</a></li>
+				<li><a href="/users">Пользователи</a></li>
+				<li><a href="/achievements">Ачивки</a></li>
+				<li><a href="/donate">Донат</a></li>
+				<li><a href="http://forum.elysiumgame.ru" target="blank">Форум</a></li>
+				<li><a href="/contact">Контакты</a></li>
+			</ul>
+			<div class="indent">
+				<div class="fleft">Полное или частичное копирование запрещено.</div>
+				<div class="fright">Elysium Game | 2011-<?=date('Y', time())?>&nbsp;&nbsp;
+					<!--LiveInternet counter--><script type="text/javascript"><!--
+					document.write("<a href='//www.liveinternet.ru/click' "+
+					"target=_blank><img src='//counter.yadro.ru/hit?t11.12;r"+
+					escape(document.referrer)+((typeof(screen)=="undefined")?"":
+					";s"+screen.width+"*"+screen.height+"*"+(screen.colorDepth?
+					screen.colorDepth:screen.pixelDepth))+";u"+escape(document.URL)+
+					";"+Math.random()+
+					"' alt='' title='LiveInternet: показано число просмотров за 24"+
+					" часа, посетителей за 24 часа и за сегодня' "+
+					"border='0' width='88' height='31'><\/a>")
+					//--></script><!--/LiveInternet-->
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- / Подвал -->
+
 </body>
 </html>
