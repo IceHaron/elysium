@@ -349,6 +349,9 @@ h4 {
 }
 .servers li:hover .online { display: block; }
 .online .player { color: black; }
+.online .time { font-size: 10px; }
+.online .group { margin: 5px 0 2px 0; }
+.online .hidden { color: red; }
 #banlist th { text-align: left; }
 
 /* Новости */

@@ -28,11 +28,11 @@ $(document).ready(function(){
 	}
 
 	// Проверяем онлайн при загрузке страницы и раз в 5 минут
-	onlineCheck();
+	onlineCheck('kernel');
 	
 	setInterval(function() {
 		pingServer('kernel');
-		onlineCheck();
+		onlineCheck('kernel');
 	}, 300000);
 
 	$('#header .row-2 ul li').each(function() {
@@ -273,24 +273,28 @@ function achCheck() {
 * Список онлайн игроков
 * 
 **/
-function onlineCheck() {
+function onlineCheck(server) {
 	$.ajax({
 		  type: 'GET'
 		, url: '/ajax'
 		, data: {'mode': 'onlineCheck'}
 		, dataType: 'json'
 		, success: function(data) {
-				$('.kernel .online').empty();
+				var hidden = 0;
+				$('.' + server + ' .online').empty();
 				for (time in data) {
-					$('.kernel .online').append('<div class="time">' + time + '</div>');
+					$('.' + server + ' .online').append('<div class="time">' + time + '</div>');
 					for (group in data[time]) {
-						// $('.kernel .online').append('<div class="group">' + group + '</div>');
+						$('.' + server + ' .online').append('<div class="group">' + group + '</div>');
 						for (i in data[time][group]) {
 							var player = data[time][group][i];
-							$('.kernel .online').append('<div class="player">' + player + '</div>');
+							if (player.search('[СКРЫТ]') != -1) hidden++;
+							else $('.' + server + ' .online').append('<div class="player">' + player + '</div>');
 						}
 					}
 				}
+				if (hidden != 0) $('.' + server + ' .online').append('<div class="hidden">+ Скрытых: ' + hidden + '</div>');
+				if ($('.online .player').length == 0) $('.online .group').hide();
 			}
 	});
 }

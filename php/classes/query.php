@@ -187,8 +187,25 @@ class Query {
 *
 **/
 	public function onlineCheck() {
+		GLOBAL $db;
 		$online = file_get_contents('http://srv.elysiumgame.ru/list.php');
-		return $online;
+		$onlineArr = json_decode($online);
+		$q = "SELECT `name`, `server_alias` FROM `usergroups` WHERE `id` NOT IN (777,100,5);";
+		$r = $db->query($q);
+
+		foreach ($r as $group) {
+			$siteGroups[ $group['server_alias'] ] = $group['name'];
+		}
+
+		foreach ($onlineArr as $time => $groups) {
+			foreach ($groups as $group => $players) {
+				$outputArr[$time][ $siteGroups[$group] ] = $players;
+			}
+		}
+
+		$outputStr = json_encode($outputArr, TRUE);
+
+		return $outputStr;
 	}
 
 /**
