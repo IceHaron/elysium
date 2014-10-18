@@ -199,6 +199,7 @@ class Query {
 
 		foreach ($onlineArr as $time => $groups) {
 			foreach ($groups as $group => $players) {
+			if ($group == 'Admins') $group = 'Admin';
 				$outputArr[$time][ $siteGroups[$group] ] = $players;
 			}
 		}

@@ -342,10 +342,14 @@ h4 {
 .online {
 	display: none;
 	position: absolute;
+	margin-top: 2px;
 	margin-left: -10px;
 	padding: 5px;
 	background-color: white;
-	border: 1px solid grey;
+	border-bottom: 1px solid grey;
+	border-left: 1px solid grey;
+	border-right: 1px solid grey;
+	cursor: default;
 }
 .servers li:hover .online { display: block; }
 .online .player { color: black; }

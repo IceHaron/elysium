@@ -285,17 +285,26 @@ function onlineCheck(server) {
 				for (time in data) {
 					$('.' + server + ' .online').append('<div class="time">' + time + '</div>');
 					for (group in data[time]) {
-						$('.' + server + ' .online').append('<div class="group">' + group + '</div>');
+						var playerlist = '';
 						for (i in data[time][group]) {
 							var player = data[time][group][i];
-							if (player.search('[СКРЫТ]') != -1) hidden++;
-							else $('.' + server + ' .online').append('<div class="player">' + player + '</div>');
+							if (player.search(/\[СКРЫТ\]/) != -1) hidden++;
+							else {
+								playerlist += '<div class="player">' + player + '</div>';
+							}
+						}
+						if (playerlist != '') {
+							$('.' + server + ' .online').append('<div class="group">' + group + '</div>');
+							$('.' + server + ' .online').append(playerlist);
 						}
 					}
 				}
 				if (hidden != 0) $('.' + server + ' .online').append('<div class="hidden">+ Скрытых: ' + hidden + '</div>');
 				if ($('.online .player').length == 0) $('.online .group').hide();
 			}
+		, error: function() {
+			$('.' + server + ' .online').html('Произошла какая-то ошибка при загрузке списка игроков, такое бывает.');
+		}
 	});
 }
 
