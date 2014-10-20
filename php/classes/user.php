@@ -261,18 +261,17 @@ class user {
 **/
 	public function getCoupons($user) {
 		GLOBAL $db;
-		$q = "SELECT * FROM `coupons` WHERE `user` = $user AND `active` = 1;";
+		$q = "
+			SELECT `coupons`.`id`, `discounts`.`type`, `discounts`.`name`, `discounts`.`effect`
+			FROM `coupons`
+			JOIN `discounts` ON `coupons`.`discount` = `discounts`.`id`
+			WHERE `coupons`.`active` = 1 AND `coupons`.`user` = $user;";
 		$r = $db->query($q);
 
 		foreach ($r as $coupon) {
-			$ruNames = array(
-				  'admindiscount' => 'Админская скидка'
-				, 'testdiscount' => 'Тестовая скидка'
-				, 'votediscount' => 'Купон на скидку за голосование в рейтингах'
-			);
-			if (!isset($coupons[ $coupon['name'] ][ $coupon['effect'] ]))
-				$coupons[ $coupon['name'] ][ $coupon['effect'] ] = array('ruName' => $ruNames[ $coupon['name'] ], 'count' => 1, 'firstID' => $coupon['id']);
-			else $coupons[ $coupon['name'] ][ $coupon['effect'] ]['count']++;
+			if (!isset($coupons[ $coupon['type'] ][ $coupon['effect'] ]))
+				$coupons[ $coupon['type'] ][ $coupon['effect'] ] = array('ruName' => $coupon['name'], 'count' => 1, 'firstID' => $coupon['id']);
+			else $coupons[ $coupon['type'] ][ $coupon['effect'] ]['count']++;
 		}
 
 		return $coupons;
