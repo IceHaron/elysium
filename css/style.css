@@ -310,11 +310,10 @@ h4 {
 #nav {
 	height:40px;
 	width: 920px;
-	border-bottom:1px solid #ddd;
 	position:fixed;
 	top:0px;
 	left: calc(50% - 460px);
-	background:#fff /*url(gusland/images/nav.png) repeat center left*/;
+	background:#fff url(/images/nav.png) repeat-x;
 	z-index: 10;
 	line-height: 1em;
 }
@@ -333,7 +332,22 @@ h4 {
 	margin:0px 6px;
 }
 #nav ul li.ratings {
+	height: 100%;
 	float: right;
+	padding-top: 5px;
+}
+#nav ul li.ratings .ratebanners {
+	display: none;
+	position: absolute;
+	margin: 0 0 0 -10px;
+	padding: 5px;
+	background-color: #ddd;
+}
+#nav ul li.ratings:hover .ratebanners { display: block; }
+#nav ul li.ratings .ratebanners > div {
+	margin-top: 10px;
+	height: 31px;
+	width: 88;
 }
 #nav ul li.authLI {
 	float: right;
@@ -664,15 +678,16 @@ ul.tabs li {
 .creator {
 	/*font-weight: bold;*/
 	font-size: 18px;
-	color: red;
+	color: #a00;
 }
-.admin { color: red; }
-.smoder { color: orange; }
-.moderator { color: goldenrod; }
-.tester { color: #A5A500; }
+.admin { color: #f00; }
+.smoder { color: #f80; }
+.moderator { color: orange; }
+.jmoder { color: goldenrod; }
+.tester { color: #DACA20; }
 .platinum { color: yellowgreen; }
-.goldvip { color: #00AA00; }
-.vip { color: #00C49D; }
+.goldvip { font-weight: bold; color: #00AA00; }
+.vip { color: #1DAA1D; }
 .verified { color: #20b7c9; }
 .hiddenUser { color: grey; }
 .legend {
