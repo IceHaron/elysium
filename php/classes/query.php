@@ -53,7 +53,7 @@ class Query {
 **/
 	public function getAchHtml($achid) {
 		$q = "SELECT * FROM `achievements` WHERE `id` = $achid";
-		$r = $db->query($q);
+		$r = $this->db->query($q);
 		$achievement = $r[0];
 		$output = '
 		<div class="achievementWrapper" id="ach-' . $achid . '">
@@ -152,12 +152,11 @@ class Query {
 *
 * Получение голоса от fairtop.ru
 * @param username - ник пользователя
-* @param timestamp - время голоса
 * @param hash - проверочная строка
 * @return string - статус
 *
 **/
-	public function voteFairTop($username, $timestamp, $hash) {
+	public function voteFairTop($username, $hash) {
 		if (empty($username) or empty($_POST['hash'])) return "Empty query";
 		$gift = 1000; // Количество денег, которое получит игрок за голосование.
 
@@ -183,15 +182,44 @@ class Query {
 
 /**
 *
+* Получение голоса от mctop.im
+* @param username - ник пользователя
+* @param token - проверочная строка
+* @return string - статус
+*
+**/
+	public function voteMCTop($username, $token) {
+		$gift = 1000; // Количество денег, которое получит игрок за голосование.
+		$secret_key = 'Ololo Tr0|oIo';
+
+			// $server = $this->db->escape($_POST['server_id']);
+
+		if($token == md5($secret_key)) {
+			$q = "SELECT `id` FROM `ololousers` WHERE `mcname` = '$username'";
+			$r = $this->db->query($q);
+			
+			if (!count($r)) return "Bad login";
+			else $userid = $r[0]['id'];
+			
+			$bonus = giveBonus($userid, $gift, 'vote', 'Голос на mctop.im');
+			$coupon = giveCoupon($userid, 'votediscount', 0.1);
+
+			if ($bonus && $coupon) return 'Success';
+			else return "Shit happened";
+		} else return "Invalid hash";
+
+	}
+
+/**
+*
 * Проверка онлайна
 *
 **/
 	public function onlineCheck() {
-		GLOBAL $db;
 		$online = file_get_contents('http://srv.elysiumgame.ru/list.php');
 		$onlineArr = json_decode($online);
 		$q = "SELECT `name`, `server_alias` FROM `usergroups` WHERE `id` NOT IN (777,100,5);";
-		$r = $db->query($q);
+		$r = $this->db->query($q);
 
 		foreach ($r as $group) {
 			$siteGroups[ $group['server_alias'] ] = $group['name'];

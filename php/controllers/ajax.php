@@ -34,10 +34,16 @@ switch ($_GET['mode']) {
 
 	case 'voteFairTop':
 		// Получаем голос с fairtop.ru
-		$timestamp = $_POST['timestamp']; // Передает время, когда человек проголосовал за проект
 		$username = htmlspecialchars($_POST['player']); // Передает Имя проголосовавшего за проект
 		$hash = $_POST['hash'];
-		echo $Query->{$_GET['mode']}($username, $timestamp, $hash);
+		echo $Query->{$_GET['mode']}($username, $hash);
+	break;
+
+	case 'voteMCTop':
+		// Получаем голос с mctop.im
+		$nickname = $this->db->escape($_POST['nickname']);
+		$token = $_POST['token'];
+		echo $Query->{$_GET['mode']}($nickname, $token);
 	break;
 
 	default:
