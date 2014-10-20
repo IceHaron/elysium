@@ -47,11 +47,10 @@ switch ($_GET['mode']) {
 	break;
 
 	case 'test':
-	var_dump('expression');
-		$ch = curl_init('http://elysium.ice/ajax?mode=voteMCTop');
+		$ch = curl_init('http://elysiumgame.ru/ajax?mode=voteMCTop');
 		curl_setopt($ch, CURLOPT_HEADER, 0);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_POSTFIELDS, "nickname=Ice_Haron&token=Ololo Tr0|oIo");
+		curl_setopt($ch, CURLOPT_POSTFIELDS, "nickname=Ice_Haron&token=b5c731342f14a13af92c2d995668d15c");
 		$res = curl_exec($ch);
 		curl_close($ch);
 		var_dump($res);

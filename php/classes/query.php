@@ -192,7 +192,7 @@ class Query {
 		$gift = 1000; // Количество денег, которое получит игрок за голосование.
 		$secret_key = 'hRMF1MJ801gHXMx9fX2w';
 
-			// $server = $this->db->escape($_POST['server_id']);
+		// $server = $this->db->escape($_POST['server_id']);
 
 		if($token == md5($secret_key)) {
 			$q = "SELECT `id` FROM `ololousers` WHERE `mcname` = '$username'";
