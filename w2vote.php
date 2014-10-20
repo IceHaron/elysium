@@ -27,7 +27,7 @@ if (!count($r)) {
 } else $userid = $r[0]['id'];
 
 $bonus = giveBonus($userid, $gift, 'vote', 'Голос на want2vote.com');
-$coupon = giveCoupon($userid, 'votediscount', 0.1);
+$coupon = giveCoupon($userid, 1);
 
 if ($bonus && $coupon) echo 'ok';
 else {
