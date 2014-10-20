@@ -190,7 +190,7 @@ class Query {
 **/
 	public function voteMCTop($username, $token) {
 		$gift = 1000; // Количество денег, которое получит игрок за голосование.
-		$secret_key = 'Ololo Tr0|oIo';
+		$secret_key = 'hRMF1MJ801gHXMx9fX2w';
 
 			// $server = $this->db->escape($_POST['server_id']);
 

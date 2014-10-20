@@ -41,9 +41,20 @@ switch ($_GET['mode']) {
 
 	case 'voteMCTop':
 		// Получаем голос с mctop.im
-		$nickname = $this->db->escape($_POST['nickname']);
+		$nickname = htmlspecialchars($_POST['nickname']);
 		$token = $_POST['token'];
 		echo $Query->{$_GET['mode']}($nickname, $token);
+	break;
+
+	case 'test':
+	var_dump('expression');
+		$ch = curl_init('http://elysium.ice/ajax?mode=voteMCTop');
+		curl_setopt($ch, CURLOPT_HEADER, 0);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, "nickname=Ice_Haron&token=Ololo Tr0|oIo");
+		$res = curl_exec($ch);
+		curl_close($ch);
+		var_dump($res);
 	break;
 
 	default:
