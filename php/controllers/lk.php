@@ -36,7 +36,7 @@ if ((int)$info['tokens']['changename'] > 0) {
 }
 
 $mcnick = $info['mcName'];
-$q = "SELECT * FROM `acquiring` WHERE `user` = $cid AND `paid` != -1 ORDER BY `date` DESC";
+$q = "SELECT * FROM `acquiring` WHERE `user` = $cid AND `paid` != -1 ORDER BY `date` DESC LIMIT 0,10";
 $orders = $db->query($q);
 $statusList = array(
 	  '0' => '<span style="color: blue">Ожидает вашего подтверждения</span>'

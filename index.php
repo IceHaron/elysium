@@ -60,6 +60,11 @@ if ($module == '') $module = 'news';
 if (glob("php/controllers/$module.php")) INCLUDE_ONCE("php/controllers/$module.php");
 else if (!glob("template/$module.html")) $module = '404';
 
+if ($module == '404') {
+	$noTemplate = TRUE;
+	REQUIRE_ONCE('template/404.html');
+}
+
 // Подключаем основной макет
 if (!$noTemplate) REQUIRE_ONCE('template/main.html');
 
