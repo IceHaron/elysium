@@ -705,7 +705,7 @@ ul.tabs li {
 	color: green;
 	border: 1px solid green;
 }
-#izumDiscount {
+#izumDiscount, #goodDiscount {
 	margin: 5px 0;
 	padding: 5px;
 	border: 1px solid grey;

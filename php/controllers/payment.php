@@ -48,7 +48,7 @@ if (isset($_POST['izum']) && isset($_POST['want']) && $clogin) {
 		$target = "https://merchant.roboxchange.com/Index.aspx?MerchantLogin=Elysium&OutSum=$toPay&InvId=$transactionID&Desc=Покупка%20$want%20izum&SignatureValue=$signature&Culture=ru";
 		if ((float)$toPay != 0) $action = 'https://merchant.roboxchange.com/Index.aspx';
 		else $action = "/payaccept";
-		$message = 'Ваш заказ.';
+		$message = 'Ваш заказ';
 		$izumform = '
 			<p>Внимательно проверьте все данные и нажмите "согласен, оплатить" если все верно.</p>
 			<table id="cheque">
@@ -81,6 +81,47 @@ if (isset($_POST['izum']) && isset($_POST['want']) && $clogin) {
 
 } else if (isset($_POST['goods']) && (isset($_POST['donut']) || isset($_POST['status'])) && $clogin) {
 
+	$message = '';
+	$discount = 0;
+	$discGroup = 0;
+	$discUsed = FALSE;
+	$disc = $db->escape($_POST['goodDiscount']);
+
+	if ($disc != '0') {
+		if ($disc == 'votediscount') {
+			$q = "
+				SELECT sum(`discounts`.`effect`) AS `effect`
+				FROM `coupons`
+				JOIN `discounts` ON (`coupons`.`discount` = `discounts`.`id`)
+				WHERE `coupons`.`user` = $cid AND `coupons`.`discount` = 1 AND `coupons`.`active` = 1;";
+			$r = $db->query($q);
+			if (isset($r[0]['effect'])) {
+				$discount = $r[0]['effect'];
+				$discGroup = 0;
+			}
+		} else {
+			$q = "
+				SELECT `discounts`.`group`, `discounts`.`effect`
+				FROM `coupons`
+				JOIN `discounts` ON (`coupons`.`discount` = `discounts`.`id`)
+				WHERE `coupons`.`user` = $cid AND `coupons`.`id` = $disc AND `coupons`.`active` = 1;";
+			$r = $db->query($q);
+			if (isset($r[0]['effect'])) {
+				$discount = $r[0]['effect'];
+				$discGroup = $r[0]['group'];
+			}
+		}
+	}
+
+	$multiplier = round(1 - (float)$discount / 100, 3);
+
+	$q = "SELECT * FROM `donuts`";
+	$r = $db->query($q);
+
+	foreach ($r as $donut) {
+		$donuts[ $donut['id'] ] = $donut;
+	}
+
 	if (isset($_POST['donut'])) {
 		foreach ($_POST['donut'] as $id => $donut) {
 			$items[] = intval($id);
@@ -89,7 +130,6 @@ if (isset($_POST['izum']) && isset($_POST['want']) && $clogin) {
 	
 	if (isset($_POST['status'])) $items[] = intval($_POST['status']);
 
-	$idStr = implode(',', $items);
 	$hasStatus = FALSE;
 	$q = "SELECT `item`, `end` FROM `purchases` WHERE `user` = $cid ORDER BY `end` ASC";
 	$r = $db->query($q);
@@ -97,44 +137,47 @@ if (isset($_POST['izum']) && isset($_POST['want']) && $clogin) {
 	foreach ($r as $purchase) {
 		$purchases[ $purchase['item'] ] = $purchase;
 		
-		if (
-		   $purchase['item'] >= 20000
-		&& $purchase['item'] <= 29999
-		&& strtotime($purchase['end']) > time()
-		) {
+		if ($donuts[ $purchase['item'] ]['group'] == 2 && strtotime($purchase['end']) > time()) {
 			$hasStatus = TRUE;
 			$statusEnd = $purchase['end'];
 		}
 		
 	}
 	
-	$q = "SELECT `id`, `name`, `cost`, `duration` FROM `donuts` WHERE `id` IN ($idStr);";
-	$r = $db->query($q);
 	$sum = 0;
 
-	foreach ($r as $item) {
-		$donuts[ $item['id'] ] = $item;
-		$sum += $item['cost'];
+	foreach ($items as $item) {
+
+		if ($discGroup == 0 || $discGroup == $donuts[$item]['group']) {
+			$cost = $multiplier * $donuts[$item]['cost'];
+			$discUsed = TRUE;
+		} else $cost = $donuts[$item]['cost'];
+
+		$sum += $cost;
 	}
 
 	if ($izum < $sum) {
-		$message = 'Не хватает изюма. <a href="/donate">Вернуться</a>';
+		$message .= 'Не хватает изюма. <a href="/donate">Вернуться</a>';
 
 	} else {
 		$insert = '';
+		$coupons = '';
 		$notgiven = '';
 		$sum = 0;
 
 		foreach ($items as $item) {
 			$duration = $donuts[$item]['duration'];
-			$cost = $donuts[$item]['cost'];
+			$group = $donuts[$item]['group'];
+
+			if ($discGroup == 0 || $discGroup == $group) $cost = $multiplier * $donuts[$item]['cost'];
+			else $cost = $donuts[$item]['cost'];
 			
 			if ($duration == 0) {
 			
 				if (($item == 10003 || $item == 10004) && isset($purchases[$item])) {
 					$notgiven .= $donuts[$item]['name'] . ' &mdash; <span style="color: red">Уже куплено</span><br/>';
 				} else {
-					$insert .= ",($cid, $item, now(), 0)";
+					$insert .= ",($cid, $item, $cost, now(), 0)";
 					$sum += $cost;
 				}
 				
@@ -142,7 +185,7 @@ if (isset($_POST['izum']) && isset($_POST['want']) && $clogin) {
 				if (isset($purchases[$item]) && strtotime($purchases[$item]['end']) > time()) {
 					$start = $purchases[$item]['end'];
 
-				} else if ($item >= 20000 && $item <= 29999 && $hasStatus) {
+				} else if ($group == 2 && $hasStatus) {
 					$start = $statusEnd;
 					
 				} else {
@@ -151,36 +194,47 @@ if (isset($_POST['izum']) && isset($_POST['want']) && $clogin) {
 				
 				$end = strtotime($start);
 				$end += $duration;
-				$insert .= ",($cid, $item, '$start', from_unixtime($end))";
+				$insert .= ",($cid, $item, $cost, '$start', from_unixtime($end))";
+				giveCoupon($cid, 2, NULL, date('Y-m-d H:i:s', $end));
 				$sum += $cost;
 			}
 
 		}
 
 		if ($notgiven && !$insert) {
-			$message = 'Все выбранные товары уже приобретены, покупка не совершена.';
+			$message .= 'Все выбранные товары уже приобретены, покупка не совершена.';
 		} else {
 			$remain = $izum - $sum;
 			$q = "UPDATE `ololousers` SET `izumko` = $remain WHERE `id` = $cid;";
 			$paid = $db->query($q);
 
-			if ($paid === TRUE) {
-				// writeHistory($cid, 'purchase', array($idStr => time()));
-				$q = "INSERT INTO `purchases` (`user`, `item`, `start`, `end`) VALUES " . substr($insert, 1);
+			if ($disc == 'votediscount') {
+				$q = "UPDATE `coupons` SET `active` = 0, `until` = now() WHERE `user` = $cid AND `discount` = 1;";
+				$killedCoupon = $db->query($q);
+			} else {
+				$q = "UPDATE `coupons` SET `active` = 0, `until` = now() WHERE `id` = $disc;";
+				$killedCoupon = $db->query($q);
+			}
+
+			if ($paid === TRUE && $killedCoupon === TRUE) {
+				$q = "INSERT INTO `purchases` (`user`, `item`, `cost`, `start`, `end`) VALUES " . substr($insert, 1);
 				$purchase = $db->query($q);
 			}
 			
 			if ($purchase === TRUE && $paid === TRUE) {
-				$message = 'Спасибо за покупку! Оплаченные товары будут активированы в ближайшее время';
+				$message .= 'Спасибо за покупку! Оплаченные товары будут активированы в ближайшее время';
 				if ($notgiven) $message .= '<br/>Следующие товары исключены из покупки:<br/>' . $notgiven;
 
-				if (isset($donuts[10000])) {
+				if (isset($purchases[10000])) {
 					$html = $achievement->earn($cid, 25);
 					$message .= '<br/>Большое вам спасибо за подарок! В качестве благодарности мы начислили вам символические 10 единиц опыта и выдали достижение' . $html;
 				}
 				
+				if ($killedCoupon !== TRUE || $disc == '0') $message .= '<br/>Скидка не использована.<br/>';
 
-			} else $message = 'Что-то пошло не так.';
+				$message .= '<br/><br/>Сумма вашей покупки: ' . $sum . ' Izum';
+
+			} else $message .= 'Что-то пошло не так.';
 		}
 	}
 

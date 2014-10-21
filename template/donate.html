@@ -3,11 +3,18 @@
 	<li class="izum">Изюм</li>
 	<li class="goods">Ништяки</li>
 </ul>
+<?
+if ($clogin){
+	if ($cid == 1) {
+		echo '<h1>СКИДКА!!! Зайди на сервер и получи 10000 $!!!!<button onclick="alert(\'Да фиг тебе!\');">Получить</button></h1>';
+	}
+}
+?>
 
+<p>Ваш баланс: <?=$izum;?> izum</p>
 <div class="tabContent izum">
 	<p style="color: red; margin: 5px;">Актуальный курс: 1 RUR = <span class="rate"><?=$rubCost;?></span> izum</p>
 	<? if ($clogin &&/* $user->info['group'] >= 100 &&*/ !$debt) { ?>
-		<p>Ваш баланс: <?=$izum;?> izum</p>
 		<form id="izumform" method="POST" action="/payment">
 			<input type="hidden" name="izum" value="1">
 			<label>Сколько вам насыпать?</label>
@@ -21,7 +28,7 @@
 				<a href="#" class="moreAboutBonuses">Подробнее о бонусах</a>
 			</p>
 			<ul id="izumDiscount">
-				<li><label><input type="radio" name="izumDiscount" value="0" data-name="none" data-effect="0" checked> Не использовать купоны на скидку</label></li>
+				<li><label style="color: #aaa;"><input type="radio" name="izumDiscount" value="0" data-type="none" data-effect="0" checked> Не использовать купоны на скидку</label></li>
 				<?=$izumCoupons;?>
 			</ul>
 			<span style="color:red"><b>Внимание!</b> Данная фича находится в разработке! До тех пор, пока она не будет полностью допилена, мы не ручаемся за то, что вам обязательно будет начислен купленный Изюм. Если при покупке произошла ошибка, свяжитесь с нами <a href="mailto:support@elysiumgame.ru?subject=Проблемы%20с%20покупкой%20изюма&body=Мой%20ник%20<?=$clogin;?>. Моя%20проблема:%20">по электронной почте</a></span><br/>
@@ -41,32 +48,39 @@
 		<a href="http://www.want2vote.com/project/id8452/" target="blank">Голосуй три</a><br/>
 		<a href="http://mctop.im/vote/53" target="blank">Голосуй четыре</a>
 	</p>
+
 	<form method="POST" action="/payment">
 		<input type="hidden" name="goods" value="1">
+		<ul id="goodDiscount">
+			<li><label style="color: #aaa;"><input type="radio" name="goodDiscount" value="0" data-type="none" data-effect="0" checked> Не использовать купоны на скидку</label></li>
+			<?=$goodCoupons;?>
+		</ul>
+
 		<table id="donutTable">
 			<tr class="caption">
 				<th rowspan="2">Купить</th>
 				<th rowspan="2">Название товара</th>
-				<th colspan="2">Стоимость</th>
+				<th colspan="3">Стоимость</th>
 				<th rowspan="2">Описание</th>
 			</tr>
 			<tr class="caption">
-				<th>izum</th>
+				<th>izum<br/>(со скидкой)</th>
+				<th>izum<br/>(без скидки)</th>
 				<th>руб</th>
 			</tr>
 		<?
 		foreach ($donuts as $groupName => $group) {
-			echo '<tr class="group"><th colspan="5">' . $groupName . '</th></tr>';
+			echo '<tr class="group"><th colspan="6">' . $groupName . '</th></tr>';
 
 			foreach ($group as $donut) {
 			if ($donut['id'] <= 29999) $dis = '';
 			else $dis = 'disabled';
 		?>
-			<tr class="item" <? if ($dis) echo 'style="opacity: 0.3;"'; ?>>
+			<tr class="item" <? if ($dis) echo 'style="opacity: 0.3;"'; ?> data-group="<?=$donut['groupID']?>">
 				<td>
 				<?
 				if ($clogin) { 
-					if ($donut['id'] >= 20000 && $donut['id'] <= 29999) {
+					if ($donut['groupID'] == 2) {
 						echo '<input type="radio" name="status" value="' . $donut['id'] . '" ' . $dis . '>';
 					} else {
 						echo '<input type="checkbox" name="donut[' . $donut['id'] . ']" ' . $dis . '>';
@@ -74,7 +88,8 @@
 				} else echo '<span style="color: lightgrey">Недоступно</span>'; ?>
 				</td>
 				<td><?=$donut['name'];?></td>
-				<td style="color: red;"><?=number_format($donut['cost'], 0, ',', ' ');?></td>
+				<td style="color: green;" class="withDisc"><?=number_format($donut['cost'], 0, ',', ' ');?></td>
+				<td style="color: red;" class="noDisc"><?=number_format($donut['cost'], 0, ',', ' ');?></td>
 				<td><?=number_format($donut['cost'] / $rubCost, 2, ',', ' ');?></td>
 				<td><?=$donut['desc'];?></td>
 			</tr>
@@ -83,8 +98,9 @@
 		}
 		?>
 		</table>
+		<div>Итог: <span id="final">0</span> Izum</div>
 		<? if ($clogin) { ?>
-			<input type="submit" value="Купить">
+			<input type="submit" value="Купить" id="buy" disabled>
 		<? } ?>
 	</form>
 

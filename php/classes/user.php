@@ -262,16 +262,15 @@ class user {
 	public function getCoupons($user) {
 		GLOBAL $db;
 		$q = "
-			SELECT `coupons`.`id`, `discounts`.`type`, `discounts`.`name`, `discounts`.`effect`
+			SELECT `coupons`.`id` AS `firstID`, `discounts`.`type`, `discounts`.`name` AS `ruName`, `discounts`.`effect`, count(*) AS `count`
 			FROM `coupons`
 			JOIN `discounts` ON `coupons`.`discount` = `discounts`.`id`
-			WHERE `coupons`.`active` = 1 AND `coupons`.`user` = $user;";
+			WHERE `coupons`.`active` = 1 AND `coupons`.`user` = $user GROUP BY `type`;";
 		$r = $db->query($q);
 
 		foreach ($r as $coupon) {
-			if (!isset($coupons[ $coupon['type'] ][ $coupon['effect'] ]))
-				$coupons[ $coupon['type'] ][ $coupon['effect'] ] = array('ruName' => $coupon['name'], 'count' => 1, 'firstID' => $coupon['id']);
-			else $coupons[ $coupon['type'] ][ $coupon['effect'] ]['count']++;
+			if ($coupon['type'] == 'votediscount') $coupon['effect'] = (float)$coupon['effect'] * (int)$coupon['count'];
+			$coupons[ $coupon['type'] ] = $coupon;
 		}
 
 		return $coupons;

@@ -185,9 +185,31 @@ function giveBonus($player, $izum, $type, $reason = 'Бонус за покуп�
 	return TRUE;
 }
 
-function giveCoupon($player, $id) {
+function giveCoupon($player, $id, $gained = NULL, $until = NULL) {
 	GLOBAL $db;
-	$q = "INSERT INTO `coupons` (`user`, `discount`) VALUES ($player, $id);";
+	if ($id == 1) {
+		$q = "SELECT count(*) AS `count` FROM `coupons` WHERE `user` = $player AND `discount` = 1;";
+		$r = $db->query($q);
+		if ($r[0]['count'] >= 250) {
+			$q = "DELETE FROM `coupons` WHERE `user` = $player AND `discount` = 1 LIMIT 250;";
+			$r = $db->query($q);
+			giveCoupon($player, 3);
+		}
+	}
+	$fields = '`user`, `discount`';
+	$values = "$player, $id";
+
+	if ($gained) {
+		$fields .= ', `gained`';
+		$values .= ", '$gained'";
+	}
+
+	if ($until) {
+		$fields .= ', `until`';
+		$values .= ", '$until'";
+	}
+
+	$q = "INSERT INTO `coupons` ($fields) VALUES ($values);";
 	$r = $db->query($q);
 
 	if (!$r) return FALSE;

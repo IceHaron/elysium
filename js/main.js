@@ -175,6 +175,33 @@ $(document).ready(function(){
 		$('#izumform input[name="want"]').trigger('change');
 	});
 
+	$('input[name="goodDiscount"]').click(function() {
+		var disctype = $(this).attr('data-type');
+		var mult = (100 - parseFloat($(this).attr('data-effect').replace(',', '.'))) / 100;
+		if (disctype == 'none' || disctype == 'votediscount' || disctype == 'votecap') {
+			$('tr.item').each(function() {
+				var oldPrice = parseInt($(this).children('.noDisc').text().replace(' ', ''));
+				var newPrice = oldPrice * mult;
+				var strPrice = newPrice + '';
+				$(this).children('.withDisc').text(strPrice.replace(/(\d{3})$/, ' $1'));
+			});
+		}
+	});
+
+	$('#donutTable input').change(function() {
+		var sum = 0;
+		var unblock = false;
+		$('#donutTable input:checked').each(function() {
+			var cost = parseFloat($(this).parent().parent().children('.withDisc').text().replace(' ', ''));
+			sum += cost;
+			unblock = true;
+		});
+		var strsum = sum + '';
+		$('#final').text(strsum.replace(/(\d{3})$/, ' $1'));
+		if (unblock) $('#buy').removeAttr('disabled');
+		else $('#buy').attr('disabled', true);
+	});
+
 	$('.diamond').dblclick(function() {
 		$.ajax({
 			  type: 'GET'

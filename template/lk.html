@@ -228,7 +228,7 @@
 </table>
 
 <div class="tabContent orders">
-	<h3>Покупки изюма:</h3>
+	<h3>Последние 10 покупок изюма:</h3>
 	<table class="orderList">
 		<tr>
 			<th class="orderID">Номер заказа</th>
@@ -282,14 +282,12 @@
 		</tr>
 		<?
 		foreach ($info['coupons'] as $name => $coupon) {
-			foreach ($coupon as $effect => $params) {
-				echo '
-					<tr>
-						<td>' . $params['ruName'] . '</td>
-						<td>' . $effect . '</td>
-						<td>' . $params['count'] . '</td>
-					</tr>';
-			}
+			echo '
+				<tr>
+					<td>' . $coupon['ruName'] . '</td>
+					<td>' . $coupon['effect'] . '</td>
+					<td>' . $coupon['count'] . '</td>
+				</tr>';
 		}
 		?>
 	</table>
