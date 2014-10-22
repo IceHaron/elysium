@@ -175,7 +175,8 @@ function giveBonus($player, $izum, $type, $reason = 'Бонус за покуп�
 	GLOBAL $db;
 	if ($type == 'buy') $bonus = round(pow(2, -500000 / $izum) * 3 * $izum / 10);
 	else $bonus = $izum;
-	$q = "UPDATE `ololousers` SET `izumko` = `izumko` + $bonus WHERE `id` = $player;";
+	if ($type == 'vote') $q = "UPDATE `ololousers` SET `izumko` = `izumko`+$bonus, `votecount` = `votecount`+1 WHERE `id` = $player;";
+	else $q = "UPDATE `ololousers` SET `izumko` = `izumko` + $bonus WHERE `id` = $player;";
 	$ololousers = $db->query($q);
 	$q = "INSERT INTO `gifts` (`admin`, `user`, `izum`, `reason`) VALUES (0, $player, $bonus, '$reason');";
 	$gifts = $db->query($q);
