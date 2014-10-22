@@ -229,7 +229,7 @@ function giftForVoting($userid, $rating, $reason) {
 	$bonus = giveBonus($userid, $gift, 'vote', $reason);
 	$coupon = giveCoupon($userid, 1);
 
-	$q = "INSERT INTO `votes` (`user`, `rating`) VALUES ($player, $rating);";
+	$q = "INSERT INTO `votes` (`user`, `rating`) VALUES ($userid, $rating);";
 	$vote = $db->query($q);
 
 	$q = "SELECT count(*) AS `count` FROM `votes` WHERE `user` = $userid;";
