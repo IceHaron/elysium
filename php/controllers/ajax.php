@@ -46,21 +46,29 @@ switch ($_GET['mode']) {
 		echo $Query->{$_GET['mode']}($nickname, $token);
 	break;
 
-	case 'voteMCRate':
+	case 'MCRate':
 		// Получаем голос с mcrate.su
-		$nickname = $db->escape(strip_tags($_GET['nick']));
-		$token = $db->escape($_GET['hash']);
+		if (isset($_GET['nick']) && isset($_GET['hash'])) {
+			$nickname = $db->escape(strip_tags($_GET['nick']));
+			$token = $db->escape($_GET['hash']);
+		} else {
+			$nickname = $db->escape($_POST['nick']);
+			$token = $db->escape($_POST['hash']);
+		}
+		echo 'Nick: ' . $nickname . '<br/>';
+		echo 'Your Hash: ' . $token . '<br/>';
+		echo 'My Hash_: ' . md5(md5($nickname.'NUXGl04WfyhE0xugmcrate')) . '<br/>';
 		echo $Query->{$_GET['mode']}($nickname, $token);
 	break;
 
 	case 'test':
-		$ch = curl_init('http://elysiumgame.ru/ajax?mode=voteMCTop');
+		$ch = curl_init('http://elysium.ice/ajax?mode=MCRate');
 		curl_setopt($ch, CURLOPT_HEADER, 0);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_POSTFIELDS, "nickname=Ice_Haron&token=b5c731342f14a13af92c2d995668d15c");
+		curl_setopt($ch, CURLOPT_POSTFIELDS, "nick=Elysiumgame&hash=7a44d2882aea99ca27a56847472ebad2");
 		$res = curl_exec($ch);
 		curl_close($ch);
-		var_dump($res);
+		echo($res);
 	break;
 
 	default:

@@ -218,7 +218,7 @@ class Query {
 * @return string - статус
 *
 **/
-	public function voteMCRate($username, $token) {
+	public function MCRate($username, $token) {
 		$gift = 1000; // Количество денег, которое получит игрок за голосование.
 		$secret_key = 'NUXGl04WfyhE0xug';
 
@@ -227,13 +227,13 @@ class Query {
 				$r = $this->db->query($q);
 				
 				if (!count($r)) die("Error: Bad login");
-				else $userid = $r[0]['id'];
+				// else $userid = $r[0]['id'];
 				
-				$bonus = giveBonus($userid, $gift, 'vote', 'Голос на mctop.im');
-				$coupon = giveCoupon($userid, 1);
+				// $bonus = giveBonus($userid, $gift, 'vote', 'Голос на mctop.im');
+				// $coupon = giveCoupon($userid, 1);
 
-				if ($bonus && $coupon) return 'Success';
-				else return "Shit happened";
+				/*if ($bonus && $coupon) */return 'Success';
+				// else return "Shit happened";
 			} else die("Error: Bad hash");
 
 	}
