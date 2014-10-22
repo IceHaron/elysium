@@ -223,7 +223,7 @@ function giveCoupon($player, $id, $gained = NULL, $until = NULL) {
 * Награда за голос
 *
 **/
-public function giftForVoting($userid, $rating, $reason) {
+function giftForVoting($userid, $rating, $reason) {
 	GLOBAL $db;
 	$gift = 1000; // Количество денег, которое получит игрок за голосование.
 	$bonus = giveBonus($userid, $gift, 'vote', $reason);
