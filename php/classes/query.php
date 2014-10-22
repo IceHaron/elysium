@@ -137,13 +137,9 @@ class Query {
 		
 		if ($_POST['signature'] != sha1($username.$timestamp.$secretkey)) return "hash mismatch";
 
-		$bonus = giveBonus($userid, $gift, 'vote', 'Голос на topcraft.ru');
-		$coupon = giveCoupon($userid, 1);
+		$bonus = giftForVoting($userid, 3, 'Голос на topcraft.ru');
 
-		$q = "INSERT INTO `votes` (`user`, `rating`) VALUES ($player, 3);";
-		$vote = $db->query($q);
-
-		if ($check && $coupon) return 'OK<br />';
+		if ($bonus) return 'OK<br />';
 		else return "Shit happened";
 
 		//Конец скрипта.
@@ -175,13 +171,9 @@ class Query {
 		
 		if ($hash != md5(sha1($username.$secretkey))) return "Invalid hash";
 
-		$bonus = giveBonus($userid, $gift, 'vote', 'Голос на fairtop.ru');
-		$coupon = giveCoupon($userid, 1);
+		$bonus = giftForVoting($userid, 0, 'Голос на fairtop.ru');
 
-		$q = "INSERT INTO `votes` (`user`, `rating`) VALUES ($player, 0);";
-		$vote = $db->query($q);
-
-		if ($bonus && $coupon) return 'Success';
+		if ($bonus) return 'Success';
 		else return "Shit happened";
 
 	}
@@ -195,7 +187,6 @@ class Query {
 *
 **/
 	public function voteMCTop($username, $token) {
-		$gift = 1000; // Количество денег, которое получит игрок за голосование.
 		$secret_key = 'hRMF1MJ801gHXMx9fX2w';
 
 		// $server = $this->db->escape($_POST['server_id']);
@@ -206,14 +197,10 @@ class Query {
 			
 			if (!count($r)) return "Bad login";
 			else $userid = $r[0]['id'];
+
+			$bonus = giftForVoting($userid, 2, 'Голос на mctop.im');
 			
-			$bonus = giveBonus($userid, $gift, 'vote', 'Голос на mctop.im');
-			$coupon = giveCoupon($userid, 1);
-
-			$q = "INSERT INTO `votes` (`user`, `rating`) VALUES ($player, 2);";
-			$vote = $db->query($q);
-
-			if ($bonus && $coupon) return 'Success';
+			if ($bonus) return 'Success';
 			else return "Shit happened";
 		} else return "Invalid hash";
 
@@ -228,7 +215,6 @@ class Query {
 *
 **/
 	public function MCRate($username, $token) {
-		$gift = 1000; // Количество денег, которое получит игрок за голосование.
 		$secret_key = 'NUXGl04WfyhE0xug';
 
 			if($token == md5(md5($username.$secret_key.'mcrate'))) {
@@ -237,17 +223,39 @@ class Query {
 				
 				if (!count($r)) die("Error: Bad login");
 				// else $userid = $r[0]['id'];
+
+				// $bonus = giftForVoting($userid, 1, 'Голос на mcrate.su');
 				
-				// $bonus = giveBonus($userid, $gift, 'vote', 'Голос на mctop.im');
-				// $coupon = giveCoupon($userid, 1);
-
-				// $q = "INSERT INTO `votes` (`user`, `rating`) VALUES ($player, 1);";
-				// $vote = $db->query($q);
-
-				/*if ($bonus && $coupon) */return 'Success';
+				/*if ($bonus) */return 'Success';
 				// else return "Shit happened";
 			} else die("Error: Bad hash");
 
+	}
+
+/**
+*
+* Награда за голос
+*
+**/
+	public function giftForVoting($userid, $rating, $reason) {
+		$gift = 1000; // Количество денег, которое получит игрок за голосование.
+		$bonus = giveBonus($userid, $gift, 'vote', $reason);
+		$coupon = giveCoupon($userid, 1);
+
+		$q = "INSERT INTO `votes` (`user`, `rating`) VALUES ($player, $rating);";
+		$vote = $this->db->query($q);
+
+		$q = "SELECT count(*) AS `count` FROM `votes` WHERE `user` = $userid;"
+		$r = $this->db->query($q);
+		$count = $r[0]['count'];
+
+		if ($count >= 4) $this->ach->earn($userid, 26);
+		if ($count >= 100) $this->ach->earn($userid, 27);
+		if ($count >= 250) $this->ach->earn($userid, 28);
+		if ($count >= 1000) $this->ach->earn($userid, 29);
+
+		if ($bonus && $coupon && $vote === TRUE) return TRUE;
+		else return FALSE;
 	}
 
 /**

@@ -12,18 +12,96 @@
 			<th rowspan="2">Место</th>
 			<th rowspan="2">Игрок</th>
 			<th rowspan="2">Голосов всего</th>
-			<th colspan="4">Из них на</th>
+			<th colspan="5">Из них на</th>
 		</tr>
 		<tr>
-			<th>fairtop</th>
-			<th>mctop</th>
-			<th>topcraft</th>
-			<th>want2vote</th>
-			<!-- <th>mcrate</th> -->
+			<?
+			$counter = 1;
+			foreach ($ratings as $name) echo '<th>' . $name . '</th>';
+			?>
 		</tr>
+		<?
+		foreach ($orderVotes as $playerID) {
+			$player = $votes[$playerID];
+			if ($counter == 1) $trStyle = ' style="background-color: gold"';
+			else if ($counter == 2) $trStyle = ' style="background-color: #ccc"';
+			else if ($counter == 3) $trStyle = ' style="background-color: #FFB568"';
+			else $trStyle = '';
+			echo '<tr' . $trStyle . '><td>' . $counter . '</td><td>' . $player['nick'] . '</td><td>' . $player['votes']['summary'] . '</td>';
+			foreach ($ratings as $id => $name) {
+				if (isset($player['votes'][$id])) $voteCount = $player['votes'][$id];
+				else $voteCount = 0;
+				echo '<td class="' . $name . '">' . $voteCount . '</td>';
+			}
+			echo '</tr>';
+			$counter++;
+		}
+		?>
 	</table>
 </div>
 <div class="tabContent monthly">
+	<table class="topVoteTable">
+		<tr>
+			<th rowspan="2">Место</th>
+			<th rowspan="2">Игрок</th>
+			<th rowspan="2">Голосов всего</th>
+			<th colspan="5">Из них на</th>
+		</tr>
+		<tr>
+			<?
+			$counter = 1;
+			foreach ($ratings as $name) echo '<th>' . $name . '</th>';
+			?>
+		</tr>
+		<?
+		foreach ($orderMonth as $playerID) {
+			$player = $monthly[$playerID];
+			if ($counter == 1) $trStyle = ' style="background-color: gold"';
+			else if ($counter == 2) $trStyle = ' style="background-color: #ccc"';
+			else if ($counter == 3) $trStyle = ' style="background-color: #FFB568"';
+			else $trStyle = '';
+			echo '<tr' . $trStyle . '><td>' . $counter . '</td><td>' . $player['nick'] . '</td><td>' . $player['votes']['summary'] . '</td>';
+			foreach ($ratings as $id => $name) {
+				if (isset($player['votes'][$id])) $voteCount = $player['votes'][$id];
+				else $voteCount = 0;
+				echo '<td class="' . $name . '">' . $voteCount . '</td>';
+			}
+			echo '</tr>';
+			$counter++;
+		}
+		?>
+	</table>
 </div>
 <div class="tabContent weekly">
+	<table class="topVoteTable">
+		<tr>
+			<th rowspan="2">Место</th>
+			<th rowspan="2">Игрок</th>
+			<th rowspan="2">Голосов всего</th>
+			<th colspan="5">Из них на</th>
+		</tr>
+		<tr>
+			<?
+			$counter = 1;
+			foreach ($ratings as $name) echo '<th>' . $name . '</th>';
+			?>
+		</tr>
+		<?
+		foreach ($orderWeek as $playerID) {
+			$player = $weekly[$playerID];
+			if ($counter == 1) $trStyle = ' style="background-color: gold"';
+			else if ($counter == 2) $trStyle = ' style="background-color: #ccc"';
+			else if ($counter == 3) $trStyle = ' style="background-color: #FFB568"';
+			else $trStyle = '';
+			echo '<tr' . $trStyle . '><td>' . $counter . '</td><td>' . $player['nick'] . '</td><td>' . $player['votes']['summary'] . '</td>';
+			foreach ($ratings as $id => $name) {
+				if (isset($player['votes'][$id])) $voteCount = $player['votes'][$id];
+				else $voteCount = 0;
+				echo '<td class="' . $name . '">' . $voteCount . '</td>';
+			}
+			echo '</tr>';
+			$counter++;
+		}
+		?>
+	</table>
 </div>

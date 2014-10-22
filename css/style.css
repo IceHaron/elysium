@@ -762,3 +762,8 @@ ul.tabs li {
 	border: 1px solid #0089CF;
 	border-radius: 10px;
 }
+
+/* Топы голосующих */
+.topVoteTable {
+	width: 100%;
+}

@@ -26,13 +26,9 @@ if (!count($r)) {
 	exit;
 } else $userid = $r[0]['id'];
 
-$bonus = giveBonus($userid, $gift, 'vote', 'Голос на want2vote.com');
-$coupon = giveCoupon($userid, 1);
+$bonus = giftForVoting($userid, 4, 'Голос на want2vote.com');
 
-$q = "INSERT INTO `votes` (`user`, `rating`) VALUES ($player, 4);";
-$vote = $db->query($q);
-
-if ($bonus && $coupon) echo 'ok';
+if ($bonus) echo 'ok';
 else {
 	header("HTTP/1.1 404 Not Found");
 	exit;
