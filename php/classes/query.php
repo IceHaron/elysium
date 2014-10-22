@@ -245,7 +245,7 @@ class Query {
 		$q = "INSERT INTO `votes` (`user`, `rating`) VALUES ($player, $rating);";
 		$vote = $this->db->query($q);
 
-		$q = "SELECT count(*) AS `count` FROM `votes` WHERE `user` = $userid;"
+		$q = "SELECT count(*) AS `count` FROM `votes` WHERE `user` = $userid;";
 		$r = $this->db->query($q);
 		$count = $r[0]['count'];
 
