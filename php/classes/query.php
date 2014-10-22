@@ -234,32 +234,6 @@ class Query {
 
 /**
 *
-* Награда за голос
-*
-**/
-	public function giftForVoting($userid, $rating, $reason) {
-		$gift = 1000; // Количество денег, которое получит игрок за голосование.
-		$bonus = giveBonus($userid, $gift, 'vote', $reason);
-		$coupon = giveCoupon($userid, 1);
-
-		$q = "INSERT INTO `votes` (`user`, `rating`) VALUES ($player, $rating);";
-		$vote = $this->db->query($q);
-
-		$q = "SELECT count(*) AS `count` FROM `votes` WHERE `user` = $userid;";
-		$r = $this->db->query($q);
-		$count = $r[0]['count'];
-
-		if ($count >= 4) $this->ach->earn($userid, 26);
-		if ($count >= 100) $this->ach->earn($userid, 27);
-		if ($count >= 250) $this->ach->earn($userid, 28);
-		if ($count >= 1000) $this->ach->earn($userid, 29);
-
-		if ($bonus && $coupon && $vote === TRUE) return TRUE;
-		else return FALSE;
-	}
-
-/**
-*
 * Проверка онлайна
 *
 **/
