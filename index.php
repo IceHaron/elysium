@@ -38,8 +38,8 @@ if ($module == 'troll') {
 
 	if (!isset($cid) || $user->info['group'] != '777') $module = '404';
 	else {
-		REQUIRE_ONCE("php/controllers/$module.php");
-		REQUIRE_ONCE("template/$module.html");
+		REQUIRE_ONCE("php/controllers/troll.php");
+		REQUIRE_ONCE("template/troll.html");
 		exit;
 	}
 
@@ -57,7 +57,7 @@ $noTemplate = FALSE;
 
 if ($module == '') $module = 'news';
 // Подгружаем контроллер, если таковой существует
-if (glob("php/controllers/$module.php")) INCLUDE_ONCE("php/controllers/$module.php");
+if (glob("php/controllers/$module.php")) REQUIRE_ONCE("php/controllers/$module.php");
 else if (!glob("template/$module.html")) $module = '404';
 
 if ($module == '404') {

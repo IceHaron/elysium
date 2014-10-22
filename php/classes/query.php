@@ -246,6 +246,7 @@ class Query {
 	public function onlineCheck() {
 		$online = file_get_contents('http://srv.elysiumgame.ru/list.php');
 		$onlineArr = json_decode($online);
+		$outputArr = array();
 		$q = "SELECT `name`, `server_alias` FROM `usergroups` WHERE `id` NOT IN (777,100,5);";
 		$r = $this->db->query($q);
 
