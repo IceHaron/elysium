@@ -140,6 +140,9 @@ class Query {
 		$bonus = giveBonus($userid, $gift, 'vote', 'Голос на topcraft.ru');
 		$coupon = giveCoupon($userid, 1);
 
+		$q = "INSERT INTO `votes` (`user`, `rating`) VALUES ($player, 3);";
+		$vote = $db->query($q);
+
 		if ($check && $coupon) return 'OK<br />';
 		else return "Shit happened";
 
@@ -175,6 +178,9 @@ class Query {
 		$bonus = giveBonus($userid, $gift, 'vote', 'Голос на fairtop.ru');
 		$coupon = giveCoupon($userid, 1);
 
+		$q = "INSERT INTO `votes` (`user`, `rating`) VALUES ($player, 0);";
+		$vote = $db->query($q);
+
 		if ($bonus && $coupon) return 'Success';
 		else return "Shit happened";
 
@@ -204,6 +210,9 @@ class Query {
 			$bonus = giveBonus($userid, $gift, 'vote', 'Голос на mctop.im');
 			$coupon = giveCoupon($userid, 1);
 
+			$q = "INSERT INTO `votes` (`user`, `rating`) VALUES ($player, 2);";
+			$vote = $db->query($q);
+
 			if ($bonus && $coupon) return 'Success';
 			else return "Shit happened";
 		} else return "Invalid hash";
@@ -231,6 +240,9 @@ class Query {
 				
 				// $bonus = giveBonus($userid, $gift, 'vote', 'Голос на mctop.im');
 				// $coupon = giveCoupon($userid, 1);
+
+				// $q = "INSERT INTO `votes` (`user`, `rating`) VALUES ($player, 1);";
+				// $vote = $db->query($q);
 
 				/*if ($bonus && $coupon) */return 'Success';
 				// else return "Shit happened";
