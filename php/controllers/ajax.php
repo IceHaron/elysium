@@ -46,6 +46,13 @@ switch ($_GET['mode']) {
 		echo $Query->{$_GET['mode']}($nickname, $token);
 	break;
 
+	case 'voteMCRate':
+		// Получаем голос с mcrate.su
+		$nickname = $db->escape(strip_tags($_GET['nick']));
+		$token = $db->escape($_GET['hash']);
+		echo $Query->{$_GET['mode']}($nickname, $token);
+	break;
+
 	case 'test':
 		$ch = curl_init('http://elysiumgame.ru/ajax?mode=voteMCTop');
 		curl_setopt($ch, CURLOPT_HEADER, 0);

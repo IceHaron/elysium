@@ -212,6 +212,34 @@ class Query {
 
 /**
 *
+* Получение голоса от mcrate.su
+* @param username - ник пользователя
+* @param token - проверочная строка
+* @return string - статус
+*
+**/
+	public function voteMCRate($username, $token) {
+		$gift = 1000; // Количество денег, которое получит игрок за голосование.
+		$secret_key = 'NUXGl04WfyhE0xug';
+
+			if($token == md5(md5($username.$secret_key.'mcrate'))) {
+				$q = "SELECT `id` FROM `ololousers` WHERE `mcname` = '$username'";
+				$r = $this->db->query($q);
+				
+				if (!count($r)) die("Error: Bad login");
+				else $userid = $r[0]['id'];
+				
+				$bonus = giveBonus($userid, $gift, 'vote', 'Голос на mctop.im');
+				$coupon = giveCoupon($userid, 1);
+
+				if ($bonus && $coupon) return 'Success';
+				else return "Shit happened";
+			} else die("Error: Bad hash");
+
+	}
+
+/**
+*
 * Проверка онлайна
 *
 **/
