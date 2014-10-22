@@ -62,7 +62,7 @@ switch ($_GET['mode']) {
 	break;
 
 	case 'test':
-		$ch = curl_init('http://elysium.ice/ajax?mode=MCRate');
+		$ch = curl_init('http://elysiumgame.ru/ajax?mode=MCRate');
 		curl_setopt($ch, CURLOPT_HEADER, 0);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_POSTFIELDS, "nick=Elysiumgame&hash=7a44d2882aea99ca27a56847472ebad2");
