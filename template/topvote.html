@@ -40,20 +40,22 @@ function printTable($type) {
 	foreach ($order as $playerList) {
 		$playerCount = count($playerList);
 
-		if ($counter == 1) $trStyle = ' style="background-color: gold"';
-		else if ($counter == 2) $trStyle = ' style="background-color: #ccc"';
-		else if ($counter == 3) $trStyle = ' style="background-color: #FFB568"';
-		else $trStyle = '';
-
 		$addTd = '<td rowspan="' . $playerCount . '">' . $counter . '</td>';
 
-		foreach ($playerList as $playerID){
+		foreach ($playerList as $k => $playerID){
 			$player = $players[$playerID];
 			$cpass = TRUE;
 
+			if ($counter == 1) $trStyle = ' style="background-color: gold"';
+			else if ($counter == 2) $trStyle = ' style="background-color: #ccc"';
+			else if ($counter == 3) $trStyle = ' style="background-color: #FFB568"';
+			else $trStyle = '';
+
 			if ($player['group'] >= 50) {
+				if ($playerCount == 1) $addTd = '<td></td>';
+				else if ($k == 0) $addTd = '<td'. $trStyle . ' rowspan="' . $playerCount . '">' . $counter . '</td>';
+				else $addTd = '';
 				$trStyle = ' style="background-color: red"';
-				$addTd = ($addTd == '') ? '' : '<td></td>';
 				$cpass = FALSE;
 			}
 
