@@ -765,5 +765,8 @@ ul.tabs li {
 
 /* Топы голосующих */
 .topVoteTable {
-	width: 100%;
+	/*width: 100%;*/
+}
+.topVoteTable th, .topVoteTable td {
+	padding: 5px;
 }
