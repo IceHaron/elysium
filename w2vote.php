@@ -4,9 +4,9 @@ REQUIRE_ONCE('settings.php');
 REQUIRE_ONCE('php/functions.php'); // самопальные функции
 // Подключаем классы...
 REQUIRE_ONCE('php/classes/db.php'); // ...для работы с базой
+REQUIRE_ONCE('php/classes/achievement.php'); // ...для работы с ачивками
 $db = new db(); // ...создаем экземпляр
-
-$gift = 1000; // Количество денег, которое получит игрок за голосование.
+$achievement = new achievement(); // ...создаем экземпляр
 
 $key = 'elysiumololokey'; // ключ доступа к обработчику
 if ($_GET['key']!=md5($key) || $_GET['nickname']=='') {

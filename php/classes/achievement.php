@@ -224,8 +224,14 @@ class achievement {
 					$progress = $l['level'];
 				break;
 
-				case 4: case 6: case 7:
+				case 4: case 6: case 7: // Приглашенные
 					$q = "SELECT count(*) AS `count` FROM `ololousers` WHERE `referrer` = $userID";
+					$r = $this->db->query($q);
+					$progress = $r[0]['count'];
+				break;
+
+				case 26: case 27: case 28: case 29: // Голоса
+					$q = "SELECT count(*) AS `count` FROM `votes` WHERE `user` = $userID";
 					$r = $this->db->query($q);
 					$progress = $r[0]['count'];
 				break;

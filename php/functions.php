@@ -224,8 +224,12 @@ function giveCoupon($player, $id, $gained = NULL, $until = NULL) {
 *
 **/
 function giftForVoting($userid, $rating, $reason) {
-	GLOBAL $db;
-	$gift = 1000; // Количество денег, которое получит игрок за голосование.
+	GLOBAL $db, $achievement;
+	$q = "SELECT count(*) as `count` FROM `ratings`";
+	$r = $db->query($q);
+	$disc = 0.1 * $r[0]['count'] * 25 / 100;
+	$vipcost = 150000 * (1- $disc);
+	$gift = floor($vipcost / $r[0]['count'] / 25); // Сумма вознаграждения
 	$bonus = giveBonus($userid, $gift, 'vote', $reason);
 	$coupon = giveCoupon($userid, 1);
 
@@ -236,10 +240,10 @@ function giftForVoting($userid, $rating, $reason) {
 	$r = $db->query($q);
 	$count = $r[0]['count'];
 
-	if ($count >= 4) $this->ach->earn($userid, 26);
-	if ($count >= 100) $this->ach->earn($userid, 27);
-	if ($count >= 250) $this->ach->earn($userid, 28);
-	if ($count >= 1000) $this->ach->earn($userid, 29);
+	if ($count >= 4) $achievement->earn($userid, 26);
+	if ($count >= 100) $achievement->earn($userid, 27);
+	if ($count >= 250) $achievement->earn($userid, 28);
+	if ($count >= 1000) $achievement->earn($userid, 29);
 
 	if ($bonus && $coupon && $vote === TRUE) return TRUE;
 	else return FALSE;
