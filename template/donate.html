@@ -3,15 +3,8 @@
 	<li class="izum">Изюм</li>
 	<li class="goods">Ништяки</li>
 </ul>
-<?
-if ($clogin){
-	if ($cid == 4) {
-		echo '<h1>АКЦИЯ!!! Зайди на сервер и получи 10000 $!!!!<button onclick="alert(\'Да фиг тебе!\');">Получить</button></h1>';
-	}
-}
-?>
 
-<p>Ваш баланс: <?=$izum;?> izum</p>
+<? if ($clogin) { ?> <p>Ваш баланс: <?=$izum;?> izum</p> <? } else {?> <p>Вы не авторизованы.</p> <? } ?>
 <div class="tabContent izum">
 	<p style="color: red; margin: 5px;">Актуальный курс: 1 RUR = <span class="rate"><?=$rubCost;?></span> izum</p>
 	<? if ($clogin &&/* $user->info['group'] >= 100 &&*/ !$debt) { ?>

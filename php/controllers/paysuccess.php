@@ -30,6 +30,10 @@ if ($r !== NULL) {
 		$html = $achievement->earn($player, 11);
 		$message .= '<br/>Платеж проведен успешно';
 		if ($want >= 100000) giveBonus($player, $want, 'buy', "Бонус за покупку $want Изюма");
+		$q = "SELECT sum(`togrant`) AS `sum` FROM `acquiring` WHERE `user` = $player AND `paid` = 2";
+		$r = $db->query($q);
+		if ($r[0]['sum'] >= 1000000) $achievement->earn($player, 31);
+		if ($r[0]['sum'] >= 1500000) $achievement->earn($player, 32);
 
 	} else {
 		// var_dump($OutSum, $r[0]['topay']);
