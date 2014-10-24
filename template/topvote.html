@@ -49,14 +49,14 @@ function printTable($type) {
 			if ($counter == 1) $trStyle = ' style="background-color: gold"';
 			else if ($counter == 2) $trStyle = ' style="background-color: #ccc"';
 			else if ($counter == 3) $trStyle = ' style="background-color: #FFB568"';
-			else $trStyle = '';
+			else $trStyle = ' style="background-color: white"';
 
 			if ($player['group'] >= 50) {
 				if ($playerCount == 1) $addTd = '<td></td>';
 				else if ($k == 0) $addTd = '<td'. $trStyle . ' rowspan="' . $playerCount . '">' . $counter . '</td>';
 				else $addTd = '';
 				$trStyle = ' style="background-color: #FF9696;"';
-				$cpass = FALSE;
+				if ($k != $playerCount-1 || $playerCount == 1) $cpass = FALSE;
 			}
 
 			$info = $votes[$playerID];
