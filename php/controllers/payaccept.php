@@ -37,7 +37,7 @@ if ($r !== NULL && (float)$OutSum != 0) {
 	$want = $r[0]['togrant'];
 	$message = 'Транзакция найдена';
 
-	$q = "SELECT `name`, `active` FROM `coupons` WHERE `id` = $discountID";
+	$q = "SELECT `discounts`.`type`, `coupons`.`active` FROM `coupons` JOIN `discounts` ON (`coupons`.`discount` = `discounts`.`id`) WHERE `coupons`.`id` = $discountID;";
 	$c = $db->query($q);
 	$checkPaid = ($r[0]['paid'] == 0);
 	$checkActiveDiscount = ($c[0]['active'] == 1);
