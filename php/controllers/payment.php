@@ -15,7 +15,7 @@ if (isset($_POST['izum']) && isset($_POST['want']) && $clogin) {
 	else $want = (int)$_POST['want'];
 
 	$discountID = intval($_POST['izumDiscount']);
-	$q = "SELECT `effect` FROM `coupons` WHERE `id` = $discountID;";
+	$q = "SELECT `discounts`.`effect` FROM `coupons` JOIN `discounts` ON (`coupons`.`discount` = `discounts`.`id`) WHERE `coupons`.`id` = $discountID;";
 	$r = $db->query($q);
 	$discount = (float)$r[0]['effect'];
 
