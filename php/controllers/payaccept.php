@@ -43,7 +43,7 @@ if ($r !== NULL && (float)$OutSum != 0) {
 	$checkActiveDiscount = ($c[0]['active'] == 1);
 
 	if ($checkPaid && $checkActiveDiscount) {
-		if ($c[0]['name'] != 'admindiscount') {
+		if ($c[0]['type'] != 'admindiscount') {
 			$q = "UPDATE `coupons` SET `active` = 0, `until` = now() WHERE `id` = $discountID";
 			$d = $db->query($q);
 		}
