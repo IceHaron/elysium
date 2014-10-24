@@ -5,8 +5,6 @@
 * 
 **/
 
-giftForVoting($cid, 'fairtop', 'test');
-
 $week = 604800;
 $month = 2592000;
 $weekly = array();
