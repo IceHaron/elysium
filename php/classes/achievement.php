@@ -236,6 +236,12 @@ class achievement {
 					$progress = $r[0]['count'];
 				break;
 
+				case 31: case 32: // Купленный изюм
+					$q = "SELECT sum(`togrant`) AS `sum` FROM `acquiring` WHERE `user` = $userID AND `paid` = 2";
+					$r = $this->db->query($q);
+					$progress = $r[0]['sum'];
+				break;
+
 				case 100500: // Опыт
 					$progress = $userInfo['exp'];
 				break;
