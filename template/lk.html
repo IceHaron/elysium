@@ -117,7 +117,12 @@
 	</tr> -->
 	<tr>
 		<th class="head">Вы находитесь в группе</th>
-		<td class="input"><?=$info['groupName']?></td>
+		<td class="input">
+			<?
+			echo $info['groupName'] . ' ';
+			if ($info['groupEnd'] > time()) echo '<span style="color: red">Истекает ' . date('Y-m-d H:i:s', $info['groupEnd']) . '</span>';
+			?>
+		</td>
 		<td class="action"></td>
 	</tr>
 	<tr>
@@ -238,7 +243,7 @@
 			<th class="orderStatus">Статус</th>
 			<th class="orderAction">Действие</th>
 		</tr>
-		<? foreach ($orders as $order) {
+		<? foreach ($info['orders'] as $order) {
 			echo '
 				<tr>
 					<td class="orderID">' . $order['id'] . '</td>
@@ -268,6 +273,26 @@
 			}
 			echo '
 					</td>
+				</tr>';
+		} ?>
+	</table>
+	<h3>Последние 10 покупок в магазине:</h3>
+	<table class="orderList">
+		<tr>
+			<th class="orderID">Номер заказа</th>
+			<th >Предмет</th>
+			<th class="orderDate">Дата заказа</th>
+			<th class="orderDate">Дата истечения</th>
+			<th class="orderCost">Сумма к оплате (Izum)</th>
+		</tr>
+		<? foreach ($info['purchases'] as $purchase) {
+			echo '
+				<tr>
+					<td class="orderID">' . $purchase['id'] . '</td>
+					<td>' . $purchase['name'] . '</td>
+					<td>' . $purchase['start'] . '</td>
+					<td>' . ($purchase['end'] == '0000-00-00 00:00:00' ? 'Бессрочно' : $purchase['end']) . '</td>
+					<td>' . ($purchase['cost'] == 0 ? 'Неизвестно' : number_format($purchase['cost'], 2, '.', '')) . '</td>
 				</tr>';
 		} ?>
 	</table>

@@ -99,6 +99,28 @@ class user {
 		$groupName = $r[0]['name'];
 		$groupPrefix = $r[0]['server_prefix'];
 
+		switch ($u['group']) {
+			case 777:
+				$purchGroup = array(20000);
+			break;
+		}
+
+		$groupEnd = time();
+		$q = "
+			SELECT `purchases`.`id`, `purchases`.`cost`, `purchases`.`item`, `purchases`.`start`, `purchases`.`end`, `donuts`.`name`
+			FROM `purchases`
+			JOIN `donuts` ON (`purchases`.`item` = `donuts`.`id`)
+			WHERE `user` = $user AND `start` < NOW() AND (`end` > NOW() OR `end` = '0000-00-00 00:00:00')
+			ORDER BY `start` DESC;";
+		$pur = $db->query($q);
+		$i = 0;
+
+		foreach ($pur as $purchase) {
+			if (array_search($purchase['item'], $purchGroup) !== FALSE && strtotime($purchase['end']) > $groupEnd) $groupEnd = strtotime($purchase['end']);
+			if ($i++ > 10) continue;
+			$purchases[] = $purchase;
+		}
+
 		$q = "SELECT `action`, count(*) AS `count` FROM `tokens` WHERE `user` = {$user} GROUP BY `action`";
 		$r = $db->query($q);
 
@@ -139,6 +161,10 @@ class user {
 
 		$coupons = $this->getCoupons($user);
 
+		$q = "SELECT * FROM `acquiring` WHERE `user` = $user AND `paid` != -1 ORDER BY `date` DESC LIMIT 0,10";
+		$orders = $db->query($q);
+
+
 		$output = array(
 			  'id' => $u['id'] // Айдишник
 			, 'email' => $u['email'] // Мыло
@@ -147,7 +173,6 @@ class user {
 			, 'prefix' => $clearPrefix // Префикс
 			, 'allowNameColor' => $allowNameColor // Разрешен ли цветной ник
 			, 'nameColor' => $nameColor // Цвет ника
-			, 'groupPrefix' => $groupPrefix // Групповой префикс
 			, 'mcName' => $u['mcname'] // Имя в майнкрафте
 			, 'levelInfo' => $this->getLevelHTML($this->getLevel($u['exp'])) // Уровень учетки
 			, 'izum' => $u['izumko'] // Баланс изюма
@@ -157,8 +182,12 @@ class user {
 			, 'achievements' => $achHTML // Последние 5 достижений
 			, 'privacy' => $privacy // Настройки приватности в виде ассоциативного массива
 			, 'groupName' => $groupName // Название группы, в которой состоит пользователь
+			, 'groupPrefix' => $groupPrefix // Групповой префикс
+			, 'groupEnd' => $groupEnd // Истечение группы
 			, 'tokens' => $tokens // Токены
 			, 'coupons' => $coupons // Купоны
+			, 'orders' => $orders // Покупки Изюма
+			, 'purchases' => $purchases // Покупки всего
 		);
 
 		if ($profile) {
