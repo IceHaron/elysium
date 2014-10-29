@@ -69,13 +69,14 @@ if ($mod == 'news') {
 		if ($_POST['action'] == 'edit') {
 
 			foreach ($_POST as $key => $value) {
-				if (array_search($key, array('action', 'history', 'privacy')) === FALSE) $$key = $db->escape($_POST[$key]);
-				else if (array_search($key, array('history', 'privacy')) !== FALSE) $$key = $_POST[$key];
+				if (array_search($key, array('action', 'history', 'privacy', 'prefix')) === FALSE) $$key = $db->escape($_POST[$key]);
+				else if (array_search($key, array('history', 'privacy', 'prefix')) !== FALSE) $$key = $_POST[$key];
 			}
 			$q = "
 				UPDATE `ololousers` SET 
 				  `email` = '$email'
 				, `nick` = '$nick'
+				, `prefix` = '$prefix'
 				, `mcname` = '$mcname'
 				, `steamid` = '$steamid'
 				, `exp` = '$exp'

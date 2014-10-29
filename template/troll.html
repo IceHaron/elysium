@@ -98,6 +98,7 @@
 					<tr>
 						<th>E-Mail</th>
 						<th>Ник на сайте</th>
+						<th>Префикс</th>
 						<th>Ник в игре</th>
 						<th>Steam</th>
 						<th>Опыт</th>
@@ -113,6 +114,7 @@
 					<tr>
 						<td><?=$item['email']?></td>
 						<td><?=$item['nick']?></td>
+						<td><?=$item['prefix']?></td>
 						<td><?=$item['mcname']?></td>
 						<td><?=$item['steamid']?></td>
 						<td><?=$item['exp']?></td>
@@ -137,6 +139,7 @@
 				<input type="hidden" name="id" value="<?=$item['id']?>">
 				<label>E-Mail</label><input type="text" name="email" placeholder="E-Mail" required value="<?=$item['email']?>"><br/>
 				<label>Ник на сайте</label><input type="text" name="nick" placeholder="Ник на сайте" required value="<?=$item['nick']?>"><br/>
+				<label>Префикс</label><input type="text" name="prefix" placeholder="Индивидуальный префикс" required value="<?=$item['prefix']?>"><br/>
 				<label>Ник в игре</label><input type="text" name="mcname" placeholder="Ник в игре" value="<?=$item['mcname']?>"><br/>
 				<label>Steam</label><input type="text" name="steamid" placeholder="Steam" value="<?=$item['steamid']?>"><br/>
 				<label>Опыт</label><input type="text" name="exp" placeholder="Опыт" required value="<?=$item['exp']?>"><br/>
