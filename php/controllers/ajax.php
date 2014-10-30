@@ -41,18 +41,15 @@ switch ($_GET['mode']) {
 
 	case 'voteMCTop':
 		// Получаем голос с mctop.im
-		$nickname = htmlspecialchars($_POST['nickname']);
+		$nickname = $_POST['nickname'];
 		$token = $_POST['token'];
 		echo $Query->{$_GET['mode']}($nickname, $token);
 	break;
 
 	case 'MCRate':
 		// Получаем голос с mcrate.su
-		if (isset($_GET['nick']) && isset($_GET['hash'])) {
-			$nickname = $db->escape(strip_tags($_GET['nick']));
-			$token = $db->escape($_GET['hash']);
-		} else {
-			$nickname = $db->escape($_POST['nick']);
+		if (isset($_POST['nick']) && isset($_POST['hash'])) {
+			$nickname = $db->escape(strip_tags($_POST['nick']));
 			$token = $db->escape($_POST['hash']);
 		}
 		echo 'Nick: ' . $nickname . '<br/>';
@@ -65,7 +62,7 @@ switch ($_GET['mode']) {
 		$ch = curl_init('http://elysiumgame.ru/ajax?mode=MCRate');
 		curl_setopt($ch, CURLOPT_HEADER, 0);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_POSTFIELDS, "nick=Elysiumgame&hash=7a44d2882aea99ca27a56847472ebad2");
+		curl_setopt($ch, CURLOPT_POSTFIELDS, "nick=Ice_Haron&hash=638c2a9dd926d7fbd2ef188ec6cd5435");
 		$res = curl_exec($ch);
 		curl_close($ch);
 		echo($res);

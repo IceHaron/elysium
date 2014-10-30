@@ -222,12 +222,12 @@ class Query {
 				$r = $this->db->query($q);
 				
 				if (!count($r)) die("Error: Bad login");
-				// else $userid = $r[0]['id'];
+				else $userid = $r[0]['id'];
 
-				// $bonus = giftForVoting($userid, 1, 'Голос на mcrate.su');
+				$bonus = giftForVoting($userid, 1, 'Голос на mcrate.su');
 				
-				/*if ($bonus) */return 'Success';
-				// else return "Shit happened";
+				if ($bonus) return 'Success';
+				else return "Shit happened";
 			} else die("Error: Bad hash");
 
 	}
