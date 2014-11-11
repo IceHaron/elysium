@@ -85,7 +85,7 @@ if (isset($_POST['izum']) && isset($_POST['want']) && $clogin) {
 	$discount = 0;
 	$stackDisc = array(0 => 1);
 	$discGroup = 0;
-	$discUsed = FALSE;
+	$discUsed = array();
 	$disc = $db->escape($_POST['goodDiscount']);
 	$sDisc = $_POST['stackDiscount'];
 
@@ -120,7 +120,7 @@ if (isset($_POST['izum']) && isset($_POST['want']) && $clogin) {
 	if (!empty($sDisc)) {
 		$s = implode(',', $sDisc);
 		$q = "
-			SELECT `discounts`.`group`, `discounts`.`effect`
+			SELECT `coupons`.`id`, `discounts`.`group`, `discounts`.`effect`
 			FROM `coupons`
 			JOIN `discounts` ON (`coupons`.`discount` = `discounts`.`id`)
 			WHERE `coupons`.`user` = $cid AND `coupons`.`id` IN ($s) AND `coupons`.`active` = 1;";
@@ -128,8 +128,7 @@ if (isset($_POST['izum']) && isset($_POST['want']) && $clogin) {
 		foreach ($r as $coupon) {
 			if (!isset($stackDisc[ $coupon['group'] ])) $stackDisc[ $coupon['group'] ] = 1 - (float)$coupon['effect'] / 100;
 			else $stackDisc[ $coupon['group'] ] *= 1 - (float)$coupon['effect'] / 100;
-				// $discount = $r[0]['effect'];
-				// $discGroup = $r[0]['group'];
+			$discUsed[] = $coupon['id'];
 		}
 	}
 
@@ -168,7 +167,6 @@ if (isset($_POST['izum']) && isset($_POST['want']) && $clogin) {
 
 		if ($discGroup == 0 || $discGroup == $donuts[$item]['group']) {
 			$cost = ceil($multiplier * $donuts[$item]['cost']);
-			$discUsed = TRUE;
 		} else $cost = $donuts[$item]['cost'];
 
 		$cost *= $stackDisc[0] * (isset($stackDisc[ $donuts[$item]['group'] ]) ? $stackDisc[ $donuts[$item]['group'] ] : 1);
@@ -231,16 +229,21 @@ if (isset($_POST['izum']) && isset($_POST['want']) && $clogin) {
 			$remain = $izum - $sum;
 			$q = "UPDATE `ololousers` SET `izumko` = $remain WHERE `id` = $cid;";
 			$paid = $db->query($q);
+			$killedCoupon = FALSE;
+			$killedStackCoupon = FALSE;
 
 			if ($disc == 'votediscount') {
 				$q = "UPDATE `coupons` SET `active` = 0, `until` = now() WHERE `user` = $cid AND `discount` = 1;";
 				$killedCoupon = $db->query($q);
 			} else {
-				$q = "UPDATE `coupons` SET `active` = 0, `until` = now() WHERE `id` = $disc;";
-				$killedCoupon = $db->query($q);
+				$discUsed[] = $disc;
 			}
 
-			if ($paid === TRUE && $killedCoupon === TRUE) {
+			$ids = implode(',', $discUsed);
+			$q = "UPDATE `coupons` SET `active` = 0, `until` = now() WHERE `id` IN ($ids);";
+			$killedStackCoupon = $db->query($q);
+
+			if ($paid === TRUE && ($killedCoupon === TRUE || $killedStackCoupon === TRUE)) {
 				$q = "INSERT INTO `purchases` (`user`, `item`, `cost`, `start`, `end`) VALUES " . substr($insert, 1);
 				$purchase = $db->query($q);
 			}
@@ -248,13 +251,12 @@ if (isset($_POST['izum']) && isset($_POST['want']) && $clogin) {
 			if ($purchase === TRUE && $paid === TRUE) {
 				$message .= 'Спасибо за покупку! Оплаченные товары будут активированы в ближайшее время';
 				if ($notgiven) $message .= '<br/>Следующие товары исключены из покупки:<br/>' . $notgiven;
-
-				if (isset($items[10000])) {
+				if (in_array(10000, $items)) {
 					$html = $achievement->earn($cid, 25);
 					$message .= '<br/>Большое вам спасибо за подарок! В качестве благодарности мы начислили вам символические 10 единиц опыта и выдали достижение' . $html;
 				}
 				
-				if ($killedCoupon !== TRUE || $disc == '0') $message .= '<br/>Скидка не использована.<br/>';
+				if (($killedCoupon !== TRUE && $killedStackCoupon !== TRUE)) $message .= '<br/>Скидка не использована.<br/>';
 
 				$message .= '<br/><br/>Сумма вашей покупки: ' . $sum . ' Izum';
 

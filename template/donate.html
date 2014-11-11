@@ -24,7 +24,7 @@
 				<li><label style="color: #aaa;"><input type="radio" name="izumDiscount" value="0" data-type="none" data-effect="0" checked> Не использовать купоны на скидку</label></li>
 				<?=$izumCoupons;?>
 			</ul>
-			<span style="color:red"><b>Внимание!</b> Данная фича находится в разработке! До тех пор, пока она не будет полностью допилена, мы не ручаемся за то, что вам обязательно будет начислен купленный Изюм. Если при покупке произошла ошибка, свяжитесь с нами <a href="mailto:support@elysiumgame.ru?subject=Проблемы%20с%20покупкой%20изюма&body=Мой%20ник%20<?=$clogin;?>. Моя%20проблема:%20">по электронной почте</a></span><br/>
+			<span>Фича работает стабильно и без нареканий, но в случае возникновения проблем, свяжитесь с нами <a href="mailto:support@elysiumgame.ru?subject=Проблемы%20с%20покупкой%20изюма&body=Мой%20ник%20<?=$clogin;?>. Моя%20проблема:%20">по электронной почте</a></span><br/>
 			<button style="font-size: 1.3em">Купить Izum</button>
 		</form>
 	<? } else if ($clogin && $debt) { ?>
@@ -48,6 +48,7 @@
 			<li><label style="color: #aaa;"><input type="radio" name="goodDiscount" value="0" data-type="none" data-effect="0" checked> Не использовать купоны на скидку</label></li>
 			<?=$goodCoupons;?>
 		</ul>
+		<p style="color: red; margin: 5px 0;"><b>Внимание!</b> Не выбирайте купон на скидку за реактивацию, если не собираетесь оплачивать статус, купон будет истрачен!</p>
 
 		<table id="donutTable">
 			<tr class="caption">
