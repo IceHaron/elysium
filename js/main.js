@@ -175,25 +175,22 @@ $(document).ready(function(){
 		$('#izumform input[name="want"]').trigger('change');
 	});
 
-	$('input[name="goodDiscount"]').click(function() {
-		var disctype = $(this).attr('data-type');
-		var mult = (100 - parseFloat($(this).attr('data-effect').replace(',', '.'))) / 100;
-		if (disctype == 'none' || disctype == 'votediscount' || disctype == 'votecap') {
-			$('tr.item').each(function() {
-				var oldPrice = parseInt($(this).children('.noDisc').text().replace(' ', ''));
-				var newPrice = oldPrice * mult;
-				var strPrice = newPrice + '';
-				$(this).children('.withDisc').text(strPrice.replace(/(\d{3})$/, ' $1'));
-			});
-		} else if (disctype == 'reactivation') {
-			if (!this.checked) mult = 1;
-			$('tr.item[data-group="2"]').each(function() {
-				var oldPrice = parseInt($(this).children('.noDisc').text().replace(' ', ''));
-				var newPrice = oldPrice * mult;
-				var strPrice = newPrice + '';
-				$(this).children('.withDisc').text(strPrice.replace(/(\d{3})$/, ' $1'));
-			});
-		}
+	$('input[name="goodDiscount"], input[name*="stackDiscount"]').click(function() {
+		var mult = {0: 1};
+		$('input[name="goodDiscount"]:checked, input[name*="stackDiscount"]:checked').each(function() {
+			var disctype = $(this).attr('data-type');
+			var group = $(this).attr('data-group');
+			var effect = (100 - parseFloat($(this).attr('data-effect').replace(',', '.'))) / 100;
+			if (mult.hasOwnProperty(group)) mult[group] *= effect;
+			else mult[group] = effect;
+		});
+		$('tr.item').each(function() {
+			var group = $(this).attr('data-group');
+			var oldPrice = parseInt($(this).children('.noDisc').text().replace(' ', ''));
+			var newPrice = Math.ceil(oldPrice * mult[0] * (mult[group] ? mult[group] : 1));
+			var strPrice = newPrice + '';
+			$(this).children('.withDisc').text(strPrice.replace(/(\d{3})$/, ' $1'));
+		});
 	});
 
 	$('#donutTable input').change(function() {

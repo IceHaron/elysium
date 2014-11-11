@@ -83,9 +83,11 @@ if (isset($_POST['izum']) && isset($_POST['want']) && $clogin) {
 
 	$message = '';
 	$discount = 0;
+	$stackDisc = array(0 => 1);
 	$discGroup = 0;
 	$discUsed = FALSE;
 	$disc = $db->escape($_POST['goodDiscount']);
+	$sDisc = $_POST['stackDiscount'];
 
 	if ($disc != '0') {
 		if ($disc == 'votediscount') {
@@ -113,7 +115,23 @@ if (isset($_POST['izum']) && isset($_POST['want']) && $clogin) {
 		}
 	}
 
-	$multiplier = round(1 - (float)$discount / 100, 3);
+	$multiplier = 1 - (float)$discount / 100;
+
+	if (!empty($sDisc)) {
+		$s = implode(',', $sDisc);
+		$q = "
+			SELECT `discounts`.`group`, `discounts`.`effect`
+			FROM `coupons`
+			JOIN `discounts` ON (`coupons`.`discount` = `discounts`.`id`)
+			WHERE `coupons`.`user` = $cid AND `coupons`.`id` IN ($s) AND `coupons`.`active` = 1;";
+		$r = $db->query($q);
+		foreach ($r as $coupon) {
+			if (!isset($stackDisc[ $coupon['group'] ])) $stackDisc[ $coupon['group'] ] = 1 - (float)$coupon['effect'] / 100;
+			else $stackDisc[ $coupon['group'] ] *= 1 - (float)$coupon['effect'] / 100;
+				// $discount = $r[0]['effect'];
+				// $discGroup = $r[0]['group'];
+		}
+	}
 
 	$q = "SELECT * FROM `donuts`";
 	$r = $db->query($q);
@@ -149,9 +167,12 @@ if (isset($_POST['izum']) && isset($_POST['want']) && $clogin) {
 	foreach ($items as $item) {
 
 		if ($discGroup == 0 || $discGroup == $donuts[$item]['group']) {
-			$cost = $multiplier * $donuts[$item]['cost'];
+			$cost = ceil($multiplier * $donuts[$item]['cost']);
 			$discUsed = TRUE;
 		} else $cost = $donuts[$item]['cost'];
+
+		$cost *= $stackDisc[0] * (isset($stackDisc[ $donuts[$item]['group'] ]) ? $stackDisc[ $donuts[$item]['group'] ] : 1);
+		$cost = ceil($cost);
 
 		$sum += $cost;
 	}
@@ -169,8 +190,11 @@ if (isset($_POST['izum']) && isset($_POST['want']) && $clogin) {
 			$duration = $donuts[$item]['duration'];
 			$group = $donuts[$item]['group'];
 
-			if ($discGroup == 0 || $discGroup == $group) $cost = $multiplier * $donuts[$item]['cost'];
+			if ($discGroup == 0 || $discGroup == $group) $cost = ceil($multiplier * $donuts[$item]['cost']);
 			else $cost = $donuts[$item]['cost'];
+
+			$cost *= $stackDisc[0] * (isset($stackDisc[$group]) ? $stackDisc[$group] : 1);
+			$cost = ceil($cost);
 			
 			if ($duration == 0) {
 			

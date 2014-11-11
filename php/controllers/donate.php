@@ -36,7 +36,7 @@ if ($clogin) {
 		$coupon = $coupons['votediscount'];
 		$goodCoupons .= '
 			<li>
-				<label><input type="radio" name="goodDiscount" value="votediscount" data-type="votediscount" data-effect="' . $coupon['effect'] . '">
+				<label><input type="radio" name="goodDiscount" value="votediscount" data-type="votediscount" data-effect="' . $coupon['effect'] . '" data-group="' . $coupon['group'] . '">
 				' . $coupon['ruName'] . ' (x' . $coupon['count'] . ')</label>
 			</li>';
 	}
@@ -45,7 +45,7 @@ if ($clogin) {
 		$coupon = $coupons['votecap'];
 		$goodCoupons .= '
 			<li>
-				<label><input type="radio" name="goodDiscount" value="' . $coupon['firstID'] . '" data-type="votecap" data-effect="' . $coupon['effect'] . '">
+				<label><input type="radio" name="goodDiscount" value="' . $coupon['firstID'] . '" data-type="votecap" data-effect="' . $coupon['effect'] . '" data-group="' . $coupon['group'] . '">
 				' . $coupon['ruName'] . ' (осталось ' . $coupon['count'] . ')</label>
 			</li>';
 	}
@@ -54,7 +54,7 @@ if ($clogin) {
 		$coupon = $coupons['reactivation'];
 		$goodCoupons .= '
 			<li>
-				<label><input type="checkbox" name="goodDiscount" value="' . $coupon['firstID'] . '" data-type="reactivation" data-effect="' . $coupon['effect'] . '">
+				<label><input type="checkbox" name="stackDiscount[]" value="' . $coupon['firstID'] . '" data-type="reactivation" data-effect="' . $coupon['effect'] . '" data-group="' . $coupon['group'] . '">
 				' . $coupon['ruName'] . ' (осталось ' . $coupon['count'] . ', первая истекает ' . $coupon['firstEnd'] . ')</label>
 			</li>';
 	}
