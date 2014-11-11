@@ -255,6 +255,7 @@ function giftForVoting($userid, $rating, $reason) {
 *
 **/
 function deactivateCoupons() {
+	GLOBAL $db;
 	$q = "UPDATE `coupons` SET `active` = 0 WHERE `active` = 1 AND `until` < now()";
 	$r = $db->query($q);
 	return $r;
