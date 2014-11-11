@@ -73,4 +73,14 @@ class db {
 		return mysqli_real_escape_string($this->link, $str);
 	}
 
+/**
+* 
+* Закрытие коннекта к базе
+* @return bool - успешность дисконнекта
+* 
+**/
+	public function close() {
+		return mysqli_close($this->link);
+	}
+
 }

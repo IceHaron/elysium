@@ -9,4 +9,6 @@ REQUIRE_ONCE('functions.php');
 $db = new db();
 $mailer = new mail();
 deleteUsers();
+deactivateCoupons();
 syncAccs();
+$db->close();

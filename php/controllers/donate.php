@@ -50,4 +50,13 @@ if ($clogin) {
 			</li>';
 	}
 
+	if (isset($coupons['reactivation'])) {
+		$coupon = $coupons['reactivation'];
+		$goodCoupons .= '
+			<li>
+				<label><input type="checkbox" name="goodDiscount" value="' . $coupon['firstID'] . '" data-type="reactivation" data-effect="' . $coupon['effect'] . '">
+				' . $coupon['ruName'] . ' (осталось ' . $coupon['count'] . ', первая истекает ' . $coupon['firstEnd'] . ')</label>
+			</li>';
+	}
+
 }

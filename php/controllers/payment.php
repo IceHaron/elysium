@@ -182,11 +182,11 @@ if (isset($_POST['izum']) && isset($_POST['want']) && $clogin) {
 				}
 				
 			} else {
-				if (isset($purchases[$item]) && strtotime($purchases[$item]['end']) > time()) {
-					$start = $purchases[$item]['end'];
-
-				} else if ($group == 2 && $hasStatus) {
+				if ($group == 2 && $hasStatus) {
 					$start = $statusEnd;
+
+				} else if (isset($purchases[$item]) && strtotime($purchases[$item]['end']) > time()) {
+					$start = $purchases[$item]['end'];
 					
 				} else {
 					$start = date('Y-m-d H:i:s', time());
@@ -225,7 +225,7 @@ if (isset($_POST['izum']) && isset($_POST['want']) && $clogin) {
 				$message .= 'Спасибо за покупку! Оплаченные товары будут активированы в ближайшее время';
 				if ($notgiven) $message .= '<br/>Следующие товары исключены из покупки:<br/>' . $notgiven;
 
-				if (isset($purchases[10000])) {
+				if (isset($items[10000])) {
 					$html = $achievement->earn($cid, 25);
 					$message .= '<br/>Большое вам спасибо за подарок! В качестве благодарности мы начислили вам символические 10 единиц опыта и выдали достижение' . $html;
 				}

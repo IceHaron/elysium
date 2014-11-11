@@ -291,7 +291,7 @@ class user {
 	public function getCoupons($user) {
 		GLOBAL $db;
 		$q = "
-			SELECT `coupons`.`id` AS `firstID`, `discounts`.`type`, `discounts`.`name` AS `ruName`, `discounts`.`effect`, count(*) AS `count`
+			SELECT `coupons`.`id` AS `firstID`, `discounts`.`type`, `discounts`.`name` AS `ruName`, `discounts`.`effect`, count(*) AS `count`, `coupons`.`until` AS `firstEnd`
 			FROM `coupons`
 			JOIN `discounts` ON `coupons`.`discount` = `discounts`.`id`
 			WHERE `coupons`.`active` = 1 AND `coupons`.`user` = $user GROUP BY `type`;";

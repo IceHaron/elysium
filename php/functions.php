@@ -248,3 +248,14 @@ function giftForVoting($userid, $rating, $reason) {
 	if ($bonus && $coupon && $vote === TRUE) return TRUE;
 	else return FALSE;
 }
+
+/**
+*
+* Деактивация старых купонов
+*
+**/
+function deactivateCoupons() {
+	$q = "UPDATE `coupons` SET `active` = 0 WHERE `active` = 1 AND `until` < now()";
+	$r = $db->query($q);
+	return $r;
+}

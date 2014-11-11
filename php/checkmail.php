@@ -7,3 +7,4 @@ REQUIRE_ONCE('classes/mail.php');
 $db = new db();
 $mailer = new mail();
 $mailer->receive();
+$db->close();

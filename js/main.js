@@ -185,6 +185,14 @@ $(document).ready(function(){
 				var strPrice = newPrice + '';
 				$(this).children('.withDisc').text(strPrice.replace(/(\d{3})$/, ' $1'));
 			});
+		} else if (disctype == 'reactivation') {
+			if (!this.checked) mult = 1;
+			$('tr.item[data-group="2"]').each(function() {
+				var oldPrice = parseInt($(this).children('.noDisc').text().replace(' ', ''));
+				var newPrice = oldPrice * mult;
+				var strPrice = newPrice + '';
+				$(this).children('.withDisc').text(strPrice.replace(/(\d{3})$/, ' $1'));
+			});
 		}
 	});
 
