@@ -11,8 +11,9 @@ if (!isset($cemail)) {
 }
 
 if (isset($_POST['prefix'])) {
-	$prefix = preg_replace('/\&amp\;/', '&', $db->escape($_POST['prefix']));
-	$nameColor = preg_replace('/\&amp\;/', '&', $db->escape($_POST['nameColor']));
+	$prefix = preg_replace('/\&amp\;/', '&', $db->escape(@$_POST['prefix']));
+	$prefix = preg_replace('/админ|одмен|Админ|Одмен/', '', $prefix);
+	$nameColor = preg_replace('/\&amp\;/', '&', $db->escape(@$_POST['nameColor']));
 	if (!$nameColor) $nameColor = 'f';
 	$q = "UPDATE `ololousers` SET `prefix` = '&r[{$prefix}&r] &{$nameColor}' WHERE `id` = $cid;";
 	$r = $db->query($q);

@@ -87,7 +87,7 @@ if (isset($_POST['izum']) && isset($_POST['want']) && $clogin) {
 	$discGroup = 0;
 	$discUsed = array();
 	$disc = $db->escape($_POST['goodDiscount']);
-	$sDisc = $_POST['stackDiscount'];
+	$sDisc = isset($_POST['stackDiscount']) ? $_POST['stackDiscount'] : array();
 
 	if ($disc != '0') {
 		if ($disc == 'votediscount') {
