@@ -15,7 +15,8 @@ $(document).ready(function(){
 	// 	pingServer(server);
 	// }
 	pingServer('kernel');
-	$('.backtrack .status').css('color','darkred').text('Timeout (5s)');
+	pingServer('backtrack');
+	// $('.backtrack .status').css('color','darkred').text('Timeout (5s)');
 	$('.gentoo .status').css('color','darkred').text('Timeout (5s)');
 
 	// Если мы залогинены, проверяем неполученные ачивки сразу и запускаем проверку каждые 5 минут
@@ -32,6 +33,7 @@ $(document).ready(function(){
 	
 	setInterval(function() {
 		pingServer('kernel');
+		pingServer('backtrack');
 		onlineCheck('kernel');
 	}, 300000);
 
