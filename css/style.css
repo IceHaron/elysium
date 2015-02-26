@@ -181,6 +181,9 @@ h4 {
 	border-top-right-radius: 20px;
 	background: rgba(0, 0, 0, 0.5);
 }
+#header .row-2 ul.menu > li.red {
+	background: rgba(255, 0, 0, 0.5);
+}
 #header .row-2 ul.menu > li:hover { background:url(/images/header_tabs_bg.png) repeat-y; }
 #header .row-3 {
 	position: absolute;
