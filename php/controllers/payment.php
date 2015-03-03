@@ -151,14 +151,18 @@ if (isset($_POST['izum']) && isset($_POST['want']) && $clogin) {
 	$q = "SELECT `item`, `end` FROM `purchases` WHERE `user` = $cid ORDER BY `end` ASC";
 	$r = $db->query($q);
 	
-	foreach ($r as $purchase) {
-		$purchases[ $purchase['item'] ] = $purchase;
-		
-		if ($donuts[ $purchase['item'] ]['group'] == 2 && strtotime($purchase['end']) > time()) {
-			$hasStatus = TRUE;
-			$statusEnd = $purchase['end'];
+	if (!empty($r)) {
+		foreach ($r as $purchase) {
+			$purchases[ $purchase['item'] ] = $purchase;
+			
+			if ($donuts[ $purchase['item'] ]['group'] == 2 && strtotime($purchase['end']) > time()) {
+				$hasStatus = TRUE;
+				$statusEnd = $purchase['end'];
+			}
+			
 		}
-		
+	} else {
+		$hasStatus = FALSE;
 	}
 	
 	$sum = 0;

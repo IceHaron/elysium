@@ -115,20 +115,22 @@ class user {
 		$pur = $db->query($q);
 		$i = 0;
 
-		foreach ($pur as $purchase) {
-			if (array_search($purchase['item'], $purchGroup) !== FALSE && strtotime($purchase['end']) > $groupEnd) $groupEnd = strtotime($purchase['end']);
-			if ($i++ > 10) continue;
-			$purchases[] = $purchase;
-		}
-
-		$q = "SELECT `action`, count(*) AS `count` FROM `tokens` WHERE `user` = {$user} GROUP BY `action`";
-		$r = $db->query($q);
-
-		if (count($r) != 0)
-			foreach ($r as $token) {
-				$tokens[ $token['action'] ] = $token['count'];
+		if (!empty($pur)) {
+			foreach ($pur as $purchase) {
+				if (array_search($purchase['item'], $purchGroup) !== FALSE && strtotime($purchase['end']) > $groupEnd) $groupEnd = strtotime($purchase['end']);
+				if ($i++ > 10) continue;
+				$purchases[] = $purchase;
 			}
-		else $tokens = array('changename' => 0);
+		} else $purchases = [];
+
+		// $q = "SELECT `action`, count(*) AS `count` FROM `tokens` WHERE `user` = {$user} GROUP BY `action`";
+		// $r = $db->query($q);
+
+		// if (count($r) != 0)
+			// foreach ($r as $token) {
+				// $tokens[ $token['action'] ] = $token['count'];
+			// }
+		// else $tokens = array('changename' => 0);
 
 		$q = "SELECT * FROM `purchases` WHERE `user` = $user AND `item` IN (10001) AND `start` < now() AND `end` > now();";
 		$r = $db->query($q);
@@ -184,9 +186,9 @@ class user {
 			, 'groupName' => $groupName // Название группы, в которой состоит пользователь
 			, 'groupPrefix' => $groupPrefix // Групповой префикс
 			, 'groupEnd' => $groupEnd // Истечение группы
-			, 'tokens' => $tokens // Токены
+			// , 'tokens' => $tokens // Токены
 			, 'coupons' => $coupons // Купоны
-			, 'orders' => $orders // Покупки Изюма
+			, 'orders' => $orders ? $orders : [] // Покупки Изюма
 			, 'purchases' => $purchases // Покупки всего
 		);
 
@@ -297,10 +299,12 @@ class user {
 			WHERE `coupons`.`active` = 1 AND `coupons`.`user` = $user GROUP BY `type`;";
 		$r = $db->query($q);
 
-		foreach ($r as $coupon) {
-			if ($coupon['type'] == 'votediscount') $coupon['effect'] = (float)$coupon['effect'] * (int)$coupon['count'];
-			$coupons[ $coupon['type'] ] = $coupon;
-		}
+		if (count($r)) {
+			foreach ($r as $coupon) {
+				if ($coupon['type'] == 'votediscount') $coupon['effect'] = (float)$coupon['effect'] * (int)$coupon['count'];
+				$coupons[ $coupon['type'] ] = $coupon;
+			}
+		} else $coupons = [];
 
 		return $coupons;
 	}

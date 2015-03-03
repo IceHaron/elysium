@@ -217,3 +217,4 @@ pip-log.txt
 .log
 settings.php
 files/
+.idea/

@@ -60,12 +60,14 @@ function syncAccs() {
 	GLOBAL $db;
 	$output = '';
 	$equiv = array(20000 => 2, 20010 => 3, 20020 => 4);
+	$post = ['mode' => 'sync'];
 
 	$q = "
 		SELECT `ololousers`.`id`, `ololousers`.`group`, `purchases`.`item`
 		FROM `ololousers`
-		LEFT JOIN `purchases` ON (`purchases`.`user` = `ololousers`.`id` AND `purchases`.`item` >= 20000 AND `purchases`.`item` <= 29999 AND `purchases`.`start` <= now() AND `purchases`.`end` >= now())
-		WHERE `ololousers`.`group` IN (1,2,3,4,5);";
+		LEFT JOIN `purchases` ON (`purchases`.`user` = `ololousers`.`id` AND `purchases`.`item` >= 20000 AND `purchases`.`item` <= 29999 AND `purchases`.`start` <= now() + INTERVAL 1 HOUR AND `purchases`.`end` >= now())
+		WHERE `ololousers`.`group` IN (1,2,3,4);";
+		// WHERE `ololousers`.`id` = 2;";
 	$r = $db->query($q);
 	
 	foreach ($r as $player) {
@@ -83,7 +85,7 @@ function syncAccs() {
 		SELECT `ololousers`.`id`, `purchases`.`item`
 		FROM `ololousers`
 		JOIN `purchases` ON (`purchases`.`user` = `ololousers`.`id` AND `purchases`.`item` IN (10001, 10002) AND `purchases`.`start` <= now() AND `purchases`.`end` >= now())
-		WHERE `ololousers`.`group` > 0;";
+		WHERE `ololousers`.`group` != 0;";
 	$r = $db->query($q);
 
 	foreach ($r as $player) {
@@ -95,27 +97,30 @@ function syncAccs() {
 		FROM `ololousers`
 		JOIN `usergroups` ON (`usergroups`.`id` = `ololousers`.`group`)
 		WHERE `ololousers`.`group` != 0;";
+		// WHERE `ololousers`.`id` = 2;";
 	$r = $db->query($q);
 	
 	foreach ($r as $player) {
-		$forumnick = $player['nick'];
-		$forumemail = $player['email'];
-		$salt = '9034u3ui';
-		$key = str_replace(array('1','2','5','8','b','d','e','f'), '', md5($forumnick . substr($forumnick, 2)));
-		$forumpw = md5($key);
-		$group = $player['group'] . '__' . $player['server_alias'];
-		$mcname = $player['mcname'];
-		$prefix = str_replace('[&r] ', $player['server_prefix'], $player['prefix']);
-		if ($prefix == '' || !isset($allowPrefix[ $player['id'] ])) $prefix = 'null';
-		$prefix = urlencode($prefix);
+		$post['user'] = $player['nick'];
+		$post['email'] = $player['email'];
+		$post['salt'] = '9034u3ui';
+		$post['key'] = str_replace(array('1','2','5','8','b','d','e','f'), '', md5($post['user'] . substr($post['user'], 2)));
+		$post['pw'] = md5($post['key']);
+		$post['group'] = $player['group'] . '__' . $player['server_alias'];
+		$post['mcnick'] = $player['mcname'];
+		$post['prefix'] = str_replace('[&r] ', $player['server_prefix'], $player['prefix']);
+		if ($post['prefix'] == '' || !isset($allowPrefix[ $player['id'] ])) $post['prefix'] = 'null';
+		$post['prefix'] = urlencode($post['prefix']);
+
+		$curlQuery = http_build_query($post);
 
 		$ch = curl_init('http://srv.elysiumgame.ru/');
 		curl_setopt($ch, CURLOPT_HEADER, 0);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_POSTFIELDS, "mode=sync&user=$forumnick&prefix=$prefix&email=$forumemail&pw=$forumpw&group=$group&mcnick=$mcname&key=$key&salt=$salt");
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $curlQuery);
 		$res = curl_exec($ch);
 		curl_close($ch);
-		$output .= "&lt;$forumemail&gt; $res<br/><br/>";
+		$output .= "&lt;{$post['email']}&gt; $res<br/><br/>";
 	}
 
 	return $output;

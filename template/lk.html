@@ -98,12 +98,7 @@
 		<? } ?>
 	</tr>
 	</form>
-	<tr>
-		<th class="head"></th>
-		<td class="input">Количество токенов на смену ников: <?=$info['tokens']['changename']?></td>
-		<td class="balance"></td>
-	</tr>
-	<? if ($user->info['group'] >= 1) { ?>
+	<? if ($user->info['group'] >= 1 && $user->info['group'] != 5) { ?>
 	<tr>
 		<th class="head"></th>
 		<td class="input"><a href="/files/update/InstLaunch.exe">Скачать клиент</a></td>

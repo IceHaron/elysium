@@ -130,19 +130,6 @@ if ($mod == 'news') {
 } else if ($mod == 'deleteusers') {
 	$output .= deleteUsers();
 
-} else if ($mod == 'changenametokens') {
-	$q = "SELECT * FROM `ololousers`";
-	$users = $db->query($q);
-	$values = '';
-
-	foreach ($users as $u) {
-		$values .= ",('{$u['id']}', 'changename')";
-	}
-	
-	$q = "INSERT INTO `tokens` (`user`, `action`) VALUES " . substr($values, 1);
-	$db->query($q);
-	$mod = 'changenametokens';
-
 } else if ($mod == 'transfer') {
 	$a = $db->query("DELETE FROM `user_achievs` WHERE `achievement` IN (5,10,11,13,21,30,42,50,70,100500);");
 	$b = $db->query("UPDATE `ololousers` SET `izumko` = 0;");
