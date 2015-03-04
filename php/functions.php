@@ -91,7 +91,6 @@ function syncAccs() {
 	foreach ($r as $player) {
 		$allowPrefix[ $player['id'] ] = $player['id'];
 	}
-	var_dump($allowPrefix);die;
 	
 	$q = "
 		SELECT `ololousers`.`id`, `ololousers`.`email`, `ololousers`.`nick`, `ololousers`.`prefix`, `ololousers`.`mcname`, `ololousers`.`group`, `usergroups`.`server_alias`, `usergroups`.`server_prefix`
