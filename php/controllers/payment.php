@@ -220,8 +220,9 @@ if (isset($_POST['izum']) && isset($_POST['want']) && $clogin) {
 				
 				$end = strtotime($start);
 				$end += $duration;
-				$insert .= ",($cid, $item, $cost, '$start', from_unixtime($end))";
-				giveCoupon($cid, 2, NULL, date('Y-m-d H:i:s', $end));
+				$end = ($user->info['group'] >= 100) ? '0000-00-00 00:00:00' : date('Y-m-d H:i:s', $end);
+				$insert .= ",($cid, $item, $cost, '$start', '$end')";
+				giveCoupon($cid, 2, NULL, $end);
 				$sum += $cost;
 			}
 
