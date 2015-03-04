@@ -84,13 +84,14 @@ function syncAccs() {
 	$q = "
 		SELECT `ololousers`.`id`, `purchases`.`item`
 		FROM `ololousers`
-		JOIN `purchases` ON (`purchases`.`user` = `ololousers`.`id` AND `purchases`.`item` IN (10001, 10002) AND `purchases`.`start` <= now() AND `purchases`.`end` >= now())
+		JOIN `purchases` ON (`purchases`.`user` = `ololousers`.`id` AND `purchases`.`item` IN (10001, 10002) AND `purchases`.`start` <= now() AND (`purchases`.`end` >= now() OR `purchases`.`end` = 0))
 		WHERE `ololousers`.`group` != 0;";
 	$r = $db->query($q);
 
 	foreach ($r as $player) {
 		$allowPrefix[ $player['id'] ] = $player['id'];
 	}
+	var_dump($allowPrefix);die;
 	
 	$q = "
 		SELECT `ololousers`.`id`, `ololousers`.`email`, `ololousers`.`nick`, `ololousers`.`prefix`, `ololousers`.`mcname`, `ololousers`.`group`, `usergroups`.`server_alias`, `usergroups`.`server_prefix`
