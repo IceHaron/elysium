@@ -103,6 +103,10 @@ class user {
 			case 777:
 				$purchGroup = array(20000);
 			break;
+			
+			default:
+				$purchGroup = array();
+			break;
 		}
 
 		$groupEnd = time();
