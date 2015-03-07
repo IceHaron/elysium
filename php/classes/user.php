@@ -136,11 +136,11 @@ class user {
 			// }
 		// else $tokens = array('changename' => 0);
 
-		$q = "SELECT * FROM `purchases` WHERE `user` = $user AND `item` IN (10001) AND `start` < now() AND `end` > now();";
+		$q = "SELECT * FROM `purchases` WHERE `user` = $user AND `item` IN (10001) AND `start` < now() AND (`end` > now() OR `end` = '0000-00-00 00:00:00');";
 		$r = $db->query($q);
 		$allowPrefix = count($r);
 
-		$q = "SELECT * FROM `purchases` WHERE `user` = $user AND `item` IN (10002) AND `start` < now() AND `end` > now();";
+		$q = "SELECT * FROM `purchases` WHERE `user` = $user AND `item` IN (10002) AND `start` < now() AND (`end` > now() OR `end` = '0000-00-00 00:00:00');";
 		$r = $db->query($q);
 		$allowNameColor = count($r);
 
