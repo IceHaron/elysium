@@ -30,11 +30,13 @@ $(document).ready(function(){
 
 	// Проверяем онлайн при загрузке страницы и раз в 5 минут
 	onlineCheck('kernel');
+	onlineCheck('backtrack');
 	
 	setInterval(function() {
 		pingServer('kernel');
 		pingServer('backtrack');
 		onlineCheck('kernel');
+		onlineCheck('backtrack');
 	}, 300000);
 
 	$('#header .row-2 ul li').each(function() {
@@ -318,17 +320,17 @@ function onlineCheck(server) {
 				$('.' + server + ' .online').empty();
 				for (time in data) {
 					$('.' + server + ' .online').append('<div class="time">' + time + '</div>');
-					for (group in data[time]) {
+					for (group in data[time][server]) {
 						var playerlist = '';
-						for (i in data[time][group]) {
-							var player = data[time][group][i];
-							if (player.search(/\[СКРЫТ\]/) != -1) hidden++;
-							else {
-								playerlist += '<div class="player">' + player + '</div>';
-							}
+						for (i in data[time][server][group]) {
+							var player = data[time][server][group][i];
+							// if (player.search(/\[СКРЫТ\]/) != -1) hidden++;
+							// else {
+							playerlist += '<div class="player">' + player + '</div>';
+							// }
 						}
 						if (playerlist != '') {
-							$('.' + server + ' .online').append('<div class="group">' + group + '</div>');
+							$('.' + server + ' .online').append('<div class="group" style="color: green">' + group + '</div>');
 							$('.' + server + ' .online').append(playerlist);
 						}
 					}

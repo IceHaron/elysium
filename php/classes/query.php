@@ -241,17 +241,20 @@ class Query {
 		$online = file_get_contents('http://srv.elysiumgame.ru/list.php');
 		$onlineArr = json_decode($online);
 		$outputArr = array();
-		$q = "SELECT `name`, `server_alias` FROM `usergroups` WHERE `id` NOT IN (777,100,5);";
+		$q = "SELECT `name`, `server_alias` FROM `usergroups` WHERE `id` NOT IN (777,100);";
 		$r = $this->db->query($q);
 
 		foreach ($r as $group) {
 			$siteGroups[ $group['server_alias'] ] = $group['name'];
 		}
 
-		foreach ($onlineArr as $time => $groups) {
-			foreach ($groups as $group => $players) {
-			if ($group == 'Admins') $group = 'Admin';
-				$outputArr[$time][ $siteGroups[$group] ] = $players;
+		foreach ($onlineArr as $time => $servers) {
+			foreach ($servers as $server => $groups) {
+				foreach ($groups as $group => $players) {
+					if ($group == 'Admins') $group = 'Admin';
+					if ($group == 'tester') $group = 'default';
+					$outputArr[$time][$server][ $siteGroups[$group] ] = $players;
+				}
 			}
 		}
 
