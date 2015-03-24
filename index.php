@@ -45,14 +45,6 @@ if ($module == 'troll') {
 
 }
 
-$q = "
-	SELECT `players`.`nick` AS `player`, `reason`, `banners`.`nick` AS `admin`, `ban`, `unban`
-	FROM `banlist`
-	JOIN `ololousers` AS `players` ON (`banlist`.`player` = `players`.`id`)
-	JOIN `ololousers` AS `banners` ON (`banlist`.`admin` = `banners`.`id`)
-	WHERE `ban` < NOW() AND (`unban` > NOW() OR `unban` IS NULL);";
-$banlist = $db->query($q);
-
 $noTemplate = FALSE;
 
 if ($module == '') $module = 'news';
