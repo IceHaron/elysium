@@ -19,7 +19,7 @@ if($token == md5($username.$secret_key)) {
 	if (!count($r)) die("Error: Bad login");
 	else $userid = $r[0]['id'];
 
-	$bonus = giftForVoting($userid, 1, 'Голос на mctop.im');
+	$bonus = giftForVoting($userid, 2, 'Голос на mctop.su');
 	
 	if ($bonus) echo 'Success';
 	else echo "Shit happened";
