@@ -12,7 +12,7 @@ $secret_key = 'hRMF1MJ801gHXMx9fX2w'; // ключ доступа к обрабо
 $username = $db->escape($_GET['nickname']);
 $token = $db->escape($_GET['token']);
 
-if($token == md5(md5($username.$secret_key))) {
+if($token == md5($username.$secret_key)) {
 	$q = "SELECT `id` FROM `ololousers` WHERE `mcname` = '$username'";
 	$r = $db->query($q);
 	
