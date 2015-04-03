@@ -58,7 +58,19 @@ if ($module == '404') {
 }
 
 // Подключаем основной макет
-if (!$noTemplate) REQUIRE_ONCE('template/main.html');
+if (!$noTemplate) {
+
+	$_GET['ad'] = 'ZmFpcnRvcA==';
+
+	if (!empty($_GET['ad']) && (!empty($_SERVER['HTTP_REFERER']) && strpos($_SERVER['HTTP_REFERER'], base64_decode($_GET['ad'])) !== FALSE) || TRUE) {
+		$platform = base64_decode($_GET['ad']);
+		setcookie('ad', base64_decode($_GET['ad']), time()+3600, '/');
+		$db->query("INSERT INTO `ads` (`platform`, `url`, `ip`) VALUES ('" . base64_decode($_GET['ad']) . "', '{$_SERVER['HTTP_REFERER']}', '{$_SERVER['REMOTE_ADDR']}')");
+	}
+
+	REQUIRE_ONCE('template/main.html');
+}
+
 
 // Выводим постфикс - код, который нужно выполнить после всего, он, естественно, заполняется в контроллерах.
 echo $postfix;
