@@ -68,6 +68,7 @@ if ($action == 'reg' && isset($_POST['nick']) && !isset($cid)) {
 			$q = "SELECT `id` FROM `ololousers` WHERE `nick` = '$nick' AND `email` = '$email'";
 			$r = $db->query($q);
 			if (!empty($_COOKIE['ad'])) $db->query("UPDATE `ads` SET `registered` = {$r[0]['id']} WHERE `platform` = '{$_COOKIE['ad']}' AND `ip` = '{$_SERVER['REMOTE_ADDR']}'");
+			unset ($_COOKIE['ad']);
 
 			$from = array('id' => $r[0]['id'], 'email' => $maillogin, 'name' => 'Elysium Game');
 			$to = array('email' => $email, 'name' => $nick);
