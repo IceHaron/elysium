@@ -60,9 +60,11 @@ if ($module == '404') {
 // Подключаем основной макет
 if (!$noTemplate) {
 
-	if (!empty($_GET['ad']) && (!empty($_SERVER['HTTP_REFERER']) && strpos($_SERVER['HTTP_REFERER'], base64_decode($_GET['ad'])) !== FALSE)) {
+	$adsArr = ['fairtop' => 'fairtop', 'real_pepper' => 'youtube'];
+
+	if (!empty($_GET['ad']) && (!empty($_SERVER['HTTP_REFERER']) && strpos($_SERVER['HTTP_REFERER'], $adsArr[base64_decode($_GET['ad'])]) !== FALSE)) {
 		$platform = base64_decode($_GET['ad']);
-		setcookie('ad', base64_decode($_GET['ad']), time()+3600, '/');
+		setcookie('ad', base64_decode($_GET['ad']), time()+3600*24*30, '/');
 		$db->query("INSERT INTO `ads` (`platform`, `url`, `ip`) VALUES ('" . base64_decode($_GET['ad']) . "', '{$_SERVER['HTTP_REFERER']}', '{$_SERVER['REMOTE_ADDR']}')");
 	}
 

@@ -163,7 +163,7 @@
 		<div class="tail-right">
 			<div class="wrapper">
 				<?
-				if($_SERVER['REQUEST_URI'] == '/false') { // На страницах ЛК и оплаты вырубаем колонку с соцсетями
+				if($_SERVER['REQUEST_URI'] == '/false') { // Стиль с правой колонкой
 				?>
 				<!-- Левый столбец, основной контент -->
 				<div class="col-1">
@@ -180,7 +180,7 @@
 					<img src="/images/vk.png">
 				</div>
 				<?
-				} else { // Ну, соответственно, стиль без второй колонки для ЛК и страницы оплаты.
+				} else { // Ну, соответственно, стиль без второй колонки
 				?>
 				<div class="nocol">
 					<?INCLUDE("template/$module.html");?>

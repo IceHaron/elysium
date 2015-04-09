@@ -11,7 +11,9 @@
 html { min-width: 920px; }
 body {
 	/*background: #2f373a;*/
-	font-family: 'Cuprum', arial, serif;
+	font-size: 14px;
+	font-family: sans-serif;
+	/*font-family: 'Cuprum', arial, serif;*/
 	color: #555;
 	min-width:920px;
 }
@@ -146,6 +148,9 @@ h4 {
 	width: 100%;
 }
 #header .row-1 .fright { padding: 45px 15px 0 0; }
+#header .row-2 {
+	margin-top: 3px;
+}
 #header .row-2 ul.menu {
 	width: 100%;
 	position: absolute;
@@ -233,6 +238,8 @@ h4 {
 }*/
 #content .indent { padding: 33px 33px 50px 37px; }
 #content .indent1 { padding-bottom: 33px; }
+
+.newsWrapper { padding-left: 5px;}
 
 /* Футер */
 #footBG { background-color: #2f373a; }
