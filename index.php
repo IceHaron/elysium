@@ -60,7 +60,7 @@ if ($module == '404') {
 // Подключаем основной макет
 if (!$noTemplate) {
 
-	$adsArr = ['fairtop' => 'fairtop', 'real_pepper' => 'youtube', 'topcraft' => 'topcraft'];
+	$adsArr = ['fairtop' => 'fairtop', 'real_pepper' => 'youtube', 'manifest' => 'youtube', 'topcraft' => 'topcraft'];
 
 	if (!empty($_GET['ad']) && (!empty($_SERVER['HTTP_REFERER']) && strpos($_SERVER['HTTP_REFERER'], $adsArr[base64_decode($_GET['ad'])]) !== FALSE)) {
 		$platform = base64_decode($_GET['ad']);
