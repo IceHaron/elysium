@@ -106,9 +106,11 @@ function syncAccs() {
 		$post['salt'] = '9034u3ui';
 		$post['key'] = str_replace(array('1','2','5','8','b','d','e','f'), '', md5($post['user'] . substr($post['user'], 2)));
 		$post['pw'] = md5($post['key']);
+		if ($player['group'] >= 100) $prefixBase = '&r[&r] &f';
+		else $prefixBase = '[&r] ';
 		$post['group'] = $player['group'] . '__' . $player['server_alias'];
 		$post['mcnick'] = $player['mcname'];
-		$post['prefix'] = str_replace('[&r] ', $player['server_prefix'], $player['prefix']);
+		$post['prefix'] = str_replace($prefixBase, $player['server_prefix'], $player['prefix']);
 		if ($post['prefix'] == '' || !isset($allowPrefix[ $player['id'] ])) $post['prefix'] = 'null';
 		$post['prefix'] = urlencode($post['prefix']);
 
